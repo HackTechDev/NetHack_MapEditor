@@ -51,7 +51,7 @@ reste invisible dans l'éditeur.
   `noflip`, afficher un avertissement et proposer un aperçu en miroir
   (horizontal ou vertical), puisque NetHack retourne ces niveaux au
   hasard.
-- **Index des entités par case** **[facile]** : `entities_at()` parcourt
+- ✅ **Fait** — **Index des entités par case** **[facile]** : `entities_at()` parcourt
   toute la liste pour chaque case affichée. Un dictionnaire
   `(x, y) -> [entités]` accélérerait l'affichage des niveaux très
   peuplés.

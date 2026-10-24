@@ -361,8 +361,9 @@ class Editor:
             return "~", "CLR_BROWN"
         return "?", "CLR_WHITE"
 
-    def top_entity(self, x, y):
-        ents = self.lvl.entities_at(x, y)
+    def top_entity(self, x, y, index=None):
+        ents = (index.get((x, y)) if index is not None
+                else self.lvl.entities_at(x, y))
         if not ents:
             return None
         prio = ["monster", "object", "trap", "stair", "ladder", "altar",
@@ -482,6 +483,7 @@ class Editor:
             self.put(top + 1 + y, left + vw + 1, "|", frame)
         # carte
         prev = self.preview_cells()
+        index = lvl.entity_index()
         if self.game:
             grid = [row[:] for row in lvl.grid]
             if self.tool != "copy":
@@ -512,7 +514,7 @@ class Editor:
                         a = self.attr(TERRAIN_COLOR.get(ch, "CLR_GRAY"))
                     a |= curses.A_REVERSE
                 elif self.show_ents:
-                    e = self.top_entity(x, y)
+                    e = self.top_entity(x, y, index)
                     if e:
                         ch, clr = self.entity_glyph(e)
                         a = self.attr(clr)

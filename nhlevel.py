@@ -154,6 +154,14 @@ class Level:
     def entities_at(self, x, y):
         return [e for e in self.entities if e.x == x and e.y == y]
 
+    def entity_index(self):
+        """Dictionnaire (x, y) -> [entités], pour afficher toute la carte
+        sans parcourir la liste des entités case par case."""
+        index = {}
+        for e in self.entities:
+            index.setdefault((e.x, e.y), []).append(e)
+        return index
+
     def snapshot(self):
         return ([row[:] for row in self.grid],
                 [e.copy() for e in self.entities], self.w, self.h)
