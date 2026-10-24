@@ -10,12 +10,13 @@ import curses
 import locale
 import os
 import sys
+import time
 
 import nhlevel
 from nhlevel import Level
 from nhme_common import (
-    Cancel, DUNGEON_FILES, FLIP_CYCLE, FLIP_NAME, HACKDIRS, HELP, SYM_NAME,
-    TOOL_KEY, TOOL_NAME, TWO_POINT, bresenham, load_data)
+    AUTOSAVE_DELAY, Cancel, DUNGEON_FILES, FLIP_CYCLE, FLIP_NAME, HACKDIRS,
+    HELP, SYM_NAME, TOOL_KEY, TOOL_NAME, TWO_POINT, bresenham, load_data)
 from nhme_dialogs import DialogsMixin
 from nhme_display import DisplayMixin
 from nhme_entities import EntitiesMixin
@@ -69,6 +70,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.game_where = ""
         self.launch = None          # réponse à « lancer le jeu ? »
         self.lua_refused = False    # compilation de Lua refusée
+        self.autosave_delay = AUTOSAVE_DELAY
+        self.autosave_time = time.time()
         self.undo_stack, self.redo_stack = [], []
         # trait en cours (crayon baissé ou glisser à la souris) : un seul
         # point d'annulation pour tout le trait
@@ -84,6 +87,9 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             else:
                 self.path = path
                 self.msg = "Nouveau fichier : %s" % path
+                self.offer_autosave()
+        else:
+            self.offer_autosave()
 
     def run(self):
         curses.raw()
@@ -102,9 +108,11 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                     continue
                 try:
                     if self.handle(k) is False:
+                        self.drop_autosave()
                         break
                 except Cancel:
                     self.msg = "Annulé."
+                self.autosave()
         finally:
             sys.stdout.write("\033[?1002l")
             sys.stdout.flush()

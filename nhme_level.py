@@ -2,13 +2,15 @@
 
 import os
 import shutil
+import time
 
 import nhcheck
 import nhexport
 import nhlevel
 import nhtheme
 from nhlevel import Level
-from nhme_common import Cancel, EXPORTS
+from nhme_common import (
+    AUTOSAVE_SUFFIX, CACHE_DIR, Cancel, EXPORTS)
 
 
 class LevelMixin:
@@ -200,7 +202,9 @@ class LevelMixin:
         except (OSError, UnicodeDecodeError) as e:
             self.msg = "Erreur à l'ouverture : %s" % e
             return False
-        return self.set_level(lvl, path)
+        self.set_level(lvl, path)
+        self.offer_autosave()
+        return True
 
     def import_text(self, path):
         """Ouvre une carte ASCII seule comme un nouveau niveau ; « s »
@@ -296,9 +300,11 @@ class LevelMixin:
         except OSError as e:
             self.msg = "Erreur d'écriture : %s" % e
             return False
+        self.drop_autosave()        # celle de l'ancien nom
         self.path = path
         self.lvl.theme = None       # « enregistrer sous » : niveau à part
         self.modified = False
+        self.drop_autosave()
         self.msg = "Enregistré : %s" % path
         return True
 
@@ -317,6 +323,65 @@ class LevelMixin:
             return False
         self.msg = "Carte exportée : %s" % path
         return True
+
+    # -- sauvegarde de secours ------------------------------------------
+    def autosave_path(self):
+        if self.path:
+            return self.path + AUTOSAVE_SUFFIX
+        return os.path.join(CACHE_DIR, "sans-nom" + AUTOSAVE_SUFFIX)
+
+    def autosave(self, force=False):
+        """Écrit la sauvegarde de secours si la carte est modifiée depuis
+        plus de AUTOSAVE_DELAY secondes (les salles à thème exceptées)."""
+        now = time.time()
+        if not self.modified or self.lvl.theme or self.autosave_delay <= 0:
+            return
+        if not force and now - self.autosave_time < self.autosave_delay:
+            return
+        self.autosave_time = now
+        path = self.autosave_path()
+        try:
+            os.makedirs(os.path.dirname(path) or ".", exist_ok=True)
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(self.lvl.to_lua(os.path.splitext(
+                    os.path.basename(self.path or "sans-nom"))[0]))
+        except OSError:
+            pass                    # une sauvegarde de secours ratée
+            #                         ne doit pas gêner l'édition
+
+    def drop_autosave(self):
+        try:
+            os.remove(self.autosave_path())
+        except OSError:
+            pass
+
+    def offer_autosave(self):
+        """Après une ouverture : propose de récupérer une sauvegarde de
+        secours plus récente que le fichier (session interrompue)."""
+        auto = self.autosave_path()
+        if self.scr is None or not os.path.exists(auto):
+            return
+        if self.path and os.path.exists(self.path) and \
+                os.path.getmtime(auto) <= os.path.getmtime(self.path):
+            self.drop_autosave()        # périmée : le fichier est plus récent
+            return
+        when = time.strftime("%d/%m/%Y %H:%M",
+                             time.localtime(os.path.getmtime(auto)))
+        if not self.confirm("Sauvegarde de secours du %s trouvée (session "
+                            "interrompue). La récupérer ?" % when):
+            self.drop_autosave()
+            return
+        try:
+            with open(auto, encoding="utf-8") as f:
+                lvl = nhlevel.parse_level(f.read())[0]
+        except (OSError, ValueError) as e:
+            self.msg = "Sauvegarde de secours illisible : %s" % e
+            return
+        path = self.path
+        self.set_level(lvl, path)
+        self.modified = True
+        self.msg = ("Sauvegarde de secours récupérée ; s pour l'enregistrer "
+                    "dans %s." % (path or "un fichier"))
 
     def save_theme(self):
         """Remplace la carte de la salle dans themerms.lua (ou ajoute la

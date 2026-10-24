@@ -4,3 +4,4 @@ __pycache__/
 *.lua~
 # cartes d'essai
 essais/
+*.nhme-autosave

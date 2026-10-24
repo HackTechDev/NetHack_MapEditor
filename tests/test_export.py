@@ -103,5 +103,25 @@ class Templates(unittest.TestCase):
                              (2, 2))
 
 
+class Autosave(unittest.TestCase):
+    def test_write_and_drop(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "carte.lua")
+            ed = nhmapedit.Editor(None)
+            ed.lvl = level(["..."])
+            ed.path = path
+            ed.autosave()                   # pas modifiée : rien
+            self.assertFalse(os.path.exists(path + ".nhme-autosave"))
+            ed.tool, ed.brush = "pen", "W"
+            ed.apply()
+            ed.autosave()                   # délai pas écoulé : rien
+            self.assertFalse(os.path.exists(path + ".nhme-autosave"))
+            ed.autosave(force=True)
+            with open(path + ".nhme-autosave") as f:
+                self.assertIn("W..", f.read())
+            self.assertTrue(ed.save())
+            self.assertFalse(os.path.exists(path + ".nhme-autosave"))
+
+
 if __name__ == "__main__":
     unittest.main()

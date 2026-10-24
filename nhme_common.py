@@ -25,6 +25,12 @@ CONFIG_DIR = os.path.join(os.environ.get("XDG_CONFIG_HOME")
                           or os.path.expanduser("~/.config"), "nhmapedit")
 TEMPLATE_DIRS = [os.path.join(HERE, "modeles"),
                  os.path.join(CONFIG_DIR, "modeles")]
+# Sauvegarde de secours : délai entre deux écritures (s), suffixe du
+# fichier, et dossier des cartes sans nom
+AUTOSAVE_DELAY = 60
+AUTOSAVE_SUFFIX = ".nhme-autosave"
+CACHE_DIR = os.path.join(os.environ.get("XDG_CACHE_HOME")
+                         or os.path.expanduser("~/.cache"), "nhmapedit")
 # Préfixe des copies de test, pour ne jamais masquer un niveau de nhdat
 TEST_PREFIX = "nhme-"
 # Session tmux du jeu lancé par l'éditeur (hors de tmux)
@@ -314,6 +320,10 @@ NIVEAU ET FICHIERS
 Salles à thème : ouvrir themerms.lua (o) propose ses salles dessinées par
 des.map, ou une nouvelle salle ; s n'y réécrit que la carte (ou ajoute la
 salle), t explique comment la voir en jeu avec THEMERM.
+
+Sauvegarde de secours : une carte modifiée est copiée au plus chaque
+minute dans fichier.lua.nhme-autosave, proposé à la réouverture après un
+arrêt brutal, supprimé à l'enregistrement.
 
 Pour un fichier existant, seuls la première carte des.map et les éléments
 à position fixe qui la suivent (avec leur inventaire ou contenu, s'il ne

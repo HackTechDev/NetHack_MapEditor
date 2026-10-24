@@ -136,7 +136,7 @@ reste invisible dans l'éditeur.
 - ✅ **Fait** — **Bibliothèque de modèles** **[moyen]** : des morceaux de carte prêts à
   coller (temple, boutique, puits, pont-levis, fontaine décorée…), rangés
   dans un dossier `modeles/`.
-- **Enregistrement automatique** **[facile]** : une sauvegarde de secours
+- ✅ **Fait** — **Enregistrement automatique** **[facile]** : une sauvegarde de secours
   régulière dans un fichier `.nhme-autosave`, proposée à la réouverture
   après un plantage.
 

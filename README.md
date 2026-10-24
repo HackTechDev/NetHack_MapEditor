@@ -134,6 +134,14 @@ elle vaut `(?)` quand la carte est placée au hasard.
   ordinaire, qu'on peut aussi ouvrir et modifier ; sa première ligne
   `-- Modèle nhmapedit : Titre` donne son titre, les commentaires
   suivants sa description.
+- **Sauvegarde de secours** : quand la carte est modifiée, l'éditeur
+  écrit au plus une fois par minute une sauvegarde de secours, à côté du
+  fichier (`carte.lua.nhme-autosave`). Pour une carte sans nom, elle va
+  dans `~/.cache/nhmapedit/`. Elle est supprimée à l'enregistrement et
+  quand on quitte normalement. Si l'éditeur ou le terminal s'est arrêté
+  brutalement, la réouverture du fichier propose de la récupérer : la
+  carte reprend son état, à enregistrer avec `s`. Les salles à thème
+  n'en ont pas.
 
 ## Vérification
 
