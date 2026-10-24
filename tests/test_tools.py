@@ -125,5 +125,21 @@ class Undo(unittest.TestCase):
         self.assertEqual(grid(ed.lvl), ["....."])
 
 
+class ContextHint(unittest.TestCase):
+    def test_states(self):
+        ed = editor(["....", "...."])
+        self.assertIn("?:aide", ed.context_hint())
+        ed.tool = "rect"
+        self.assertIn("poser l'ancre", ed.context_hint())
+        ed.anchor = (0, 0)
+        self.assertIn("annuler l'ancre", ed.context_hint())
+        ed.anchor, ed.tool = None, "paste"
+        self.assertIn("Presse-papiers vide", ed.context_hint())
+        ed.clip = ([["-", "-", "-"], ["|", ".", "|"]], [])
+        self.assertIn("coller (3x2", ed.context_hint())
+        ed.tool, ed.pen_down = "pen", True
+        self.assertIn("Crayon baissé", ed.context_hint())
+
+
 if __name__ == "__main__":
     unittest.main()

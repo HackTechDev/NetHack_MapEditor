@@ -21,7 +21,10 @@ grandes que l'écran défilent.
 
 ## Utilisation
 
-Appuyez sur `?` dans l'éditeur pour l'aide complète.
+Appuyez sur `?` dans l'éditeur pour l'aide complète. La barre du bas
+s'adapte à la situation et rappelle les touches utiles : ancre posée
+(tracer, annuler), outil Coller (taille du presse-papiers, miroirs,
+rotation), crayon baissé, entités sous le curseur, rendu jeu…
 
 | Touche | Action |
 |---|---|

@@ -8,7 +8,8 @@ import nhexport
 import nhlevel
 from nhme_common import (
     ASCII_GLYPH, FLIP_NAME, HI_COLORS, NH_COLORS, OBJ_CLASS_COLOR, RANDOM,
-    SELECT, SHORT, SYM_NAME, TERRAIN_COLOR, TOOLS, TOOL_NAME, game_view)
+    SELECT, SHORT, SYM_NAME, TERRAIN_COLOR, TOOLS, TOOL_NAME, TWO_POINT,
+    game_view)
 
 
 class DisplayMixin:
@@ -300,10 +301,42 @@ class DisplayMixin:
             st += "   [symétrie : %s]" % SYM_NAME[self.sym]
         self.put(maxy - 3, 0, st[:maxx - 1], curses.A_BOLD)
         self.put(maxy - 2, 0, self.msg[:maxx - 1], self.attr("CLR_YELLOW"))
-        hint = (" ?:aide  1-0 D G R:outils  m:entité  i:liste  p:propriétés  "
+        self.put(maxy - 1, 0, self.context_hint()[:maxx - 1].ljust(
+            maxx - 1), curses.A_REVERSE)
+
+    def context_hint(self):
+        """Barre du bas : les touches utiles dans la situation actuelle."""
+        if self.anchor:
+            return (" Espace/Entrée: tracer jusqu'au curseur  flèches/souris:"
+                    " 2e point  Échap: annuler l'ancre")
+        if self.tool == "paste":
+            if not self.clip:
+                return (" Presse-papiers vide :  7: copier  D: couper  "
+                        "b: modèle  Échap: Pinceau")
+            h, w = len(self.clip[0]), len(self.clip[0][0])
+            return (" Espace: coller (%dx%d, coin haut-gauche au curseur)  "
+                    "X/Y: miroir  O: rotation  b: modèles  Échap: Pinceau"
+                    % (w, h))
+        if self.pen_down:
+            return (" Crayon baissé : flèches = peindre  caractère = "
+                    "pinceau  d: lever  u: annuler le trait")
+        if self.tool in TWO_POINT:
+            extra = {"scatter": "  (densité %d %%)" % self.density,
+                     "copy": "  puis 8 colle", "cut": "  puis 8 colle",
+                     "replace": "  (R : autre remplacement)"}
+            return (" Espace: poser l'ancre (1er coin)  caractère: pinceau  "
+                    "M: symétrie  u: annuler" + extra.get(self.tool, ""))
+        if self.tool == "fill":
+            return (" Espace: remplir la zone sous le curseur avec le "
+                    "pinceau  y: pipette  u: annuler")
+        if self.show_ents and self.lvl.entities_at(self.cx, self.cy):
+            return (" m: ajouter  z: supprimer  i: liste (e: modifier)  "
+                    "r: répéter  Tab: masquer les entités")
+        if self.game:
+            return (" Rendu jeu :  J: revenir aux caractères de carte  "
+                    "f: retournement  ?: aide")
+        return (" ?:aide  1-0 D G R:outils  m:entité  i:liste  p:propriétés  "
                 "t:tester  s:enregistrer  q:quitter")
-        self.put(maxy - 1, 0, hint[:maxx - 1].ljust(maxx - 1),
-                 curses.A_REVERSE)
 
     def put(self, y, x, s, a=0):
         try:

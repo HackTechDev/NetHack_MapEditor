@@ -317,6 +317,9 @@ NIVEAU ET FICHIERS
      l'exporte en image, telle qu'elle est affichée (J, Tab)
   q  quitter      ?  cette aide
 
+La barre du bas rappelle les touches utiles selon la situation : ancre
+posée, outil Coller, crayon baissé, entités sous le curseur, rendu jeu…
+
 Salles à thème : ouvrir themerms.lua (o) propose ses salles dessinées par
 des.map, ou une nouvelle salle ; s n'y réécrit que la carte (ou ajoute la
 salle), t explique comment la voir en jeu avec THEMERM.

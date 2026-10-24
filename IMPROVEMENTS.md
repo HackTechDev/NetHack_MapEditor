@@ -148,7 +148,7 @@ reste invisible dans l'éditeur.
   raccourcis clavier.
 - **Interface en anglais** **[moyen]** : choix de la langue selon `LANG`,
   pour une diffusion au-delà de la communauté francophone.
-- **Aide contextuelle** **[facile]** : afficher dans la barre du bas les
+- ✅ **Fait** — **Aide contextuelle** **[facile]** : afficher dans la barre du bas les
   touches utiles pour l'outil en cours (ancre posée, collage…).
 
 ## 9. Qualité du projet
