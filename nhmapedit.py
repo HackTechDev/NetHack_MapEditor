@@ -41,6 +41,11 @@ TOOLS = [
 TOOL_NAME = dict(TOOLS)
 TWO_POINT = {"line", "rect", "fillrect", "room", "copy"}
 
+# Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
+FLIP_NAME = {0: "aucun", 1: "vertical", 2: "horizontal",
+             3: "horizontal et vertical"}
+FLIP_CYCLE = {0: 2, 2: 1, 1: 3, 3: 0}
+
 # Couleurs NetHack (CLR_*) -> (couleur curses, gras)
 NH_COLORS = {
     "CLR_BLACK": (curses.COLOR_BLUE, True),
@@ -178,6 +183,8 @@ DÉPLACEMENT
   Maj+flèches, PgPréc/PgSuiv, Début/Fin   déplacement rapide
   g                      aller à une position (x y)
   c                      afficher / masquer les règles de coordonnées
+  f                      aperçu du retournement aléatoire de NetHack :
+                         aucun, horizontal, vertical, les deux
   Souris                 clic = déplacer + appliquer l'outil, glisser = peindre
 
 TERRAIN (le caractère tapé devient le pinceau, et peint en mode Pinceau)
@@ -275,6 +282,7 @@ class Editor:
         self.show_ents = True
         self.rulers = True          # règles de coordonnées autour de la carte
         self.game = False           # rendu « comme dans le jeu »
+        self.flip = 0               # aperçu retourné (bits de FLIP_NAME)
         enc = locale.getpreferredencoding(False).lower().replace("-", "")
         self.unicode = enc == "utf8"
         self.clip = None
@@ -375,15 +383,27 @@ class Editor:
         vh = max(1, min(self.lvl.h, maxy - 2 - 5 - rt))
         return maxy, maxx, vw, vh, side, 1 + rt, rl
 
+    def fl(self, x, y):
+        """Case de la carte <-> case affichée, selon l'aperçu retourné.
+
+        La transformation est sa propre inverse ; ox et oy (décalage de
+        la vue) sont exprimés dans les coordonnées affichées."""
+        if self.flip & 2:
+            x = self.lvl.w - 1 - x
+        if self.flip & 1:
+            y = self.lvl.h - 1 - y
+        return x, y
+
     def scroll_into_view(self, vw, vh):
-        if self.cx < self.ox:
-            self.ox = self.cx
-        elif self.cx >= self.ox + vw:
-            self.ox = self.cx - vw + 1
-        if self.cy < self.oy:
-            self.oy = self.cy
-        elif self.cy >= self.oy + vh:
-            self.oy = self.cy - vh + 1
+        cx, cy = self.fl(self.cx, self.cy)
+        if cx < self.ox:
+            self.ox = cx
+        elif cx >= self.ox + vw:
+            self.ox = cx - vw + 1
+        if cy < self.oy:
+            self.oy = cy
+        elif cy >= self.oy + vh:
+            self.oy = cy - vh + 1
         self.ox = max(0, min(self.ox, self.lvl.w - vw))
         self.oy = max(0, min(self.oy, self.lvl.h - vh))
 
@@ -443,6 +463,9 @@ class Editor:
             name, " [modifié]" if self.modified else "", lvl.w, lvl.h)
         if lvl.w > nhlevel.MAP_X_LIM:
             head += "  (largeur > %d !)" % nhlevel.MAP_X_LIM
+        if lvl.allowed_flips():
+            head += "  (retournable : %s, f pour voir)" % FLIP_NAME[
+                lvl.allowed_flips()]
         self.put(0, 0, head.ljust(maxx), curses.A_REVERSE)
         # cadre
         frame = self.attr("CLR_BLACK")
@@ -465,13 +488,18 @@ class Editor:
                 for (x, y), c in prev.items():
                     if 0 <= x < lvl.w and 0 <= y < lvl.h:
                         grid[y][x] = c
-            view = game_view(grid, lvl.init.get("fg", " "))
+            # le rendu se calcule sur la carte telle qu'affichée, pour
+            # que les coins de murs soient eux aussi retournés
+            shown = [[grid[y][x] for x, y in
+                      (self.fl(dx, dy) for dx in range(lvl.w))]
+                     for dy in range(lvl.h)]
+            view = game_view(shown, lvl.init.get("fg", " "))
         for sy in range(vh):
-            y = self.oy + sy
             for sx in range(vw):
-                x = self.ox + sx
+                dx, dy = self.ox + sx, self.oy + sy
+                x, y = self.fl(dx, dy)
                 if self.game:
-                    ch, clr = view[y][x]
+                    ch, clr = view[dy][dx]
                     if not self.unicode:
                         ch = ASCII_GLYPH.get(ch, ch)
                     a = self.attr(clr)
@@ -492,8 +520,9 @@ class Editor:
         if side:
             self.draw_side(top, left + vw + 3, maxy)
         self.draw_status(maxy, maxx)
-        cy = top + 1 + self.cy - self.oy
-        cx = left + 1 + self.cx - self.ox
+        dx, dy = self.fl(self.cx, self.cy)
+        cy = top + 1 + dy - self.oy
+        cx = left + 1 + dx - self.ox
         try:
             scr.move(cy, cx)
         except curses.error:
@@ -503,14 +532,15 @@ class Editor:
     def draw_rulers(self, top, left, vw, vh, a):
         """Numéros de colonnes (dizaines puis unités) et de lignes."""
         hi = self.attr("CLR_YELLOW") | curses.A_REVERSE
+        # les règles donnent les vraies coordonnées, même retournées
         for sx in range(vw):
-            x = self.ox + sx
+            x = self.fl(self.ox + sx, 0)[0]
             ca = hi if x == self.cx else a
             tens = str(x // 10 % 10) if x % 10 == 0 or x == self.cx else " "
             self.put(top - 2, left + 1 + sx, tens, ca)
             self.put(top - 1, left + 1 + sx, str(x % 10), ca)
         for sy in range(vh):
-            y = self.oy + sy
+            y = self.fl(0, self.oy + sy)[1]
             self.put(top + 1 + sy, 0, "%2d" % y,
                      hi if y == self.cy else a)
 
@@ -565,6 +595,8 @@ class Editor:
             st += "   [entités masquées]"
         if self.game:
             st += "   [rendu jeu]"
+        if self.flip:
+            st += "   [aperçu retourné : %s]" % FLIP_NAME[self.flip]
         self.put(maxy - 3, 0, st[:maxx - 1], curses.A_BOLD)
         self.put(maxy - 2, 0, self.msg[:maxx - 1], self.attr("CLR_YELLOW"))
         hint = (" ?:aide  1-8:outils  m:entité  i:liste  p:propriétés  "
@@ -864,6 +896,11 @@ class Editor:
         self.msg = "Collé."
 
     def move(self, dx, dy):
+        """Déplace le curseur de (dx, dy) cases à l'écran."""
+        if self.flip & 2:
+            dx = -dx
+        if self.flip & 1:
+            dy = -dy
         nx = max(0, min(self.lvl.w - 1, self.cx + dx))
         ny = max(0, min(self.lvl.h - 1, self.cy + dy))
         if self.pen_down and self.tool == "pen":
@@ -1202,6 +1239,10 @@ class Editor:
                     or y + lvl.h > nhlevel.ROWNO:
                 out.append("! La carte placée en (%d,%d) déborde du niveau "
                            "(80x21)." % (x, y))
+        if lvl.allowed_flips():
+            out.append("- NetHack peut retourner ce niveau au chargement (%s) "
+                       ": f pour un aperçu, drapeau noflip pour l'empêcher."
+                       % FLIP_NAME[lvl.allowed_flips()])
         kinds = [(e.kind, e.value) for e in lvl.entities]
         for d, lab in (("up", "montant"), ("down", "descendant")):
             if ("stair", d) not in kinds and ("ladder", d) not in kinds:
@@ -1423,9 +1464,9 @@ class Editor:
         if k in moves:
             self.move(*moves[k])
         elif k == curses.KEY_HOME:
-            self.move(-self.cx, 0)
+            self.move(-self.fl(self.cx, 0)[0], 0)
         elif k == curses.KEY_END:
-            self.move(lvl.w - 1 - self.cx, 0)
+            self.move(lvl.w - 1 - self.fl(self.cx, 0)[0], 0)
         elif k == curses.KEY_MOUSE:
             self.mouse(lay)
         elif k == curses.KEY_RESIZE:
@@ -1479,6 +1520,16 @@ class Editor:
             self.game = not self.game
             self.msg = ("Rendu « comme dans le jeu »." if self.game
                         else "Rendu des caractères de carte (des.map).")
+        elif k == "f":
+            self.flip = FLIP_CYCLE[self.flip]
+            if not self.flip:
+                self.msg = "Carte affichée dans son sens d'origine."
+            else:
+                self.msg = "Aperçu retourné : %s. %s" % (
+                    FLIP_NAME[self.flip],
+                    "NetHack peut le faire au chargement."
+                    if self.flip & lvl.allowed_flips() == self.flip else
+                    "Empêché par les drapeaux du niveau (noflip...).")
         elif k == "c":
             self.rulers = not self.rulers
             self.msg = "Règles de coordonnées %s." % (
@@ -1529,7 +1580,7 @@ class Editor:
         except curses.error:
             return
         sx, sy = mx - left - 1, my - top - 1
-        x, y = sx + self.ox, sy + self.oy
+        x, y = self.fl(sx + self.ox, sy + self.oy)
         inside = 0 <= sx < vw and 0 <= sy < vh
         if bstate & curses.BUTTON1_PRESSED and inside:
             self.mouse_down = True

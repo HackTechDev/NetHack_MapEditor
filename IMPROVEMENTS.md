@@ -47,7 +47,7 @@ reste invisible dans l'éditeur.
   Unicode et les coins calculés comme le fait `wallification()`. Les
   portes secrètes et les couloirs secrets apparaîtraient comme des murs
   et de la roche, pour voir ce que le joueur découvrira.
-- **Aperçu du retournement** **[facile]** : si le niveau n'a pas
+- ✅ **Fait** — **Aperçu du retournement** **[facile]** : si le niveau n'a pas
   `noflip`, afficher un avertissement et proposer un aperçu en miroir
   (horizontal ou vertical), puisque NetHack retourne ces niveaux au
   hasard.

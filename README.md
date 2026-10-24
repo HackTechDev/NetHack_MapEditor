@@ -38,6 +38,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | `i` | liste des entités (Entrée : y aller, `e` : modifier, `d` : supprimer) |
 | Tab | afficher / masquer les entités |
 | `c` | afficher / masquer les règles de coordonnées (colonnes en haut, lignes à gauche) |
+| `f` | aperçu du retournement aléatoire que NetHack applique aux niveaux sans `noflip` : aucun → horizontal → vertical → les deux (l'édition reste possible, les règles gardent les vraies coordonnées) |
 | `J` | rendu « comme dans le jeu » : murs en traits avec leurs coins et jonctions, sol en points, symboles et couleurs du jeu, portes et couloirs secrets cachés (l'édition reste possible) |
 | `p` | propriétés : taille, `level_init`, drapeaux, placement (halign/valign ou x,y), éclairage |
 | `v` | vérifier la carte (largeur > 76, entités dans les murs, escaliers en double…) |

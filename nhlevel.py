@@ -176,6 +176,19 @@ class Level:
         return "des.level_flags(%s);" % ", ".join(
             lua_value(f) for f in self.flags)
 
+    def allowed_flips(self):
+        """Retournements que NetHack peut appliquer au chargement : bit 1
+        haut/bas, bit 2 gauche/droite (allow_flips de src/sp_lev.c)."""
+        allowed = 3
+        for f in self.flags:
+            if f == "noflip":
+                allowed = 0
+            elif f == "noflipx":
+                allowed &= ~2
+            elif f == "noflipy":
+                allowed &= ~1
+        return allowed
+
     def origin(self):
         """Position (x, y) dans le niveau de la case (0, 0) de la carte.
 
