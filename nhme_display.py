@@ -6,6 +6,7 @@ import tempfile
 
 import nhexport
 import nhlevel
+from nhi18n import _
 from nhme_common import (
     ASCII_GLYPH, FLIP_NAME, HI_COLORS, NH_COLORS, OBJ_CLASS_COLOR, RANDOM,
     SELECT, SHORT, SYM_NAME, TERRAIN_COLOR, TOOLS, TOOL_NAME, TWO_POINT,
@@ -123,21 +124,21 @@ class DisplayMixin:
         scr.erase()
         maxy, maxx, vw, vh, side, top, left = self.layout()
         if maxy < 12 or maxx < 40:
-            self.put(0, 0, "Terminal trop petit (min. 40x12)")
+            self.put(0, 0, _("Terminal trop petit (min. 40x12)"))
             scr.refresh()
             return
         self.scroll_into_view(vw, vh)
         lvl = self.lvl
         # en-tête
-        name = os.path.basename(self.path) if self.path else "(sans nom)"
+        name = os.path.basename(self.path) if self.path else _("(sans nom)")
         if lvl.theme:
-            name += " : salle « %s »" % lvl.theme["name"]
+            name += _(" : salle « %s »") % lvl.theme["name"]
         head = " nhmapedit — %s%s   %dx%d" % (
-            name, " [modifié]" if self.modified else "", lvl.w, lvl.h)
+            name, _(" [modifié]") if self.modified else "", lvl.w, lvl.h)
         if lvl.w > nhlevel.MAP_X_LIM:
             head += "  (largeur > %d !)" % nhlevel.MAP_X_LIM
         if lvl.allowed_flips() and not lvl.theme:
-            head += "  (retournable : %s, f pour voir)" % FLIP_NAME[
+            head += _("  (retournable : %s, f pour voir)") % FLIP_NAME[
                 lvl.allowed_flips()]
         self.put(0, 0, head.ljust(maxx), curses.A_REVERSE)
         # cadre
@@ -243,14 +244,14 @@ class DisplayMixin:
                      hi if y == self.cy else a)
 
     def draw_side(self, y, x, maxy):
-        self.put(y, x, "Outils", curses.A_BOLD)
+        self.put(y, x, _("Outils"), curses.A_BOLD)
         rows = (len(TOOLS) + 1) // 2
-        for i, (t, _, short, key) in enumerate(TOOLS):
+        for i, (t, _name, short, key) in enumerate(TOOLS):
             a = curses.A_REVERSE if t == self.tool else 0
             self.put(y + 1 + i % rows, x + i // rows * 13,
                      "%s %s" % (key, short), a)
         y += rows + 2
-        self.put(y, x, "Terrain", curses.A_BOLD)
+        self.put(y, x, _("Terrain"), curses.A_BOLD)
         y += 1
         cols = 2
         rows = (len(nhlevel.TERRAIN) + cols - 1) // cols
@@ -272,33 +273,33 @@ class DisplayMixin:
         o = lvl.origin()
         # coordonnées relatives à la carte (celles des scripts), puis
         # position réelle dans le niveau de 80x21
-        info = "(%2d,%2d) niveau %s  '%s' %s" % (
+        info = _("(%2d,%2d) niveau %s  '%s' %s") % (
             x, y, "(%2d,%2d)" % (o[0] + x, o[1] + y) if o else "(?)",
             c, nhlevel.TERRAIN_DESC.get(c, "?"))
         ents = lvl.entities_at(x, y)
         if ents:
             info += "  | " + " ; ".join(e.describe() for e in ents)
         self.put(maxy - 4, 0, info[:maxx - 1])
-        bname = "roche" if self.brush == " " else self.brush
-        st = "Outil: %s   Pinceau: %s (%s)" % (
+        bname = _("roche") if self.brush == " " else self.brush
+        st = _("Outil: %s   Pinceau: %s (%s)") % (
             TOOL_NAME[self.tool], bname,
             nhlevel.TERRAIN_DESC[self.brush].split(" (")[0])
         if self.pen_down:
-            st += "   [crayon baissé]"
+            st += _("   [crayon baissé]")
         if self.advance:
-            st += "   [avance auto]"
+            st += _("   [avance auto]")
         if self.anchor:
-            st += "   ancre (%d,%d) -> %dx%d" % (
+            st += _("   ancre (%d,%d) -> %dx%d") % (
                 self.anchor + (abs(self.cx - self.anchor[0]) + 1,
                                abs(self.cy - self.anchor[1]) + 1))
         if not self.show_ents:
-            st += "   [entités masquées]"
+            st += _("   [entités masquées]")
         if self.game:
-            st += "   [rendu jeu]"
+            st += _("   [rendu jeu]")
         if self.flip:
-            st += "   [aperçu retourné : %s]" % FLIP_NAME[self.flip]
+            st += _("   [aperçu retourné : %s]") % FLIP_NAME[self.flip]
         if self.sym:
-            st += "   [symétrie : %s]" % SYM_NAME[self.sym]
+            st += _("   [symétrie : %s]") % SYM_NAME[self.sym]
         self.put(maxy - 3, 0, st[:maxx - 1], curses.A_BOLD)
         self.put(maxy - 2, 0, self.msg[:maxx - 1], self.attr("CLR_YELLOW"))
         self.put(maxy - 1, 0, self.context_hint()[:maxx - 1].ljust(
@@ -307,36 +308,36 @@ class DisplayMixin:
     def context_hint(self):
         """Barre du bas : les touches utiles dans la situation actuelle."""
         if self.anchor:
-            return (" Espace/Entrée: tracer jusqu'au curseur  flèches/souris:"
-                    " 2e point  Échap: annuler l'ancre")
+            return _(" Espace/Entrée: tracer jusqu'au curseur  "
+                     "flèches/souris: 2e point  Échap: annuler l'ancre")
         if self.tool == "paste":
             if not self.clip:
-                return (" Presse-papiers vide :  7: copier  D: couper  "
-                        "b: modèle  Échap: Pinceau")
+                return (_(" Presse-papiers vide :  7: copier  D: couper  "
+                          "b: modèle  Échap: Pinceau"))
             h, w = len(self.clip[0]), len(self.clip[0][0])
-            return (" Espace: coller (%dx%d, coin haut-gauche au curseur)  "
-                    "X/Y: miroir  O: rotation  b: modèles  Échap: Pinceau"
+            return (_(" Espace: coller (%dx%d, coin haut-gauche au curseur)  "
+                      "X/Y: miroir  O: rotation  b: modèles  Échap: Pinceau")
                     % (w, h))
         if self.pen_down:
-            return (" Crayon baissé : flèches = peindre  caractère = "
-                    "pinceau  d: lever  u: annuler le trait")
+            return (_(" Crayon baissé : flèches = peindre  caractère = "
+                      "pinceau  d: lever  u: annuler le trait"))
         if self.tool in TWO_POINT:
-            extra = {"scatter": "  (densité %d %%)" % self.density,
+            extra = {"scatter": _("  (densité %d %%)") % self.density,
                      "copy": "  puis 8 colle", "cut": "  puis 8 colle",
-                     "replace": "  (R : autre remplacement)"}
-            return (" Espace: poser l'ancre (1er coin)  caractère: pinceau  "
-                    "M: symétrie  u: annuler" + extra.get(self.tool, ""))
+                     "replace": _("  (R : autre remplacement)")}
+            return (_(" Espace: poser l'ancre (1er coin)  caractère: pinceau  "
+                      "M: symétrie  u: annuler") + extra.get(self.tool, ""))
         if self.tool == "fill":
-            return (" Espace: remplir la zone sous le curseur avec le "
-                    "pinceau  y: pipette  u: annuler")
+            return (_(" Espace: remplir la zone sous le curseur avec le "
+                      "pinceau  y: pipette  u: annuler"))
         if self.show_ents and self.lvl.entities_at(self.cx, self.cy):
-            return (" m: ajouter  z: supprimer  i: liste (e: modifier)  "
-                    "r: répéter  Tab: masquer les entités")
+            return (_(" m: ajouter  z: supprimer  i: liste (e: modifier)  "
+                      "r: répéter  Tab: masquer les entités"))
         if self.game:
-            return (" Rendu jeu :  J: revenir aux caractères de carte  "
-                    "f: retournement  ?: aide")
-        return (" ?:aide  1-0 D G R:outils  m:entité  i:liste  p:propriétés  "
-                "t:tester  s:enregistrer  q:quitter")
+            return (_(" Rendu jeu :  J: revenir aux caractères de carte  "
+                      "f: retournement  ?: aide"))
+        return _(" ?:aide  1-0 D G R:outils  m:entité  i:liste  "
+                 "p:propriétés  t:tester  s:enregistrer  q:quitter")
 
     def put(self, y, x, s, a=0):
         try:

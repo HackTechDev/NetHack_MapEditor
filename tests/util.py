@@ -8,6 +8,8 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, ROOT)
+# messages vérifiés en français, quelle que soit la locale
+os.environ["NHMAPEDIT_LANG"] = "fr"
 
 # Niveaux de NetHack : $NHMAPEDIT_DAT, sinon les sources à côté du dépôt
 DAT = os.environ.get("NHMAPEDIT_DAT",

@@ -7,6 +7,7 @@ import configparser
 import os
 
 import nhlevel
+from nhi18n import _
 
 COLORS = ["CLR_BLACK", "CLR_RED", "CLR_GREEN", "CLR_BROWN", "CLR_BLUE",
           "CLR_MAGENTA", "CLR_CYAN", "CLR_GRAY", "NO_COLOR", "CLR_ORANGE",
@@ -62,7 +63,7 @@ def load(path):
         elif key == "dungeon":
             cfg["dungeon"] = os.path.expanduser(val)
         else:
-            bad("jeu", key, "clé inconnue")
+            bad("jeu", key, _("clé inconnue"))
     for key, val in (cp.items("editeur") if cp.has_section("editeur")
                      else []):
         low = val.strip().lower()
@@ -72,10 +73,10 @@ def load(path):
                 cfg["size"] = (max(1, min(w, nhlevel.MAX_W)),
                                max(1, min(h, nhlevel.MAX_H)))
             except ValueError:
-                bad("editeur", key, "LARGEURxHAUTEUR attendu")
+                bad("editeur", key, _("LARGEURxHAUTEUR attendu"))
         elif key in ("regles", "règles", "entites", "entités"):
             if low not in YES:
-                bad("editeur", key, "oui ou non attendu")
+                bad("editeur", key, _("oui ou non attendu"))
             else:
                 cfg[{"regles": "rulers", "règles": "rulers"}.get(
                     key, "entities")] = YES[low]
@@ -85,20 +86,20 @@ def load(path):
             elif low in YES:
                 cfg["unicode"] = YES[low]
             else:
-                bad("editeur", key, "auto, oui ou non attendu")
+                bad("editeur", key, _("auto, oui ou non attendu"))
         elif key == "sauvegarde":
             try:
                 cfg["autosave"] = max(0, int(low))
             except ValueError:
-                bad("editeur", key, "nombre de secondes attendu (0 : "
-                    "désactivée)")
+                bad("editeur", key, _("nombre de secondes attendu (0 : "
+                    "désactivée)"))
         elif key == "langue":
             if low in ("fr", "en", "auto"):
                 cfg["lang"] = low
             else:
-                bad("editeur", key, "fr, en ou auto attendu")
+                bad("editeur", key, _("fr, en ou auto attendu"))
         else:
-            bad("editeur", key, "clé inconnue")
+            bad("editeur", key, _("clé inconnue"))
     for key, val in (cp.items("couleurs") if cp.has_section("couleurs")
                      else []):
         # « # » et l'espace ne peuvent pas être des clés INI
@@ -107,9 +108,9 @@ def load(path):
         if not col.startswith(("CLR_", "NO_")):
             col = "CLR_" + col
         if c not in nhlevel.TERRAIN_CHARS:
-            bad("couleurs", key, "terrain inconnu")
+            bad("couleurs", key, _("terrain inconnu"))
         elif col not in COLORS:
-            bad("couleurs", key, "couleur inconnue (%s)" % ", ".join(
+            bad("couleurs", key, _("couleur inconnue (%s)") % ", ".join(
                 c[4:].lower() for c in COLORS if c.startswith("CLR_")))
         else:
             cfg.setdefault("colors", {})[c] = col
@@ -118,8 +119,8 @@ def load(path):
         try:
             cfg.setdefault("keys", {})[_key(key)] = _key(val.strip())
         except ValueError as e:
-            bad("touches", key, "touche invalide %s" % e)
+            bad("touches", key, _("touche invalide %s") % e)
     for s in cp.sections():
         if s not in ("jeu", "editeur", "couleurs", "touches"):
-            errs.append("[%s] : section inconnue" % s)
+            errs.append(_("[%s] : section inconnue") % s)
     return cfg, errs

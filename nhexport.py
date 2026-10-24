@@ -6,6 +6,7 @@ import shutil
 import subprocess
 
 import nhlevel
+from nhi18n import _
 
 
 def import_text(text):
@@ -21,15 +22,15 @@ def import_text(text):
         lines.pop()
     lines = [l.rstrip() for l in lines]
     if not lines:
-        raise ValueError("carte vide")
+        raise ValueError(_("carte vide"))
     w, h = max(len(l) for l in lines), len(lines)
     if w > nhlevel.MAX_W or h > nhlevel.MAX_H:
-        raise ValueError("carte de %dx%d : %dx%d au plus" % (
+        raise ValueError(_("carte de %dx%d : %dx%d au plus") % (
             w, h, nhlevel.MAX_W, nhlevel.MAX_H))
     bad = sorted({c for l in lines for c in l
                   if c not in nhlevel.TERRAIN_CHARS})
     if bad:
-        raise ValueError("caractères inconnus : %s" % " ".join(
+        raise ValueError(_("caractères inconnus : %s") % " ".join(
             repr(c) for c in bad))
     lvl = nhlevel.Level(w, h)
     for y, l in enumerate(lines):
@@ -109,11 +110,11 @@ def svg_to_png(svg_path, png_path):
     elif shutil.which("convert"):
         cmd = ["convert", svg_path, png_path]
     else:
-        raise OSError("export PNG : installez rsvg-convert (librsvg) ou "
-                      "ImageMagick, ou exportez en .svg")
+        raise OSError(_("export PNG : installez rsvg-convert (librsvg) ou "
+                        "ImageMagick, ou exportez en .svg"))
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode:
-        raise OSError("conversion en PNG : %s" % r.stderr.strip()[:200])
+        raise OSError(_("conversion en PNG : %s") % r.stderr.strip()[:200])
 
 
 # ----------------------------------------------------------------------

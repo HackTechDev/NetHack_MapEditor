@@ -146,7 +146,7 @@ reste invisible dans l'éditeur.
   pour le répertoire du jeu (aujourd'hui, la variable
   `NHMAPEDIT_HACKDIR`), les couleurs, la taille par défaut et les
   raccourcis clavier.
-- **Interface en anglais** **[moyen]** : choix de la langue selon `LANG`,
+- ✅ **Fait** — **Interface en anglais** **[moyen]** : choix de la langue selon `LANG`,
   pour une diffusion au-delà de la communauté francophone.
 - ✅ **Fait** — **Aide contextuelle** **[facile]** : afficher dans la barre du bas les
   touches utiles pour l'outil en cours (ancre posée, collage…).

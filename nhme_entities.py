@@ -3,6 +3,7 @@
 import copy
 
 import nhlevel
+from nhi18n import _
 from nhlevel import Entity
 from nhme_common import Cancel, MON_FORM, OBJ_FORM
 
@@ -16,7 +17,8 @@ class EntitiesMixin:
             txt = ", ".join("%s = %s" % (k, nhlevel.lua_value(v))
                             for k, v in current.items())
         while True:
-            s = self.prompt("Options Lua (ex: peaceful=1, asleep=1) : ", txt)
+            s = self.prompt(_("Options Lua (ex: peaceful=1, asleep=1) : "),
+                            txt)
             if not s.strip():
                 return {}
             try:
@@ -27,12 +29,13 @@ class EntitiesMixin:
             except (nhlevel.NotLiteral, ValueError):
                 pass
             txt = s
-            self.msg = "Syntaxe invalide : clé = valeur, séparées par des virgules."
+            self.msg = _("Syntaxe invalide : clé = valeur, séparées par des "
+                         "virgules.")
 
     def edit_options(self, kind, extra):
         """Formulaire des options courantes d'un monstre ou d'un objet."""
-        return self.form("Options %s" % ("du monstre" if kind == "monster"
-                                         else "de l'objet"),
+        return self.form(_("Options du monstre") if kind == "monster"
+                         else _("Options de l'objet"),
                          MON_FORM if kind == "monster" else OBJ_FORM, extra)
 
     def edit_contents(self, cont, title):
@@ -45,10 +48,10 @@ class EntitiesMixin:
         while True:
             items = [("%s %s" % (self.entity_glyph(it)[0], it.describe()), i)
                      for i, it in enumerate(cont.items)]
-            items.append(("+ ajouter un objet", "add"))
+            items.append((_("+ ajouter un objet"), "add"))
             if existed:
-                items.append(("- retirer l'option", "remove"))
-            hint = "Entrée/e: modifier  d: supprimer  Échap: terminer"
+                items.append((_("- retirer l'option"), "remove"))
+            hint = _("Entrée/e: modifier  d: supprimer  Échap: terminer")
             try:
                 i, action = self.pick_action(title, items, sel, hint)
             except Cancel:
@@ -76,40 +79,41 @@ class EntitiesMixin:
         """Demande les paramètres d'une entité. Renvoie (value, extra)."""
         extra = dict(extra or {})
         if kind in ("stair", "ladder"):
-            value = self.pick("Direction", [("montant (up)", "up"),
-                                            ("descendant (down)", "down")],
+            value = self.pick(_("Direction"), [(_("montant (up)"), "up"),
+                                               (_("descendant (down)"),
+                                                "down")],
                               value)
         elif kind == "altar":
-            value = self.pick("Alignement de l'autel",
+            value = self.pick(_("Alignement de l'autel"),
                               [(a, a) for a in nhlevel.ALTAR_ALIGNS], value)
             extra["type"] = self.pick(
-                "Type d'autel", [(t, t) for t in nhlevel.ALTAR_TYPES],
+                _("Type d'autel"), [(t, t) for t in nhlevel.ALTAR_TYPES],
                 extra.get("type", "altar"))
         elif kind == "monster":
-            items = [("(aléatoire)", None)] + [
+            items = [(_("(aléatoire)"), None)] + [
                 ("%s  %s" % (m["sym"], m["name"]), m["name"])
                 for m in self.data["monsters"]]
-            value = self.pick("Monstre (tapez pour filtrer ; une lettre "
-                              "seule = classe)", items, value, custom=True)
+            value = self.pick(_("Monstre (tapez pour filtrer ; une lettre "
+                                "seule = classe)"), items, value, custom=True)
             extra = self.edit_options(kind, extra)
         elif kind == "object":
-            items = [("(aléatoire)", None)] + [
+            items = [(_("(aléatoire)"), None)] + [
                 ("%s  %s" % (o["sym"], o["name"]), o["name"])
                 for o in self.data["objects"]]
-            value = self.pick("Objet (tapez pour filtrer ; un symbole "
-                              "seul = classe)", items, value, custom=True)
+            value = self.pick(_("Objet (tapez pour filtrer ; un symbole "
+                                "seul = classe)"), items, value, custom=True)
             extra = self.edit_options(kind, extra)
         elif kind == "trap":
-            value = self.pick("Type de piège",
+            value = self.pick(_("Type de piège"),
                               [(t, t) for t in self.data["traps"]], value)
         elif kind == "door":
-            value = self.pick("État de la porte",
+            value = self.pick(_("État de la porte"),
                               [(s, s) for s in nhlevel.DOOR_STATES], value)
         elif kind == "engraving":
-            etype = self.pick("Type de gravure",
+            etype = self.pick(_("Type de gravure"),
                               [(t, t) for t in nhlevel.ENGRAVING_TYPES],
                               extra.get("type", "engrave"))
-            value = self.prompt("Texte gravé : ", value or "Elbereth")
+            value = self.prompt(_("Texte gravé : "), value or "Elbereth")
             extra.pop("type", None)
             extra = dict(type=etype, **extra)
         return value, extra
@@ -119,16 +123,16 @@ class EntitiesMixin:
             return
         kinds = [("%s" % nhlevel.ENTITY_LABEL[k].capitalize(), k)
                  for k in nhlevel.ENTITY_KINDS]
-        kind = self.pick("Placer une entité en (%d,%d)" % (self.cx, self.cy),
-                         kinds)
+        kind = self.pick(_("Placer une entité en (%d,%d)")
+                         % (self.cx, self.cy), kinds)
         value, extra = self.edit_entity_fields(kind)
         self.add_entity(Entity(kind, self.cx, self.cy, value, extra))
 
     def no_entities(self):
         """Une salle à thème n'enregistre que sa carte."""
         if self.lvl.theme:
-            self.msg = ("Salle à thème : seule la carte est enregistrée, "
-                        "pas les entités.")
+            self.msg = (_("Salle à thème : seule la carte est enregistrée, "
+                          "pas les entités."))
             return True
         return False
 
@@ -145,23 +149,23 @@ class EntitiesMixin:
         self.lvl.entities.append(e)
         self.template = e.copy()
         self.template.origin = None
-        self.msg = "Ajouté : %s (r pour répéter)." % e.describe()
+        self.msg = _("Ajouté : %s (r pour répéter).") % e.describe()
 
     def delete_entities(self):
         ents = self.lvl.entities_at(self.cx, self.cy)
         if not ents:
-            self.msg = "Aucune entité ici."
+            self.msg = _("Aucune entité ici.")
             return
         self.checkpoint()
         self.lvl.entities = [e for e in self.lvl.entities if e not in ents]
-        self.msg = "%d entité(s) supprimée(s)." % len(ents)
+        self.msg = _("%d entité(s) supprimée(s).") % len(ents)
 
     def entity_list(self):
         sel = None
         while True:
             ents = self.lvl.entities
             if not ents:
-                self.msg = "Aucune entité."
+                self.msg = _("Aucune entité.")
                 return
             ents.sort(key=lambda e: (e.y, e.x))
             items = [("(%2d,%2d) %s %s" % (e.x, e.y, self.entity_glyph(e)[0],
@@ -171,9 +175,9 @@ class EntitiesMixin:
                 here = [i for i, e in enumerate(ents)
                         if (e.x, e.y) == (self.cx, self.cy)]
                 sel = here[0] if here else 0
-            hint = "Entrée: aller  e: modifier  d: supprimer  Échap: fermer"
+            hint = _("Entrée: aller  e: modifier  d: supprimer  Échap: fermer")
             try:
-                i, action = self.pick_action("Entités (%d)" % len(ents),
+                i, action = self.pick_action(_("Entités (%d)") % len(ents),
                                              items, sel, hint)
             except Cancel:
                 return
@@ -185,7 +189,7 @@ class EntitiesMixin:
             if action == "delete":
                 self.checkpoint()
                 ents.remove(e)
-                self.msg = "Supprimé : %s" % e.describe()
+                self.msg = _("Supprimé : %s") % e.describe()
                 sel = max(0, i - 1)
             elif action == "edit":
                 try:
@@ -195,4 +199,4 @@ class EntitiesMixin:
                     continue
                 self.checkpoint()
                 e.value, e.extra = value, extra
-                self.msg = "Modifié : %s" % e.describe()
+                self.msg = _("Modifié : %s") % e.describe()

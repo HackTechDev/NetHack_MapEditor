@@ -10,6 +10,8 @@ conservé tel quel.
 import copy
 import re
 
+from nhi18n import _
+
 MAX_W, MAX_H = 79, 21
 MAP_X_LIM = 76          # limite indiquée par include/sp_lev.h
 COLNO, ROWNO = 80, 21   # taille d'un niveau (include/global.h)
@@ -18,29 +20,29 @@ X_MAZE_MAX, Y_MAZE_MAX = (COLNO - 1) & ~1, (ROWNO - 1) & ~1
 
 # Caractères de carte acceptés par des.map (src/nhlua.c, char2typ[])
 TERRAIN = [
-    (" ", "roche (pierre pleine)"),
-    (".", "sol de salle"),
-    ("#", "couloir"),
-    ("-", "mur horizontal / coin"),
-    ("|", "mur vertical"),
-    ("+", "porte"),
-    ("S", "porte secrète"),
-    ("H", "couloir secret"),
-    ("{", "fontaine"),
-    ("\\", "trône"),
-    ("K", "évier"),
-    ("}", "douves"),
-    ("P", "bassin d'eau"),
-    ("W", "eau (plan de l'Eau)"),
-    ("L", "lave"),
-    ("Z", "mur de lave"),
-    ("I", "glace"),
-    ("T", "arbre"),
-    ("F", "barreaux de fer"),
-    ("A", "air"),
-    ("C", "nuage"),
-    ("B", "limite (crosswall)"),
-    ("x", "transparent (garde l'existant)"),
+    (" ", _("roche (pierre pleine)")),
+    (".", _("sol de salle")),
+    ("#", _("couloir")),
+    ("-", _("mur horizontal / coin")),
+    ("|", _("mur vertical")),
+    ("+", _("porte")),
+    ("S", _("porte secrète")),
+    ("H", _("couloir secret")),
+    ("{", _("fontaine")),
+    ("\\", _("trône")),
+    ("K", _("évier")),
+    ("}", _("douves")),
+    ("P", _("bassin d'eau")),
+    ("W", _("eau (plan de l'Eau)")),
+    ("L", _("lave")),
+    ("Z", _("mur de lave")),
+    ("I", _("glace")),
+    ("T", _("arbre")),
+    ("F", _("barreaux de fer")),
+    ("A", _("air")),
+    ("C", _("nuage")),
+    ("B", _("limite (crosswall)")),
+    ("x", _("transparent (garde l'existant)")),
 ]
 TERRAIN_CHARS = "".join(c for c, _ in TERRAIN)
 TERRAIN_DESC = dict(TERRAIN)
@@ -56,9 +58,9 @@ LEVEL_FLAGS = [
 ENTITY_KINDS = ["stair", "ladder", "altar", "monster", "object", "trap",
                 "door", "engraving"]
 ENTITY_LABEL = {
-    "stair": "escalier", "ladder": "échelle", "altar": "autel",
-    "monster": "monstre", "object": "objet", "trap": "piège",
-    "door": "porte", "engraving": "gravure",
+    "stair": _("escalier"), "ladder": _("échelle"), "altar": _("autel"),
+    "monster": _("monstre"), "object": _("objet"), "trap": _("piège"),
+    "door": _("porte"), "engraving": _("gravure"),
 }
 # Nom du paramètre principal de chaque entité dans la table Lua
 MAIN_KEY = {
@@ -93,9 +95,9 @@ class Entity:
         if self.value is not None:
             s += " " + str(self.value)
             if self.kind in ("monster", "object") and len(self.value) == 1:
-                s += " (classe, aléatoire)"
+                s += _(" (classe, aléatoire)")
         elif self.kind in ("monster", "object"):
-            s += " aléatoire"
+            s += _(" aléatoire")
         if self.extra:
             s += " {" + ", ".join(
                 "%s=%s" % (k, v.summary() if isinstance(v, Contents)
@@ -440,7 +442,7 @@ class Contents:
 
     def summary(self):
         n = len(self.items)
-        return "(%d objet%s)" % (n, "s" if n > 1 else "")
+        return (_("(%d objets)") if n > 1 else _("(%d objet)")) % n
 
     def lua(self):
         head = "function(%s)" % (self.param or "")
@@ -822,7 +824,7 @@ def parse_level(text):
         except NotLiteral:
             pass
     if not map_seen:
-        raise ValueError("aucun appel des.map() trouvé dans ce fichier")
+        raise ValueError(_("aucun appel des.map() trouvé dans ce fichier"))
     has_init = any(c["role"] == "init" for c in kept)
     if not has_init:
         lvl.init = {"style": "solidfill", "fg": " "}

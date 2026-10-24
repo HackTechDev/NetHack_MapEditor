@@ -6,6 +6,7 @@ repère la position de chaque élément dans le texte, et on insère,
 remplace ou supprime seulement l'entrée d'un niveau spécial.
 """
 
+from nhi18n import _
 from nhlevel import NotLiteral, lua_value, tokenize
 
 # Limites de NetHack (include/dgn_file.h, include/dungeon.h)
@@ -77,8 +78,8 @@ class DungeonFile:
                 except (NotLiteral, IndexError):
                     break
                 return
-        raise ValueError("table « dungeon = { ... } » introuvable ou trop "
-                         "complexe")
+        raise ValueError(_("table « dungeon = { ... } » introuvable ou trop "
+                           "complexe"))
 
     # -- lecture ---------------------------------------------------------
     def dungeons(self):
@@ -190,25 +191,25 @@ def check_level(df, fields, di, li=None):
     n = fields.get("nlevels")
     longest = name + ("-%d" % n if n else "")
     if not name:
-        errs.append("nom manquant")
+        errs.append(_("nom manquant"))
     elif len(longest) > NAME_MAX:
-        errs.append("nom trop long : %s (%d caractères au plus)"
+        errs.append(_("nom trop long : %s (%d caractères au plus)")
                     % (longest, NAME_MAX))
     names = df.all_level_names()
     if li is not None:
         cur = df.levels(df.dungeons()[di])[li].py().get("name")
         names.remove(cur)
     if name in names:
-        errs.append("le niveau %s existe déjà" % name)
+        errs.append(_("le niveau %s existe déjà") % name)
     if not isinstance(fields.get("base"), int):
-        errs.append("base manquante")
+        errs.append(_("base manquante"))
     chain = fields.get("chainlevel")
     if chain and chain not in df.names_before(di, li):
-        errs.append("chainlevel %s : niveau inconnu ou défini plus loin"
+        errs.append(_("chainlevel %s : niveau inconnu ou défini plus loin")
                     % chain)
     bt = fields.get("bonetag")
     if bt is not None and len(bt) != 1:
-        errs.append("bonetag : un seul caractère")
+        errs.append(_("bonetag : un seul caractère"))
     if li is None and len(df.all_level_names()) + 1 > LEV_LIMIT:
-        errs.append("plus de %d niveaux spéciaux" % LEV_LIMIT)
+        errs.append(_("plus de %d niveaux spéciaux") % LEV_LIMIT)
     return errs

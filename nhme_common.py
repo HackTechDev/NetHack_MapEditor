@@ -4,6 +4,8 @@ import curses
 import json
 import os
 
+from nhi18n import LANG, _
+
 HERE = os.path.dirname(os.path.abspath(__file__))
 
 # Répertoires de données du jeu essayés pour la touche « t » (tester)
@@ -41,32 +43,32 @@ GAME_OPTIONS = "!legacy,!tutorial"
 
 # Outils : identifiant, nom, nom court (palette), touche
 TOOLS = [
-    ("pen", "Pinceau", "Pinceau", "1"),
-    ("line", "Ligne", "Ligne", "2"),
-    ("rect", "Rectangle", "Rectangle", "3"),
-    ("fillrect", "Rectangle plein", "Rect plein", "4"),
-    ("room", "Salle", "Salle", "5"),
-    ("fill", "Remplissage", "Remplir", "6"),
-    ("copy", "Copier zone", "Copier", "7"),
-    ("paste", "Coller", "Coller", "8"),
-    ("ellipse", "Ellipse", "Ellipse", "9"),
-    ("fillellipse", "Ellipse pleine", "Ell. pleine", "0"),
-    ("cut", "Couper (déplacer) zone", "Couper", "D"),
-    ("scatter", "Semis aléatoire", "Semis", "G"),
-    ("replace", "Remplacer du terrain", "Remplacer", "R"),
+    ("pen", _("Pinceau"), _("Pinceau"), "1"),
+    ("line", _("Ligne"), _("Ligne"), "2"),
+    ("rect", _("Rectangle"), _("Rectangle"), "3"),
+    ("fillrect", _("Rectangle plein"), _("Rect plein"), "4"),
+    ("room", _("Salle"), _("Salle"), "5"),
+    ("fill", _("Remplissage"), _("Remplir"), "6"),
+    ("copy", _("Copier zone"), _("Copier"), "7"),
+    ("paste", _("Coller"), _("Coller"), "8"),
+    ("ellipse", _("Ellipse"), _("Ellipse"), "9"),
+    ("fillellipse", _("Ellipse pleine"), _("Ell. pleine"), "0"),
+    ("cut", _("Couper (déplacer) zone"), _("Couper"), "D"),
+    ("scatter", _("Semis aléatoire"), _("Semis"), "G"),
+    ("replace", _("Remplacer du terrain"), _("Remplacer"), "R"),
 ]
-TOOL_NAME = {t: name for t, name, _, _ in TOOLS}
-TOOL_KEY = {key: t for t, _, _, key in TOOLS}
+TOOL_NAME = {t: name for t, name, _short, _key in TOOLS}
+TOOL_KEY = {key: t for t, _name, _short, key in TOOLS}
 TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut", "ellipse",
              "fillellipse", "scatter", "replace"}
 # outils dont l'aperçu montre la zone sans y dessiner le pinceau
 SELECT = {"copy", "cut", "scatter", "replace"}
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
-FLIP_NAME = {0: "aucun", 1: "vertical", 2: "horizontal",
-             3: "horizontal et vertical"}
+FLIP_NAME = {0: _("aucun"), 1: _("vertical"), 2: _("horizontal"),
+             3: _("horizontal et vertical")}
 FLIP_CYCLE = {0: 2, 2: 1, 1: 3, 3: 0}
-SYM_NAME = {1: "haut/bas", 2: "gauche/droite", 3: "les deux axes"}
+SYM_NAME = {1: _("haut/bas"), 2: _("gauche/droite"), 3: _("les deux axes")}
 
 # Couleurs NetHack (CLR_*) -> (couleur curses, gras)
 NH_COLORS = {
@@ -117,12 +119,13 @@ OBJ_CLASS_COLOR = {
 
 # Libellés courts pour la palette latérale
 SHORT = {
-    " ": "roche", ".": "sol", "#": "couloir", "-": "mur -", "|": "mur |",
-    "+": "porte", "S": "porte sec.", "H": "coul. sec.", "{": "fontaine",
-    "\\": "trône", "K": "évier", "}": "douves", "P": "bassin", "W": "eau",
-    "L": "lave", "Z": "mur lave", "I": "glace", "T": "arbre",
-    "F": "barreaux", "A": "air", "C": "nuage", "B": "limite",
-    "x": "transp.",
+    " ": _("roche"), ".": _("sol"), "#": _("couloir"), "-": _("mur -"),
+    "|": _("mur |"), "+": _("porte"), "S": _("porte sec."),
+    "H": _("coul. sec."), "{": _("fontaine"), "\\": _("trône"),
+    "K": _("évier"), "}": _("douves"), "P": _("bassin"), "W": _("eau"),
+    "L": _("lave"), "Z": _("mur lave"), "I": _("glace"), "T": _("arbre"),
+    "F": _("barreaux"), "A": _("air"), "C": _("nuage"), "B": _("limite"),
+    "x": _("transp."),
 }
 
 # Rendu « comme dans le jeu » : symbole et couleur de chaque terrain
@@ -198,32 +201,32 @@ def game_view(grid, fill=" "):
 # libellé). Types : bool (1/0), str, int, intr (entier ou "random"),
 # buc (liste), mon (nom de monstre ou classe), contents (liste d'objets).
 MON_FORM = [
-    ("peaceful", "bool", "pacifique"),
-    ("asleep", "bool", "endormi"),
-    ("female", "bool", "femelle"),
-    ("invisible", "bool", "invisible"),
-    ("cancelled", "bool", "annulé"),
-    ("waiting", "bool", "attend le héros"),
-    ("name", "str", "nom"),
-    ("appear_as", "str", "apparence (obj:…, mon:…, ter:…)"),
-    ("m_lev_adj", "int", "ajustement du niveau"),
-    ("inventory", "contents", "inventaire"),
-    ("keep_default_invent", "bool", "garde l'inventaire par défaut"),
+    ("peaceful", "bool", _("pacifique")),
+    ("asleep", "bool", _("endormi")),
+    ("female", "bool", _("femelle")),
+    ("invisible", "bool", _("invisible")),
+    ("cancelled", "bool", _("annulé")),
+    ("waiting", "bool", _("attend le héros")),
+    ("name", "str", _("nom")),
+    ("appear_as", "str", _("apparence (obj:…, mon:…, ter:…)")),
+    ("m_lev_adj", "int", _("ajustement du niveau")),
+    ("inventory", "contents", _("inventaire")),
+    ("keep_default_invent", "bool", _("garde l'inventaire par défaut")),
 ]
 OBJ_FORM = [
-    ("buc", "buc", "béni / maudit"),
-    ("spe", "intr", "enchantement, charges"),
-    ("quantity", "intr", "quantité"),
-    ("name", "str", "nom"),
-    ("achievement", "bool", "succès (achievement)"),
-    ("montype", "mon", "monstre (statue, cadavre…)"),
-    ("contents", "contents", "contenu (conteneur, statue)"),
-    ("buried", "bool", "enterré"),
-    ("locked", "bool", "verrouillé"),
-    ("trapped", "bool", "piégé"),
-    ("eroded", "int", "érosion"),
-    ("greased", "bool", "graissé"),
-    ("lit", "bool", "allumé"),
+    ("buc", "buc", _("béni / maudit")),
+    ("spe", "intr", _("enchantement, charges")),
+    ("quantity", "intr", _("quantité")),
+    ("name", "str", _("nom")),
+    ("achievement", "bool", _("succès (achievement)")),
+    ("montype", "mon", _("monstre (statue, cadavre…)")),
+    ("contents", "contents", _("contenu (conteneur, statue)")),
+    ("buried", "bool", _("enterré")),
+    ("locked", "bool", _("verrouillé")),
+    ("trapped", "bool", _("piégé")),
+    ("eroded", "int", _("érosion")),
+    ("greased", "bool", _("graissé")),
+    ("lit", "bool", _("allumé")),
 ]
 BUC = ["random", "blessed", "uncursed", "cursed", "not-cursed",
        "not-uncursed", "not-blessed"]
@@ -234,7 +237,7 @@ RANDOM = "RANDOM"
 # Terrain sur lequel une entité (autre qu'une porte) n'a pas sa place
 SOLID = set(" -|STZFB")
 
-HELP = """\
+HELP_FR = """\
 nhmapedit — éditeur de cartes NetHack (fichiers .lua de dat/)
 
 DÉPLACEMENT
@@ -338,6 +341,10 @@ Pour un fichier existant, seuls la première carte des.map et les éléments
 contient que des des.object simples) sont édités ; le reste du script Lua
 est conservé tel quel à l'enregistrement.
 """
+if LANG == "en":
+    from nhi18n_en import HELP
+else:
+    HELP = HELP_FR
 
 
 def load_data():

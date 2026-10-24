@@ -84,6 +84,9 @@ def capture(level, cols, rows):
         pid, fd = pty.fork()
         if pid == 0:
             os.environ["TERM"] = "xterm-256color"
+            # capture du README en français, sauf NHMAPEDIT_LANG=en
+            os.environ.setdefault("NHMAPEDIT_LANG", "fr")
+            os.environ["NHMAPEDIT_CONFIG"] = os.devnull
             os.execv(sys.executable, [sys.executable, __file__,
                                       "--child", dump, copy])
         fcntl.ioctl(fd, termios.TIOCSWINSZ,

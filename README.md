@@ -7,6 +7,11 @@ Ces niveaux sont des scripts Lua (`dat/*.lua`) qui utilisent `des.map()`,
 
 ![nhmapedit : le niveau de Médusa, avec une salle en cours de tracé](docs/capture.svg)
 
+*English: the interface is also available in English. It follows the
+locale (`LANG`): French when it starts with `fr`, English otherwise.
+Force it with `NHMAPEDIT_LANG=en` or `langue = en` in the configuration
+file (see « Configuration »).*
+
 ## Lancement
 
 ```sh
@@ -295,6 +300,19 @@ Ensuite, en mode wizard, la variable `THEMERM` impose la salle :
 `THEMERM="L-shaped" nethack -D`. Avec tmux, l'éditeur propose de lancer
 le jeu ainsi.
 
+## Langue
+
+L'interface est en français ou en anglais. La langue suit la locale :
+français si `LANGUAGE`, `LC_ALL`, `LC_MESSAGES` ou `LANG` commence par
+`fr`, anglais sinon. On l'impose avec la clé `langue` du fichier de
+configuration, ou pour une session : `NHMAPEDIT_LANG=en python3
+nhmapedit.py`. Les messages de la vérification Lua sont traduits aussi.
+
+Les textes sont écrits en français dans le code, passés à `_()`
+(`nhi18n.py`) ; leur traduction est dans `nhi18n_en.py`, avec l'aide
+anglaise. Un test (`tests/test_i18n.py`) vérifie qu'aucun texte ne
+manque au catalogue.
+
 ## Configuration
 
 Le fichier facultatif `~/.config/nhmapedit/config` (ou celui désigné par
@@ -346,6 +364,8 @@ au démarrage, sans empêcher l'éditeur de s'ouvrir.
 - `nhcheck.py` : les vérifications (connexité, règles, Lua) ;
   `nhcheck_des.lua` est la bibliothèque `des` factice de la vérification
   Lua.
+- `nhi18n.py` : choix de la langue et fonction `_()` ; `nhi18n_en.py` :
+  la traduction anglaise.
 - `nhconfig.py` : lecture du fichier de configuration ;
   `docs/config.exemple` : un exemple commenté.
 - `gen_data.py` : extrait des sources de NetHack les listes de monstres

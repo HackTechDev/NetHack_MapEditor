@@ -14,6 +14,7 @@ import time
 
 import nhconfig
 import nhlevel
+from nhi18n import _
 from nhlevel import Level
 from nhme_common import (
     AUTOSAVE_DELAY, CONFIG_DIR, Cancel, DUNGEON_FILES, FLIP_CYCLE, FLIP_NAME,
@@ -85,7 +86,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         # trait en cours (crayon baissé ou glisser à la souris) : un seul
         # point d'annulation pour tout le trait
         self.stroke = self.stroke_saved = False
-        self.msg = "Bienvenue ! « ? » pour l'aide."
+        self.msg = _("Bienvenue ! « ? » pour l'aide.")
         self.mouse_down = False
         self.pairs = {}
         if scr is not None:         # Editor(None) : sans écran (tests)
@@ -95,7 +96,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                 self.open_file(path)
             else:
                 self.path = path
-                self.msg = "Nouveau fichier : %s" % path
+                self.msg = _("Nouveau fichier : %s") % path
                 self.offer_autosave()
         else:
             self.offer_autosave()
@@ -121,7 +122,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                         self.drop_autosave()
                         break
                 except Cancel:
-                    self.msg = "Annulé."
+                    self.msg = _("Annulé.")
                 self.autosave()
         finally:
             sys.stdout.write("\033[?1002l")
@@ -156,26 +157,26 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         elif k == "\x1b":
             if self.anchor:
                 self.anchor = None
-                self.msg = "Tracé annulé."
+                self.msg = _("Tracé annulé.")
             elif self.tool == "paste":
                 self.tool = "pen"
-                self.msg = "Outil Pinceau."
+                self.msg = _("Outil Pinceau.")
         elif k in TOOL_KEY:
             if TOOL_KEY[k] == "scatter":
-                s = self.prompt("Densité du semis en %% (1-100) : ",
+                s = self.prompt(_("Densité du semis en %% (1-100) : "),
                                 str(self.density))
                 try:
                     self.density = max(1, min(100, int(s)))
                 except ValueError:
-                    self.msg = "Densité invalide."
+                    self.msg = _("Densité invalide.")
                     return True
             elif TOOL_KEY[k] == "replace" and not self.ask_replace():
                 return True         # déjà fait sur toute la carte
             self.tool = TOOL_KEY[k]
             self.anchor = None
-            self.msg = "Outil : %s." % TOOL_NAME[self.tool]
+            self.msg = _("Outil : %s.") % TOOL_NAME[self.tool]
             if self.tool == "paste" and not self.clip:
-                self.msg += " (presse-papiers vide)"
+                self.msg += _(" (presse-papiers vide)")
         elif isinstance(k, str) and (k in nhlevel.TERRAIN_CHARS
                                      and k != " " or k == "e"):
             self.brush = " " if k == "e" else k
@@ -183,34 +184,35 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                 self.paint({(self.cx, self.cy): self.brush})
                 if self.advance:
                     self.move(1, 0)
-            self.msg = "Pinceau : %s." % nhlevel.TERRAIN_DESC[self.brush]
+            self.msg = _("Pinceau : %s.") % nhlevel.TERRAIN_DESC[self.brush]
         elif k == "d":
             self.pen_down = not self.pen_down
             if self.pen_down and self.tool == "pen":
                 self.begin_stroke()
                 self.paint({(self.cx, self.cy): self.brush})
-            self.msg = "Crayon %s." % ("baissé" if self.pen_down else "levé")
+            self.msg = (_("Crayon baissé.") if self.pen_down
+                        else _("Crayon levé."))
         elif k == "y":
             self.eyedropper()
         elif k == "M":
             self.sym = FLIP_CYCLE[self.sym]
-            self.msg = ("Symétrie : %s." % SYM_NAME[self.sym] if self.sym
-                        else "Symétrie désactivée.")
+            self.msg = (_("Symétrie : %s.") % SYM_NAME[self.sym] if self.sym
+                        else _("Symétrie désactivée."))
         elif k == "E":
             self.edit_rows_cols()
         elif k in ("X", "Y", "O"):
             self.transform_clip({"X": "x", "Y": "y", "O": "rot"}[k])
         elif k == "a":
             self.advance = not self.advance
-            self.msg = "Avance automatique %s." % (
-                "activée" if self.advance else "désactivée")
+            self.msg = _("Avance automatique %s.") % (
+                _("activée") if self.advance else _("désactivée"))
         elif k == "m":
             self.place_entity()
         elif k == "r":
             if self.template and not self.no_entities():
                 self.add_entity(self.template.copy())
             else:
-                self.msg = "Aucune entité à répéter (m pour en placer une)."
+                self.msg = _("Aucune entité à répéter (m pour en placer une).")
         elif k in (curses.KEY_DC, curses.KEY_BACKSPACE, "\x7f", "\x08", "z"):
             self.delete_entities()
         elif k == "i":
@@ -219,22 +221,22 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.show_ents = not self.show_ents
         elif k == "J":
             self.game = not self.game
-            self.msg = ("Rendu « comme dans le jeu »." if self.game
-                        else "Rendu des caractères de carte (des.map).")
+            self.msg = (_("Rendu « comme dans le jeu ».") if self.game
+                        else _("Rendu des caractères de carte (des.map)."))
         elif k == "f":
             self.flip = FLIP_CYCLE[self.flip]
             if not self.flip:
-                self.msg = "Carte affichée dans son sens d'origine."
+                self.msg = _("Carte affichée dans son sens d'origine.")
             else:
-                self.msg = "Aperçu retourné : %s. %s" % (
+                self.msg = _("Aperçu retourné : %s. %s") % (
                     FLIP_NAME[self.flip],
-                    "NetHack peut le faire au chargement."
+                    _("NetHack peut le faire au chargement.")
                     if self.flip & lvl.allowed_flips() == self.flip else
-                    "Empêché par les drapeaux du niveau (noflip...).")
+                    _("Empêché par les drapeaux du niveau (noflip...)."))
         elif k == "c":
             self.rulers = not self.rulers
-            self.msg = "Règles de coordonnées %s." % (
-                "affichées" if self.rulers else "masquées")
+            self.msg = _("Règles de coordonnées %s.") % (
+                _("affichées") if self.rulers else _("masquées"))
         elif k == "p":
             self.properties()
         elif k == "v":
@@ -242,13 +244,14 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         elif k == "t":
             self.test_in_game()
         elif k == "g":
-            s = self.prompt("Aller à « x y » : ", "%d %d" % (self.cx, self.cy))
+            s = self.prompt(_("Aller à « x y » : "),
+                            "%d %d" % (self.cx, self.cy))
             try:
                 x, y = (int(v) for v in s.split())
                 self.cx, self.cy = x, y
                 self.clamp_cursor()
             except ValueError:
-                self.msg = "Position invalide."
+                self.msg = _("Position invalide.")
         elif k == "u":
             self.undo()
         elif k in ("U", "\x12"):
@@ -259,7 +262,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.templates()
         elif k == "o":
             self.check_unsaved()
-            path = self.prompt("Ouvrir : ", os.getcwd() + "/",
+            path = self.prompt(_("Ouvrir : "), os.getcwd() + "/",
                                self.path_completer)
             self.open_file(os.path.expanduser(path.strip()))
         elif k in ("s", "\x13"):
@@ -267,19 +270,20 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         elif k == "w":
             self.save(as_new=True)
         elif k == "?":
-            self.message_box("Aide", HELP.rstrip())
+            self.message_box(_("Aide"), HELP.rstrip())
         elif k in ("q", "\x11"):
             if self.check_unsaved():
                 return False
         elif k == "\x03":
-            if not self.modified or self.confirm("Quitter sans enregistrer ?"):
+            if not self.modified or self.confirm(
+                    _("Quitter sans enregistrer ?")):
                 return False
         return True
 
     def mouse(self, lay):
-        _, _, vw, vh, _, top, left = lay
+        vw, vh, top, left = lay[2], lay[3], lay[5], lay[6]
         try:
-            _, mx, my, _, bstate = curses.getmouse()
+            _id, mx, my, _z, bstate = curses.getmouse()
         except curses.error:
             return
         sx, sy = mx - left - 1, my - top - 1
@@ -323,7 +327,7 @@ def main():
     while args:
         a = args.pop(0)
         if a in ("-h", "--help"):
-            print(__doc__.strip())
+            print(_(__doc__.strip()))
             print()
             print(HELP)
             return
@@ -332,7 +336,7 @@ def main():
                 w, h = (int(v) for v in args.pop(0).lower().split("x"))
                 size = (min(w, nhlevel.MAX_W), min(h, nhlevel.MAX_H))
             except ValueError:
-                sys.exit("--new attend LARGEURxHAUTEUR, ex: --new 40x12")
+                sys.exit(_("--new attend LARGEURxHAUTEUR, ex: --new 40x12"))
         else:
             path = a
     locale.setlocale(locale.LC_ALL, "")
@@ -343,7 +347,7 @@ def main():
         scr.keypad(True)
         ed = Editor(scr, path, size, config)
         if errors:
-            ed.msg = "Configuration : %s" % "; ".join(errors)
+            ed.msg = _("Configuration : %s") % "; ".join(errors)
         ed.run()
 
     curses.wrapper(run)

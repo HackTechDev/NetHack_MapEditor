@@ -5,6 +5,7 @@ import glob
 import os
 
 import nhlevel
+from nhi18n import _
 from nhme_common import BUC, Cancel
 
 
@@ -78,7 +79,7 @@ class DialogsMixin:
         correspondance renvoie le texte saisi."""
         filt, sel, top = "", 0, 0
         if initial is not None:
-            for i, (_, v) in enumerate(items):
+            for i, (_label, v) in enumerate(items):
                 if v == initial:
                     sel = i
         curses.curs_set(0)
@@ -105,10 +106,10 @@ class DialogsMixin:
                 a = curses.A_REVERSE if j == sel else 0
                 win.addnstr(1 + i, 2, shown[j][0].ljust(w - 4), w - 4, a)
             more = "%d/%d" % (len(shown), len(items))
-            win.addnstr(h - 3, 2, "Filtre : " + filt, w - 4 - len(more) - 1,
+            win.addnstr(h - 3, 2, _("Filtre : ") + filt, w - 4 - len(more) - 1,
                         curses.A_BOLD)
             win.addnstr(h - 3, w - 2 - len(more), more, len(more))
-            win.addnstr(h - 2, 2, hint or "Entrée: choisir  Échap: annuler",
+            win.addnstr(h - 2, 2, hint or _("Entrée: choisir  Échap: annuler"),
                         w - 4)
             win.refresh()
             k = win.get_wch()
@@ -158,9 +159,9 @@ class DialogsMixin:
             for i in range(n):
                 if top + i < len(lines):
                     win.addnstr(1 + i, 2, lines[top + i], w - 4)
-            foot = " Échap/q: fermer "
+            foot = _(" Échap/q: fermer ")
             if len(lines) > n:
-                foot = " ↑↓ défiler" + foot
+                foot = _(" ↑↓ défiler") + foot
             win.addnstr(h - 1, max(1, w - len(foot) - 2), foot, w - 3)
             win.refresh()
             k = win.getch()
@@ -178,7 +179,7 @@ class DialogsMixin:
 
     def confirm(self, question):
         try:
-            r = self.prompt(question + " (o/n) ")
+            r = self.prompt(question + _(" (o/n) "))
         except Cancel:
             return False
         return r.strip().lower() in ("o", "oui", "y", "yes")
@@ -195,16 +196,16 @@ class DialogsMixin:
         extra = dict(extra)
         sel = "_done"
         while True:
-            items = [("Terminer", "_done")]
+            items = [(_("Terminer"), "_done")]
             for key, typ, label in form:
                 if key not in extra:
-                    shown = "(défaut)"
+                    shown = _("(défaut)")
                 elif typ == "bool":
-                    shown = "oui" if extra[key] else "non"
+                    shown = _("oui") if extra[key] else _("non")
                 elif typ == "contents":
                     c = extra[key]
                     shown = c.summary() + " " + ", ".join(
-                        it.value or "aléatoire" for it in c.items)
+                        it.value or _("aléatoire") for it in c.items)
                 elif isinstance(extra[key], list):
                     shown = ", ".join(map(str, extra[key]))
                 else:
@@ -213,11 +214,11 @@ class DialogsMixin:
                               key))
             rest = {k: v for k, v in extra.items() if k not in keys}
             if free:
-                items.append(("Autres options : %s" % (", ".join(
+                items.append((_("Autres options : %s") % (", ".join(
                     "%s=%s" % (k, nhlevel.lua_value(v))
-                    for k, v in rest.items()) or "(aucune)"), "_other"))
+                    for k, v in rest.items()) or _("(aucune)")), "_other"))
             try:
-                sel = self.pick("%s (Entrée: modifier, Échap: terminer)"
+                sel = self.pick(_("%s (Entrée: modifier, Échap: terminer)")
                                 % title, items, sel)
             except Cancel:
                 return extra
@@ -240,7 +241,7 @@ class DialogsMixin:
                         del extra[sel]
                 elif typ == "buc" or typ[0] == "choice":
                     values = BUC if typ == "buc" else typ[1]
-                    v = self.pick(sel, [("(défaut)", None)] +
+                    v = self.pick(sel, [(_("(défaut)"), None)] +
                                   [(b, b) for b in values], extra.get(sel))
                     self.set_option(extra, sel, v)
                 elif typ[0] == "flags":
@@ -252,11 +253,11 @@ class DialogsMixin:
                         sel))
                     self.set_option(extra, sel, v)
                 elif typ == "mon":
-                    items = [("(défaut)", None)] + [
+                    items = [(_("(défaut)"), None)] + [
                         ("%s  %s" % (m["sym"], m["name"]), m["name"])
                         for m in self.data["monsters"]]
-                    v = self.pick("Monstre (tapez pour filtrer ; une lettre "
-                                  "seule = classe)", items, extra.get(sel),
+                    v = self.pick(_("Monstre (tapez pour filtrer ; une lettre "
+                                    "seule = classe)"), items, extra.get(sel),
                                   custom=True)
                     self.set_option(extra, sel, v)
                 else:
@@ -272,8 +273,8 @@ class DialogsMixin:
             items = [("[%s] %s" % ("x" if v in checked else " ", v), v)
                      for v in values]
             try:
-                sel = self.pick("%s (Entrée: cocher/décocher, Échap: "
-                                "terminer)" % title, items, sel)
+                sel = self.pick(_("%s (Entrée: cocher/décocher, Échap: "
+                                  "terminer)") % title, items, sel)
             except Cancel:
                 return [v for v in values if v in checked]
             if sel in checked:
@@ -292,10 +293,10 @@ class DialogsMixin:
         """Saisie d'une option texte ou entière ; vide = valeur par défaut."""
         cur = extra.get(key)
         txt = "" if cur is None else str(cur)
-        hint = {"str": "texte", "int": "entier",
-                "intr": "entier ou random"}[typ]
+        hint = {"str": _("texte"), "int": _("entier"),
+                "intr": _("entier ou random")}[typ]
         while True:
-            s = self.prompt("%s (%s, vide = défaut) : " % (key, hint),
+            s = self.prompt(_("%s (%s, vide = défaut) : ") % (key, hint),
                             txt).strip()
             if not s:
                 extra.pop(key, None)
@@ -311,7 +312,7 @@ class DialogsMixin:
                 return
             except ValueError:
                 txt = s
-                self.msg = "Valeur invalide : %s attendu." % hint
+                self.msg = _("Valeur invalide : %s attendu.") % hint
 
     def pick_action(self, title, items, sel, hint):
         """Comme pick() sans filtre, avec les touches e et d."""

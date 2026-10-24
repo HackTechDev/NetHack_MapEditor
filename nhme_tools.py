@@ -6,6 +6,7 @@ import re
 
 import nhexport
 import nhlevel
+from nhi18n import _
 from nhme_common import (
     Cancel, SELECT, TEMPLATE_DIRS, TOOL_NAME, bresenham, ellipse_cells)
 
@@ -72,23 +73,23 @@ class ToolsMixin:
 
     def undo(self):
         if not self.undo_stack:
-            self.msg = "Rien à annuler."
+            self.msg = _("Rien à annuler.")
             return
         self.redo_stack.append(self.lvl.snapshot())
         self.lvl.restore(self.undo_stack.pop())
         self.clamp_cursor()
         self.modified = True
-        self.msg = "Annulé."
+        self.msg = _("Annulé.")
 
     def redo(self):
         if not self.redo_stack:
-            self.msg = "Rien à rétablir."
+            self.msg = _("Rien à rétablir.")
             return
         self.undo_stack.append(self.lvl.snapshot())
         self.lvl.restore(self.redo_stack.pop())
         self.clamp_cursor()
         self.modified = True
-        self.msg = "Rétabli."
+        self.msg = _("Rétabli.")
 
     def clamp_cursor(self):
         self.cx = max(0, min(self.cx, self.lvl.w - 1))
@@ -140,7 +141,8 @@ class ToolsMixin:
             self.paste()
         elif self.anchor is None:
             self.anchor = (self.cx, self.cy)
-            self.msg = "Ancre posée ; déplacez-vous puis Espace (Échap annule)."
+            self.msg = _("Ancre posée ; déplacez-vous puis Espace (Échap "
+                         "annule).")
         else:
             a, b = self.anchor, (self.cx, self.cy)
             self.anchor = None
@@ -149,7 +151,7 @@ class ToolsMixin:
                 pick = {p: c for p, c in cells.items()
                         if random.random() * 100 < self.density}
                 self.paint(pick)
-                self.msg = "Semis : %d cases sur %d (%d %%)." % (
+                self.msg = _("Semis : %d cases sur %d (%d %%).") % (
                     len(pick), len(cells), self.density)
             elif t == "replace":
                 self.replace_terrain(a, b)
@@ -157,7 +159,7 @@ class ToolsMixin:
                 self.copy(a, b, cut=t == "cut")
             else:
                 self.paint(self.shape_cells(a, b))
-                self.msg = "%s tracé." % TOOL_NAME[t]
+                self.msg = _("%s tracé.") % TOOL_NAME[t]
 
     def flood_fill(self, x, y, c):
         old = self.lvl.grid[y][x]
@@ -175,27 +177,27 @@ class ToolsMixin:
                 self.lvl.grid[y][x] = c
                 n += 1
                 stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
-        self.msg = "%d cases remplies." % n
+        self.msg = _("%d cases remplies.") % n
 
     def ask_replace(self):
         """Demande les paramètres du remplacement. Renvoie True s'il faut
         tracer une zone, False s'il a été fait sur toute la carte."""
         items = [("%s  %s" % ("e" if c == " " else c, d), c)
                  for c, d in nhlevel.TERRAIN if c != "x"]
-        old = self.pick("Remplacer quel terrain ?", items,
+        old = self.pick(_("Remplacer quel terrain ?"), items,
                         self.lvl.grid[self.cy][self.cx])
-        new = self.pick("Remplacer « %s » par :" % nhlevel.TERRAIN_DESC[old],
-                        items, self.brush)
-        s = self.prompt("Proportion des cases à remplacer en %% (1-100) : ",
+        new = self.pick(_("Remplacer « %s » par :")
+                        % nhlevel.TERRAIN_DESC[old], items, self.brush)
+        s = self.prompt(_("Proportion des cases à remplacer en %% (1-100) : "),
                         "100")
         try:
             pct = max(1, min(100, int(s)))
         except ValueError:
             raise Cancel()
         self.replace = (old, new, pct)
-        where = self.pick("Où remplacer ?", [
-            ("sur toute la carte", "map"),
-            ("dans une zone (à tracer avec l'ancre)", "zone")])
+        where = self.pick(_("Où remplacer ?"), [
+            (_("sur toute la carte"), "map"),
+            (_("dans une zone (à tracer avec l'ancre)"), "zone")])
         if where == "map":
             self.replace_terrain((0, 0), (self.lvl.w - 1, self.lvl.h - 1))
             return False
@@ -215,20 +217,20 @@ class ToolsMixin:
                  if self.lvl.grid[y][x] == old
                  and random.random() * 100 < pct}
         self.paint(cells, sym=False)
-        self.msg = "%d case(s) « %s » remplacée(s) par « %s »." % (
+        self.msg = _("%d case(s) « %s » remplacée(s) par « %s ».") % (
             len(cells), nhlevel.TERRAIN_DESC[old], nhlevel.TERRAIN_DESC[new])
 
     def edit_rows_cols(self):
         """Menu : insérer ou supprimer une ligne ou une colonne."""
         lvl = self.lvl
-        what = self.pick("Lignes et colonnes (curseur en %d,%d)"
+        what = self.pick(_("Lignes et colonnes (curseur en %d,%d)")
                          % (self.cx, self.cy), [
-                             ("insérer une ligne au-dessus", "row-above"),
-                             ("insérer une ligne en dessous", "row-below"),
-                             ("supprimer la ligne", "row-del"),
-                             ("insérer une colonne à gauche", "col-left"),
-                             ("insérer une colonne à droite", "col-right"),
-                             ("supprimer la colonne", "col-del")])
+                             (_("insérer une ligne au-dessus"), "row-above"),
+                             (_("insérer une ligne en dessous"), "row-below"),
+                             (_("supprimer la ligne"), "row-del"),
+                             (_("insérer une colonne à gauche"), "col-left"),
+                             (_("insérer une colonne à droite"), "col-right"),
+                             (_("supprimer la colonne"), "col-del")])
         # « au-dessus » et « à gauche » s'entendent à l'écran, même dans
         # l'aperçu retourné
         if self.flip & 1:
@@ -257,17 +259,17 @@ class ToolsMixin:
         else:
             ok = lvl.delete_col(self.cx)
         if not ok:
-            self.msg = ("Taille maximale atteinte (%dx%d)."
+            self.msg = (_("Taille maximale atteinte (%dx%d).")
                         % (nhlevel.MAX_W, nhlevel.MAX_H)
                         if "del" not in what else
-                        "Impossible : la carte n'a plus qu'une ligne "
-                        "ou colonne.")
+                        _("Impossible : la carte n'a plus qu'une ligne "
+                          "ou colonne."))
             return
         self.checkpoint(snap)
         self.clamp_cursor()
-        self.msg = "Carte maintenant en %dx%d%s." % (
+        self.msg = _("Carte maintenant en %dx%d%s.") % (
             lvl.w, lvl.h, "" if len(lvl.entities) == n else
-            " (%d entité(s) supprimée(s))" % (n - len(lvl.entities)))
+            _(" (%d entité(s) supprimée(s))") % (n - len(lvl.entities)))
 
     def copy(self, a, b, cut=False):
         """Copie la zone (terrain et entités) dans le presse-papiers.
@@ -298,16 +300,17 @@ class ToolsMixin:
             self.lvl.entities = [e for e in self.lvl.entities
                                  if e not in inside]
         self.tool = "paste"
-        self.msg = ("Zone %dx%d %s (%d entités). Outil Coller actif."
+        self.msg = (_("Zone %dx%d %s (%d entités). Outil Coller actif.")
                     % (hx - lx + 1, hy - ly + 1,
-                       "coupée" if cut else "copiée", len(ents)))
+                       _("coupée") if cut else _("copiée"), len(ents)))
 
     def transform_clip(self, how):
         """Miroir (« x » : gauche/droite, « y » : haut/bas) ou rotation
         d'un quart de tour dans le sens horaire (« rot ») du
         presse-papiers, entités comprises."""
         if not self.clip:
-            self.msg = "Presse-papiers vide (outil 7 ou D pour en remplir un)."
+            self.msg = _("Presse-papiers vide (outil 7 ou D pour en remplir "
+                         "un).")
             return
         g, ents = self.clip
         h, w = len(g), len(g[0])
@@ -333,13 +336,13 @@ class ToolsMixin:
             e.x, e.y = pos(e.x, e.y)
         self.clip = (g, ents)
         self.tool = "paste"
-        self.msg = "Presse-papiers %s (%dx%d). Outil Coller actif." % (
-            {"x": "retourné gauche/droite", "y": "retourné haut/bas",
-             "rot": "tourné d'un quart de tour"}[how], len(g[0]), len(g))
+        self.msg = _("Presse-papiers %s (%dx%d). Outil Coller actif.") % (
+            {"x": _("retourné gauche/droite"), "y": _("retourné haut/bas"),
+             "rot": _("tourné d'un quart de tour")}[how], len(g[0]), len(g))
 
     def paste(self):
         if not self.clip:
-            self.msg = "Presse-papiers vide (outil 7 pour copier)."
+            self.msg = _("Presse-papiers vide (outil 7 pour copier).")
             return
         g, ents = self.clip
         self.checkpoint()
@@ -352,12 +355,12 @@ class ToolsMixin:
             c.y += self.cy
             if c.x < self.lvl.w and c.y < self.lvl.h:
                 self.lvl.entities.append(c)
-        self.msg = "Collé."
+        self.msg = _("Collé.")
 
     def eyedropper(self):
         """Pipette : le terrain sous le curseur devient le pinceau."""
         self.brush = self.lvl.grid[self.cy][self.cx]
-        self.msg = "Pipette : pinceau %s." % nhlevel.TERRAIN_DESC.get(
+        self.msg = _("Pipette : pinceau %s.") % nhlevel.TERRAIN_DESC.get(
             self.brush, repr(self.brush))
 
     def move(self, dx, dy):
@@ -381,43 +384,43 @@ class ToolsMixin:
         presse-papiers, et l'outil Coller le pose où l'on veut."""
         items = [("%-22s %s" % (t, d), p)
                  for t, d, p in nhexport.list_templates(TEMPLATE_DIRS)]
-        items.append(("+ enregistrer le presse-papiers comme modèle",
+        items.append((_("+ enregistrer le presse-papiers comme modèle"),
                       "_save"))
-        path = self.pick("Modèles (tapez pour filtrer)", items)
+        path = self.pick(_("Modèles (tapez pour filtrer)"), items)
         if path == "_save":
             return self.save_template()
         try:
             self.clip = nhexport.load_template(path)
         except (OSError, ValueError) as e:
-            self.msg = "Modèle illisible : %s" % e
+            self.msg = _("Modèle illisible : %s") % e
             return
         g, ents = self.clip
         self.tool = "paste"
-        self.msg = ("Modèle %s (%dx%d, %d entités) : outil Coller actif, "
-                    "X/Y/O pour le retourner." % (
+        self.msg = (_("Modèle %s (%dx%d, %d entités) : outil Coller actif, "
+                      "X/Y/O pour le retourner.") % (
                         os.path.basename(path), len(g[0]), len(g),
                         len(ents)))
 
     def save_template(self):
         if not self.clip:
-            self.msg = ("Presse-papiers vide : copiez d'abord une zone "
-                        "(outil 7).")
+            self.msg = (_("Presse-papiers vide : copiez d'abord une zone "
+                          "(outil 7)."))
             return
-        title = self.prompt("Nom du modèle : ").strip()
+        title = self.prompt(_("Nom du modèle : ")).strip()
         if not title:
             raise Cancel()
         d = TEMPLATE_DIRS[-1]
         path = os.path.join(d, re.sub(r"[^\w-]+", "-", title).strip("-")
                             .lower() + ".lua")
         if os.path.exists(path) and not self.confirm(
-                "%s existe. Écraser ?" % path):
+                _("%s existe. Écraser ?") % path):
             raise Cancel()
         try:
             os.makedirs(d, exist_ok=True)
             with open(path, "w", encoding="utf-8") as f:
                 f.write(nhexport.template_lua(title, *self.clip))
         except OSError as e:
-            self.msg = "Erreur d'écriture : %s" % e
+            self.msg = _("Erreur d'écriture : %s") % e
             return
-        self.msg = "Modèle enregistré : %s" % path
+        self.msg = _("Modèle enregistré : %s") % path
 

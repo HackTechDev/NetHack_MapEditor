@@ -8,6 +8,7 @@ remplace qu'elle, le reste du fichier (code, commentaires) ne change pas.
 
 import re
 
+from nhi18n import _
 from nhlevel import tokenize
 
 _BRACKETS = {"(": 1, "{": 1, "[": 1, ")": -1, "}": -1, "]": -1}
@@ -26,7 +27,7 @@ class ThemeFile:
                 start = i + 2
                 break
         if start is None:
-            raise ValueError("pas de table « themerooms = { ... } »")
+            raise ValueError(_("pas de table « themerooms = { ... } »"))
         depth, entry = 0, None
         for j in range(start, len(toks)):
             kind, val, s, e = toks[j]
@@ -42,7 +43,7 @@ class ThemeFile:
                 self.table_end = s
                 break
         if self.table_end is None:
-            raise ValueError("table themerooms non terminée")
+            raise ValueError(_("table themerooms non terminée"))
         self.toks = toks
 
     @staticmethod
@@ -92,7 +93,7 @@ class ThemeFile:
         for r in self.rooms:
             if not r["name"]:
                 continue
-            for k, _ in enumerate(r["maps"]):
+            for k in range(len(r["maps"])):
                 label = r["name"] + ("  (carte %d)" % (k + 1)
                                      if len(r["maps"]) > 1 else "")
                 out.append((label, (r["name"], k)))
@@ -111,7 +112,7 @@ class ThemeFile:
     def replace_map(self, name, k, new):
         """Texte du fichier avec la carte k de la salle remplacée ; garde
         le style de la chaîne (sauts de ligne autour de la carte)."""
-        s, e, _ = self.find(name)["maps"][k]
+        s, e = self.find(name)["maps"][k][:2]
         raw = self.text[s:e]
         m = re.match(r"\[(=*)\[", raw)
         if not m:               # chaîne entre guillemets : rare, on la

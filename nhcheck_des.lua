@@ -1,9 +1,10 @@
 -- Vérification d'un niveau avec le vrai Lua, sans le jeu.
 --
--- Usage : lua nhcheck_des.lua donnees.lua nhlib.lua niveau.lua
+-- Usage : lua nhcheck_des.lua donnees.lua nhlib.lua niveau.lua [fr|en]
 --   donnees.lua : écrit par nhmapedit (listes de monstres, d'objets et de
 --                 pièges, définies dans la table DATA) ;
---   nhlib.lua   : bibliothèque de NetHack (percent, shuffle…), ou « - ».
+--   nhlib.lua   : bibliothèque de NetHack (percent, shuffle…), ou « - » ;
+--   fr ou en    : langue des messages (français par défaut).
 --
 -- Le script du niveau est exécuté avec une bibliothèque « des » factice
 -- qui contrôle les paramètres. Chaque problème est écrit sur une ligne :
@@ -11,6 +12,29 @@
 
 local datafile, nhlibfile, levelfile = arg[1], arg[2], arg[3]
 dofile(datafile)
+
+-- Messages en anglais (clé : le message français)
+local EN = {
+   ["%s ligne %d : %s\n"] = "%s line %d : %s\n",
+   ["des.%s : paramètre inconnu « %s »"] = "des.%s: unknown parameter '%s'",
+   ["monstre inconnu : %s"] = "unknown monster: %s",
+   ["objet inconnu : %s"] = "unknown object: %s",
+   ["des.%s : %s « %s » invalide"] = "des.%s: invalid %s '%s'",
+   ["des.level_flags : drapeau inconnu « %s »"] =
+      "des.level_flags: unknown flag '%s'",
+   ["piège inconnu : %s"] = "unknown trap: %s",
+   ["des.%s : direction « %s » invalide"] = "des.%s: invalid direction '%s'",
+   ["alignement"] = "alignment",
+   ["état"] = "state",
+   ["fonction inconnue : des.%s"] = "unknown function: des.%s",
+   ["? ligne 0 : nhlib.lua non chargé ("] = "? line 0 : nhlib.lua not loaded (",
+   ["ligne %1 :"] = "line %1 :",
+   ["! ligne %s : erreur à l'exécution : %s\n"] = "! line %s : runtime error: %s\n",
+}
+local function tr(s)
+   if arg[4] == "en" then return EN[s] or s end
+   return s
+end
 
 local function set(list)
    local s = {}
@@ -63,8 +87,8 @@ end
 
 local function report(sev, fmt, ...)
    problems = problems + 1
-   io.write(string.format("%s ligne %d : %s\n", sev, where(),
-                          string.format(fmt, ...)))
+   io.write(string.format(tr("%s ligne %d : %s\n"), sev, where(),
+                          string.format(tr(fmt), ...)))
 end
 
 -- Objet qui accepte tout : index, appel, opérateurs (sélections,
@@ -245,7 +269,7 @@ D.ladder = stair("ladder")
 
 function D.altar(t)
    if type(t) == "table" then
-      check_choice("altar", "alignement", t.align, ALIGNS)
+      check_choice("altar", tr("alignement"), t.align, ALIGNS)
       check_choice("altar", "type", t.type, ALTARS)
    end
 end
@@ -254,7 +278,7 @@ function D.door(...)
    local args = { ... }
    local s = args[1]
    if type(s) == "table" then s = s.state end
-   check_choice("door", "état", s, DOORS)
+   check_choice("door", tr("état"), s, DOORS)
 end
 
 function D.engraving(...)
@@ -285,13 +309,14 @@ end })
 if nhlibfile ~= "-" then
    local ok, err = pcall(dofile, nhlibfile)
    if not ok then
-      io.write("? ligne 0 : nhlib.lua non chargé (" .. tostring(err) .. ")\n")
+      io.write(tr("? ligne 0 : nhlib.lua non chargé (") .. tostring(err)
+               .. ")\n")
    end
 end
 
 local chunk, err = loadfile(levelfile)
 if not chunk then
-   io.write("! " .. err:gsub("^[^:]*:(%d+):", "ligne %1 :") .. "\n")
+   io.write("! " .. err:gsub("^[^:]*:(%d+):", tr("ligne %1 :")) .. "\n")
    os.exit(1)
 end
 local ok, rerr = pcall(chunk)
@@ -299,7 +324,7 @@ if not ok then
    local msg = tostring(rerr)
    local line = msg:match(":(%d+):")
    msg = msg:gsub("^[^:]*:%d+: ", "")
-   io.write(string.format("! ligne %s : erreur à l'exécution : %s\n",
+   io.write(string.format(tr("! ligne %s : erreur à l'exécution : %s\n"),
                           line or "?", msg))
    os.exit(1)
 end

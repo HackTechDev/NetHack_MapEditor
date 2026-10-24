@@ -11,6 +11,7 @@ import subprocess
 import tempfile
 
 import nhlevel
+from nhi18n import LANG, _
 
 # Terrain praticable à pied (« x » : transparent, le terrain d'avant reste
 # en place ; on le suppose praticable)
@@ -99,14 +100,14 @@ def connectivity(lvl):
         if b in reachable(lvl, a, secret=False):
             pass
         elif b in reachable(lvl, a, secret=True):
-            out.append("- Connexité : l'escalier descendant (%d,%d) n'est "
-                       "accessible que par un passage secret (S ou H)." % b)
+            out.append(_("- Connexité : l'escalier descendant (%d,%d) n'est "
+                         "accessible que par un passage secret (S ou H).") % b)
         elif b in reachable(lvl, a, secret=True, liquid=True):
-            out.append("? Connexité : l'escalier descendant (%d,%d) n'est "
-                       "accessible qu'en traversant l'eau ou la lave." % b)
+            out.append(_("? Connexité : l'escalier descendant (%d,%d) n'est "
+                         "accessible qu'en traversant l'eau ou la lave.") % b)
         else:
-            out.append("! Connexité : l'escalier descendant (%d,%d) est "
-                       "inaccessible depuis le montant (%d,%d)." % (b + a))
+            out.append(_("! Connexité : l'escalier descendant (%d,%d) est "
+                         "inaccessible depuis le montant (%d,%d).") % (b + a))
     zs = zones(lvl)
     if len(zs) > 1:
         main = None
@@ -119,24 +120,25 @@ def connectivity(lvl):
         for z in closed[:8]:
             x, y = min(z, key=lambda p: (p[1], p[0]))
             if (x, y) in wet:
-                out.append("- Zone de %d case(s), par exemple en (%d,%d), "
-                           "accessible seulement par l'eau ou la lave."
+                out.append(_("- Zone de %d case(s), par exemple en (%d,%d), "
+                             "accessible seulement par l'eau ou la lave.")
                            % (len(z), x, y))
                 continue
             edge = any(p[0] in (0, lvl.w - 1) or p[1] in (0, lvl.h - 1)
                        for p in z)
-            note = (" ; elle touche le bord de la carte et peut être "
-                    "reliée au reste du niveau" if edge and not full
+            note = (_(" ; elle touche le bord de la carte et peut être "
+                      "reliée au reste du niveau") if edge and not full
                     else "")
-            out.append("? Zone fermée de %d case(s), par exemple en "
-                       "(%d,%d)%s." % (len(z), x, y, note))
+            out.append(_("? Zone fermée de %d case(s), par exemple en "
+                         "(%d,%d)%s.") % (len(z), x, y, note))
         if len(closed) > 8:
-            out.append("? … et %d autre(s) zone(s) séparée(s)."
+            out.append(_("? … et %d autre(s) zone(s) séparée(s).")
                        % (len(closed) - 8))
     return out
 
 
-FLIPS = {1: "haut/bas", 2: "gauche/droite", 3: "dans les deux sens"}
+FLIPS = {1: _("haut/bas"), 2: _("gauche/droite"),
+         3: _("dans les deux sens")}
 WALLS = set("-|")
 
 
@@ -193,9 +195,9 @@ def _door_problems(lvl, x, y):
     v = wall(x, y - 1) and wall(x, y + 1)
     if h and v or (wall(x - 1, y) or wall(x + 1, y)) and (
             wall(x, y - 1) or wall(x, y + 1)) and not (h or v):
-        return "! Porte en (%d,%d) dans un coin de mur." % (x, y)
+        return _("! Porte en (%d,%d) dans un coin de mur.") % (x, y)
     if not (h or v):
-        return "? Porte en (%d,%d) qui n'est pas encadrée par des murs." % (
+        return _("? Porte en (%d,%d) qui n'est pas encadrée par des murs.") % (
             x, y)
     return None
 
@@ -204,24 +206,24 @@ def rules(lvl, monsters=None, objects=None):
     """Règles de NetHack : placement de la carte, entités, portes."""
     out = []
     if lvl.w > nhlevel.MAP_X_LIM:
-        out.append("! Largeur %d > %d (MAP_X_LIM) : risque de refus "
-                   "par NetHack." % (lvl.w, nhlevel.MAP_X_LIM))
+        out.append(_("! Largeur %d > %d (MAP_X_LIM) : risque de refus "
+                     "par NetHack.") % (lvl.w, nhlevel.MAP_X_LIM))
     o = lvl.origin()
     if o:
         x, y = o
         if x < 1 or x + lvl.w > nhlevel.COLNO or y < 0 \
                 or y + lvl.h > nhlevel.ROWNO:
-            out.append("! La carte placée en (%d,%d) déborde du niveau "
-                       "(80x21)." % (x, y))
+            out.append(_("! La carte placée en (%d,%d) déborde du niveau "
+                         "(80x21).") % (x, y))
     if lvl.allowed_flips():
-        out.append("- NetHack peut retourner ce niveau au chargement (%s) "
-                   ": f pour un aperçu, drapeau noflip pour l'empêcher."
+        out.append(_("- NetHack peut retourner ce niveau au chargement (%s) "
+                     ": f pour un aperçu, drapeau noflip pour l'empêcher.")
                    % FLIPS[lvl.allowed_flips()])
     kinds = [(e.kind, e.value) for e in lvl.entities]
-    for d, lab in (("up", "montant"), ("down", "descendant")):
+    for d, lab in (("up", _("montant")), ("down", _("descendant"))):
         if ("stair", d) not in kinds and ("ladder", d) not in kinds:
-            out.append("- Pas d'escalier/échelle %s à position fixe "
-                       "(peut être placé ailleurs dans le script)." % lab)
+            out.append(_("- Pas d'escalier/échelle %s à position fixe "
+                         "(peut être placé ailleurs dans le script).") % lab)
     temples = temple_regions(lvl)
     # NetHack compare les noms sans tenir compte de la casse
     monsters = {n.lower() for n in monsters or ()}
@@ -229,42 +231,43 @@ def rules(lvl, monsters=None, objects=None):
     for e in lvl.entities:
         if not (0 <= e.x < lvl.w and 0 <= e.y < lvl.h):
             # permis par NetHack (coordonnées relatives à la carte)
-            out.append("? %s en (%d,%d) hors de la carte (invisible dans "
-                       "l'éditeur)." % (e.describe(), e.x, e.y))
+            out.append(_("? %s en (%d,%d) hors de la carte (invisible dans "
+                         "l'éditeur).") % (e.describe(), e.x, e.y))
             continue
         t = lvl.grid[e.y][e.x]
         if e.kind == "door":
             # sur un mur, des.door() le remplace par la porte
             if t not in "+S-|":
-                out.append("? Porte en (%d,%d) sur '%s'." % (e.x, e.y, t))
+                out.append(_("? Porte en (%d,%d) sur '%s'.") % (e.x, e.y, t))
         elif t in " -|STZFB":
-            out.append("! %s en (%d,%d) sur du terrain solide '%s'." % (
+            out.append(_("! %s en (%d,%d) sur du terrain solide '%s'.") % (
                 e.describe(), e.x, e.y, t))
         elif e.kind in ("stair", "ladder", "altar") and t in LIQUID:
-            out.append("! %s en (%d,%d) dans '%s' (%s)." % (
+            out.append(_("! %s en (%d,%d) dans '%s' (%s).") % (
                 e.describe(), e.x, e.y, t, nhlevel.TERRAIN_DESC.get(t, t)))
         elif e.kind in ("stair", "ladder", "altar") and t not in ".#x":
-            out.append("? %s en (%d,%d) sur '%s' : le terrain sera "
-                       "remplacé." % (e.describe(), e.x, e.y, t))
+            out.append(_("? %s en (%d,%d) sur '%s' : le terrain sera "
+                         "remplacé.") % (e.describe(), e.x, e.y, t))
         if e.kind == "altar" and temples is not None \
                 and (e.x, e.y) not in temples:
-            out.append("? Autel en (%d,%d) hors d'une salle temple "
-                       "(des.region type « temple ») : pas de prêtre."
+            out.append(_("? Autel en (%d,%d) hors d'une salle temple "
+                         "(des.region type « temple ») : pas de prêtre.")
                        % (e.x, e.y))
         if e.kind == "monster" and e.value and len(e.value) > 1 \
                 and monsters and e.value.lower() not in monsters:
-            out.append("? Monstre inconnu : %s" % e.value)
+            out.append(_("? Monstre inconnu : %s") % e.value)
         if e.kind == "object" and e.value and len(e.value) > 1 \
                 and objects and e.value.lower() not in objects:
-            out.append("? Objet inconnu (vérifiez le nom) : %s" % e.value)
+            out.append(_("? Objet inconnu (vérifiez le nom) : %s") % e.value)
     seen = {}
     for e in lvl.entities:
         if e.kind in ("stair", "ladder"):
             seen.setdefault((e.kind, e.value), []).append(e)
     for (k, v), lst in seen.items():
         if len(lst) > 1:
-            out.append("! %d %ss %s : un seul est permis par niveau."
-                       % (len(lst), nhlevel.ENTITY_LABEL[k], v))
+            out.append(_("! %s %s présent %d fois : un seul est permis par "
+                         "niveau.") % (nhlevel.ENTITY_LABEL[k].capitalize(), v,
+                                    len(lst)))
     doors = {(x, y) for y in range(lvl.h) for x in range(lvl.w)
              if lvl.grid[y][x] == "+"}
     doors |= {(e.x, e.y) for e in lvl.entities if e.kind == "door"
@@ -279,7 +282,7 @@ def rules(lvl, monsters=None, objects=None):
 def check(lvl, monsters=None, objects=None):
     """Toutes les vérifications ; ["Aucun problème détecté."] sinon."""
     out = rules(lvl, monsters, objects) + connectivity(lvl)
-    return out or ["Aucun problème détecté."]
+    return out or [_("Aucun problème détecté.")]
 
 
 # ----------------------------------------------------------------------
@@ -312,7 +315,7 @@ def build_lua():
     Renvoie son chemin, ou lève OSError avec la sortie de make."""
     src = lua_sources()
     if not src:
-        raise OSError("sources de Lua introuvables dans %s/lib" % SOURCES)
+        raise OSError(_("sources de Lua introuvables dans %s/lib") % SOURCES)
     dest = os.path.join(CACHE, "lua")
     shutil.rmtree(dest, ignore_errors=True)
     shutil.copytree(src, dest)
@@ -351,14 +354,14 @@ def lua_check(text, lua, data):
                 nhlevel.lua_value(t) for t in data.get("traps", [])))
         try:
             r = subprocess.run([lua, os.path.join(HERE, "nhcheck_des.lua"),
-                                datafile, nhlib() or "-", level],
+                                datafile, nhlib() or "-", level, LANG],
                                capture_output=True, text=True, timeout=20)
         except (OSError, subprocess.SubprocessError) as e:
-            return ["? Lua : impossible de lancer %s (%s)." % (lua, e)]
+            return [_("? Lua : impossible de lancer %s (%s).") % (lua, e)]
     out = []
     for line in (r.stdout + r.stderr).splitlines():
         if line[:2] in ("! ", "? "):
-            out.append("%s Lua, %s" % (line[0], line[2:]))
+            out.append(_("%s Lua, %s") % (line[0], line[2:]))
         elif line.strip():
-            out.append("? Lua : " + line.strip())
+            out.append(_("? Lua : ") + line.strip())
     return out
