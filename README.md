@@ -70,7 +70,10 @@ enregistré sans modification reste identique octet pour octet. Lors du
 premier enregistrement, l'original est gardé sous `fichier.lua~`.
 
 Les coordonnées des entités sont relatives à la carte, comme dans les
-scripts NetHack.
+scripts NetHack. La barre d'état affiche aussi la position réelle de la
+case dans le niveau de 80x21 (`niveau (x,y)`), calculée comme le fait
+NetHack à partir de `halign`/`valign` ou de la position fixe de la carte ;
+elle vaut `(?)` quand la carte est placée au hasard.
 
 ## Tester un niveau dans NetHack
 

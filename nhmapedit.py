@@ -452,8 +452,12 @@ class Editor:
         lvl = self.lvl
         x, y = self.cx, self.cy
         c = lvl.grid[y][x]
-        info = "(%2d,%2d) '%s' %s" % (x, y, c, nhlevel.TERRAIN_DESC.get(
-            c, "?"))
+        o = lvl.origin()
+        # coordonnées relatives à la carte (celles des scripts), puis
+        # position réelle dans le niveau de 80x21
+        info = "(%2d,%2d) niveau %s  '%s' %s" % (
+            x, y, "(%2d,%2d)" % (o[0] + x, o[1] + y) if o else "(?)",
+            c, nhlevel.TERRAIN_DESC.get(c, "?"))
         ents = lvl.entities_at(x, y)
         if ents:
             info += "  | " + " ; ".join(e.describe() for e in ents)
@@ -969,12 +973,15 @@ class Editor:
         sel = 0
         while True:
             lvl = self.lvl
-            if lvl.map_partial:
-                place = "(fixé par le script d'origine)"
-            elif lvl.pos:
+            if lvl.pos:
                 place = "position fixe x=%d y=%d" % lvl.pos
             else:
                 place = "halign=%s valign=%s" % (lvl.halign, lvl.valign)
+                o = lvl.origin()
+                place += (" -> coin en (%d,%d) du niveau" % o if o
+                          else " -> position aléatoire")
+            if lvl.map_partial:
+                place += " (fixé par le script)"
             items = [
                 ("Taille de la carte : %dx%d" % (lvl.w, lvl.h), "size"),
                 ("level_init : %s" % nhlevel.lua_value(lvl.init), "init"),
@@ -1099,10 +1106,11 @@ class Editor:
         if lvl.w > nhlevel.MAP_X_LIM:
             out.append("! Largeur %d > %d (MAP_X_LIM) : risque de refus "
                        "par NetHack." % (lvl.w, nhlevel.MAP_X_LIM))
-        if lvl.pos:
-            x, y = lvl.pos
-            if x < 1 or x + lvl.w > nhlevel.MAX_W + 1 or y < 0 \
-                    or y + lvl.h > nhlevel.MAX_H:
+        o = lvl.origin()
+        if o:
+            x, y = o
+            if x < 1 or x + lvl.w > nhlevel.COLNO or y < 0 \
+                    or y + lvl.h > nhlevel.ROWNO:
                 out.append("! La carte placée en (%d,%d) déborde du niveau "
                            "(80x21)." % (x, y))
         kinds = [(e.kind, e.value) for e in lvl.entities]

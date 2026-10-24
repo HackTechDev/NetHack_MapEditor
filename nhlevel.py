@@ -11,6 +11,9 @@ import re
 
 MAX_W, MAX_H = 79, 21
 MAP_X_LIM = 76          # limite indiquée par include/sp_lev.h
+COLNO, ROWNO = 80, 21   # taille d'un niveau (include/global.h)
+# gx.x_maze_max et gy.y_maze_max par défaut (src/decl.c)
+X_MAZE_MAX, Y_MAZE_MAX = (COLNO - 1) & ~1, (ROWNO - 1) & ~1
 
 # Caractères de carte acceptés par des.map (src/nhlua.c, char2typ[])
 TERRAIN = [
@@ -173,6 +176,40 @@ class Level:
         return "des.level_flags(%s);" % ", ".join(
             lua_value(f) for f in self.flags)
 
+    def origin(self):
+        """Position (x, y) dans le niveau de la case (0, 0) de la carte.
+
+        Reprend le calcul de lspo_map() (src/sp_lev.c). Renvoie None si
+        la carte est placée au hasard (halign ou valign « none »)."""
+        if self.pos:
+            return tuple(self.pos)
+        if "none" in (self.halign, self.valign):
+            return None
+        w, h = self.w, self.h
+        x = {
+            # 1 si des.level_init() précède la carte, ce que l'éditeur
+            # garantit à l'enregistrement (3 sinon)
+            "left": 1,
+            "half-left": 2 + _cdiv(X_MAZE_MAX - 2 - w, 4),
+            "center": 2 + _cdiv(X_MAZE_MAX - 2 - w, 2),
+            "half-right": 2 + _cdiv((X_MAZE_MAX - 2 - w) * 3, 4),
+            "right": X_MAZE_MAX - w - 1,
+        }.get(self.halign)
+        y = {
+            "top": 3,
+            "center": 2 + _cdiv(Y_MAZE_MAX - 2 - h, 2),
+            "bottom": Y_MAZE_MAX - h - 1,
+        }.get(self.valign)
+        if x is None or y is None:
+            return None
+        x += x % 2 == 0         # NetHack force des coordonnées impaires
+        y += y % 2 == 0
+        if y < 0 or y + h > ROWNO:
+            y += -2 if y > 0 else 2
+            if h == ROWNO or y < 0 or y + h > ROWNO:
+                y = 0
+        return x, y
+
     def map_lua(self):
         if (not self.pos and not self.lit and self.halign == "center"
                 and self.valign == "center"):
@@ -263,6 +300,12 @@ class Level:
                     pos += m.end()
         out.append(text[pos:])
         return "".join(out)
+
+
+def _cdiv(a, b):
+    """Division entière du C (tronquée vers zéro)."""
+    q = abs(a) // b
+    return q if a >= 0 else -q
 
 
 # ----------------------------------------------------------------------
@@ -649,7 +692,10 @@ def _read_map(lvl, call, args):
             if not isinstance(table, dict):
                 table = None
         except NotLiteral:
-            table = None
+            # table avec du code (contents = function...) : on lit au
+            # moins les options littérales pour connaître le placement
+            table = _literal_fields(args)
+            lvl.map_partial = True
     lvl.halign = lvl.valign = "center"
     lines = s.split("\n")
     if lines and lines[-1] == "":
@@ -660,14 +706,12 @@ def _read_map(lvl, call, args):
     lvl.w, lvl.h = w, h
     lvl.grid = [list(ln[:w].ljust(w)) for ln in lines[:h]]
     call["str_span"] = span
-    if table is None and len(args) > 1:
-        lvl.map_partial = True
-        return
     if table:
-        if "x" in table and "y" in table:
+        if "coord" in table:
+            table["x"], table["y"] = (list(table.pop("coord")) + [None])[:2]
+        if isinstance(table.get("x"), int) and isinstance(table.get("y"),
+                                                           int):
             lvl.pos = (table["x"], table["y"])
-        elif "coord" in table and isinstance(table["coord"], list):
-            lvl.pos = tuple(table["coord"][:2])
         lvl.halign = table.get("halign", "none")
         lvl.valign = table.get("valign", "none")
         lvl.lit = bool(table.get("lit", 0))
@@ -675,3 +719,26 @@ def _read_map(lvl, call, args):
                                 "lit", "map"}
         if unknown:
             lvl.map_partial = True
+
+
+def _literal_fields(args):
+    """Champs « nom = valeur littérale » au premier niveau d'une table."""
+    fields, depth, i, n = {}, 0, 0, len(args)
+    while i < n:
+        kind, val = args[i][0], args[i][1]
+        if kind == "op" and val in ("(", "{", "["):
+            depth += 1
+        elif kind == "op" and val in (")", "}", "]"):
+            depth -= 1
+        elif (depth == 1 and kind == "name" and i + 1 < n
+              and args[i + 1][1] == "="):
+            try:
+                v, j = _parse_value(args, i + 2, n)
+                if j < n and args[j][1] in (",", ";", "}"):
+                    fields[val] = _to_py(v)
+                    i = j
+                    continue
+            except NotLiteral:
+                pass
+        i += 1
+    return fields

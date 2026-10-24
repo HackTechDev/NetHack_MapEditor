@@ -39,7 +39,7 @@ reste invisible dans l'éditeur.
 - ✅ **Fait** — **Règles de coordonnées** **[facile]** : numéros de colonnes en haut
   et de lignes à gauche (les dizaines et les unités sur deux lignes).
   Indispensable pour relire ou écrire des coordonnées à la main.
-- **Coordonnées absolues** **[facile]** : quand la carte est centrée
+- ✅ **Fait** — **Coordonnées absolues** **[facile]** : quand la carte est centrée
   (`halign`/`valign`), afficher dans la barre d'état la position réelle
   dans le niveau de 80x21, en plus de la position relative à la carte.
 - **Rendu « comme dans le jeu »** **[moyen]** : une touche pour basculer
