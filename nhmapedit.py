@@ -43,13 +43,14 @@ TOOLS = [
     ("fillellipse", "Ellipse pleine", "Ell. pleine", "0"),
     ("cut", "Couper (déplacer) zone", "Couper", "D"),
     ("scatter", "Semis aléatoire", "Semis", "G"),
+    ("replace", "Remplacer du terrain", "Remplacer", "R"),
 ]
 TOOL_NAME = {t: name for t, name, _, _ in TOOLS}
 TOOL_KEY = {key: t for t, _, _, key in TOOLS}
 TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut", "ellipse",
-             "fillellipse", "scatter"}
+             "fillellipse", "scatter", "replace"}
 # outils dont l'aperçu montre la zone sans y dessiner le pinceau
-SELECT = {"copy", "cut", "scatter"}
+SELECT = {"copy", "cut", "scatter", "replace"}
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
 FLIP_NAME = {0: "aucun", 1: "vertical", 2: "horizontal",
@@ -214,6 +215,8 @@ OUTILS (Espace ou Entrée pour appliquer)
   9 Ellipse   0 Ellipse pleine (un cercle est une ellipse dans un carré)
   G Semis aléatoire : peint au hasard une partie des cases d'une zone,
     selon une densité en % demandée au choix de l'outil
+  R Remplacer un terrain par un autre, sur toute la carte ou dans une zone,
+    avec une proportion en % (comme des.replace_terrain)
   Presse-papiers : X miroir gauche/droite   Y miroir haut/bas
                    O rotation d'un quart de tour (sens horaire)
   Les outils à deux points : 1er appui = ancre, 2e appui = tracé. Échap annule.
@@ -323,6 +326,7 @@ class Editor:
         self.unicode = enc == "utf8"
         self.clip = None
         self.density = 30           # densité de l'outil Semis, en %
+        self.replace = None         # (ancien, nouveau, %) de l'outil Remplacer
         self.template = None        # dernière entité placée
         self.hackdir = next((d for d in HACKDIRS if self.is_hackdir(d)),
                             None)
@@ -914,6 +918,8 @@ class Editor:
                 self.paint(pick)
                 self.msg = "Semis : %d cases sur %d (%d %%)." % (
                     len(pick), len(cells), self.density)
+            elif t == "replace":
+                self.replace_terrain(a, b)
             elif t in SELECT:
                 self.copy(a, b, cut=t == "cut")
             else:
@@ -934,6 +940,42 @@ class Editor:
                 n += 1
                 stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
         self.msg = "%d cases remplies." % n
+
+    def ask_replace(self):
+        """Demande les paramètres du remplacement. Renvoie True s'il faut
+        tracer une zone, False s'il a été fait sur toute la carte."""
+        items = [("%s  %s" % ("e" if c == " " else c, d), c)
+                 for c, d in nhlevel.TERRAIN if c != "x"]
+        old = self.pick("Remplacer quel terrain ?", items,
+                        self.lvl.grid[self.cy][self.cx])
+        new = self.pick("Remplacer « %s » par :" % nhlevel.TERRAIN_DESC[old],
+                        items, self.brush)
+        s = self.prompt("Proportion des cases à remplacer en %% (1-100) : ",
+                        "100")
+        try:
+            pct = max(1, min(100, int(s)))
+        except ValueError:
+            raise Cancel()
+        self.replace = (old, new, pct)
+        where = self.pick("Où remplacer ?", [
+            ("sur toute la carte", "map"),
+            ("dans une zone (à tracer avec l'ancre)", "zone")])
+        if where == "map":
+            self.replace_terrain((0, 0), (self.lvl.w - 1, self.lvl.h - 1))
+            return False
+        return True
+
+    def replace_terrain(self, a, b):
+        old, new, pct = self.replace
+        lx, hx = sorted((a[0], b[0]))
+        ly, hy = sorted((a[1], b[1]))
+        cells = {(x, y): new for y in range(ly, hy + 1)
+                 for x in range(lx, hx + 1)
+                 if self.lvl.grid[y][x] == old
+                 and random.random() * 100 < pct}
+        self.paint(cells)
+        self.msg = "%d case(s) « %s » remplacée(s) par « %s »." % (
+            len(cells), nhlevel.TERRAIN_DESC[old], nhlevel.TERRAIN_DESC[new])
 
     def copy(self, a, b, cut=False):
         """Copie la zone (terrain et entités) dans le presse-papiers.
@@ -1626,6 +1668,8 @@ class Editor:
                 except ValueError:
                     self.msg = "Densité invalide."
                     return True
+            elif TOOL_KEY[k] == "replace" and not self.ask_replace():
+                return True         # déjà fait sur toute la carte
             self.tool = TOOL_KEY[k]
             self.anchor = None
             self.msg = "Outil : %s." % TOOL_NAME[self.tool]

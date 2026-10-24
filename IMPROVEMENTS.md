@@ -71,7 +71,7 @@ reste invisible dans l'éditeur.
 - ✅ **Fait** — **Formes supplémentaires** **[facile]** : cercle et ellipse (pleins ou
   non), et remplissage aléatoire d'une zone à un pourcentage donné (pour
   des arbres, des rochers ou de l'eau éparse).
-- **Rechercher et remplacer du terrain** **[facile]** : dans une zone ou
+- ✅ **Fait** — **Rechercher et remplacer du terrain** **[facile]** : dans une zone ou
   sur toute la carte, comme `des.replace_terrain()`.
 - **Insérer ou supprimer une ligne ou une colonne** **[facile]** : en
   décalant la carte et les entités.
