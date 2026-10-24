@@ -153,7 +153,7 @@ reste invisible dans l'éditeur.
 
 ## 9. Qualité du projet
 
-- **Tests automatiques** **[facile]** : transformer en tests `unittest`
+- ✅ **Fait** — **Tests automatiques** **[facile]** : transformer en tests `unittest`
   les vérifications faites à la main pendant le développement :
   aller-retour identique sur les 93 niveaux de `dat/`, export valide pour
   `luac`, outils de dessin…

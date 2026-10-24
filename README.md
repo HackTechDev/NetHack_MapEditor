@@ -222,6 +222,27 @@ le jeu ainsi.
   pilotant l'éditeur dans un pseudo-terminal :
   `python3 docs/capture.py [--level niveau.lua] [--size 108x30]`.
 
+## Tests
+
+Les tests automatiques (bibliothèque standard `unittest`) se lancent depuis
+la racine du dépôt :
+
+```sh
+python3 -m unittest            # ou : python3 -m unittest -v
+```
+
+Ils vérifient :
+- l'aller-retour octet pour octet sur les niveaux de `dat/` ;
+- la lecture et l'écriture des entités, inventaires et contenus ;
+- les outils de dessin, le presse-papiers, la symétrie et l'annulation ;
+- les modifications de `dungeon.lua` et de `themerms.lua` ;
+- un parcours complet de l'interface dans un pseudo-terminal.
+
+Les niveaux sont cherchés dans `../NetHack-5.0.0/dat`, ou dans
+`$NHMAPEDIT_DAT`. Les tests qui en ont besoin sont sautés s'ils sont
+absents. Le test de syntaxe utilise `luac` (ou `$NHMAPEDIT_LUAC`) quand il
+est disponible.
+
 ## Licence
 
 Le code de nhmapedit est distribué sous licence MIT (voir `LICENSE`).

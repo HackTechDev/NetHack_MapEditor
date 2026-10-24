@@ -419,7 +419,9 @@ class Editor:
         self.stroke = self.stroke_saved = False
         self.msg = "Bienvenue ! « ? » pour l'aide."
         self.mouse_down = False
-        self.init_colors()
+        self.pairs = {}
+        if scr is not None:         # Editor(None) : sans écran (tests)
+            self.init_colors()
         if path:
             if os.path.exists(path):
                 self.open_file(path)
