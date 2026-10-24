@@ -123,7 +123,7 @@ reste invisible dans l'éditeur.
 - ✅ **Fait** — **Éditer `dungeon.lua`** **[gros]** : ajouter un nouveau niveau
   spécial au donjon (branche, profondeur, probabilité) sans éditer le
   fichier à la main.
-- **Salles à thème** **[gros]** : éditer les salles de `themerms.lua`,
+- ✅ **Fait** — **Salles à thème** **[gros]** : éditer les salles de `themerms.lua`,
   qui sont des `des.room()` et des `des.map()` dans des fonctions Lua.
 
 ## 7. Fichiers et formats

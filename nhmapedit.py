@@ -22,6 +22,7 @@ import time
 
 import nhdungeon
 import nhlevel
+import nhtheme
 from nhlevel import Entity, Level
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -312,6 +313,10 @@ NIVEAU ET FICHIERS
   n  nouveau      o  ouvrir      s  enregistrer      w  enregistrer sous
   q  quitter      ?  cette aide
 
+Salles à thème : ouvrir themerms.lua (o) propose ses salles dessinées par
+des.map, ou une nouvelle salle ; s n'y réécrit que la carte (ou ajoute la
+salle), t explique comment la voir en jeu avec THEMERM.
+
 Pour un fichier existant, seuls la première carte des.map et les éléments
 à position fixe qui la suivent (avec leur inventaire ou contenu, s'il ne
 contient que des des.object simples) sont édités ; le reste du script Lua
@@ -592,11 +597,13 @@ class Editor:
         lvl = self.lvl
         # en-tête
         name = os.path.basename(self.path) if self.path else "(sans nom)"
+        if lvl.theme:
+            name += " : salle « %s »" % lvl.theme["name"]
         head = " nhmapedit — %s%s   %dx%d" % (
             name, " [modifié]" if self.modified else "", lvl.w, lvl.h)
         if lvl.w > nhlevel.MAP_X_LIM:
             head += "  (largeur > %d !)" % nhlevel.MAP_X_LIM
-        if lvl.allowed_flips():
+        if lvl.allowed_flips() and not lvl.theme:
             head += "  (retournable : %s, f pour voir)" % FLIP_NAME[
                 lvl.allowed_flips()]
         self.put(0, 0, head.ljust(maxx), curses.A_REVERSE)
@@ -1502,12 +1509,22 @@ class Editor:
         return value, extra
 
     def place_entity(self):
+        if self.no_entities():
+            return
         kinds = [("%s" % nhlevel.ENTITY_LABEL[k].capitalize(), k)
                  for k in nhlevel.ENTITY_KINDS]
         kind = self.pick("Placer une entité en (%d,%d)" % (self.cx, self.cy),
                          kinds)
         value, extra = self.edit_entity_fields(kind)
         self.add_entity(Entity(kind, self.cx, self.cy, value, extra))
+
+    def no_entities(self):
+        """Une salle à thème n'enregistre que sa carte."""
+        if self.lvl.theme:
+            self.msg = ("Salle à thème : seule la carte est enregistrée, "
+                        "pas les entités.")
+            return True
+        return False
 
     def add_entity(self, e):
         e.x, e.y = self.cx, self.cy
@@ -1984,9 +2001,57 @@ class Editor:
             with open(path, encoding="utf-8") as f:
                 text = f.read()
             lvl, _ = nhlevel.parse_level(text)
-        except (OSError, ValueError, UnicodeDecodeError) as e:
+        except ValueError as e:
+            # pas de des.map au premier niveau : peut-être themerms.lua
+            try:
+                tf = nhtheme.ThemeFile(text)
+            except ValueError:
+                self.msg = "Erreur à l'ouverture : %s" % e
+                return False
+            return self.open_theme(path, tf)
+        except (OSError, UnicodeDecodeError) as e:
             self.msg = "Erreur à l'ouverture : %s" % e
             return False
+        return self.set_level(lvl, path)
+
+    def open_theme(self, path, tf):
+        """Choisit une salle à thème (dessinée par des.map) à éditer, ou
+        en crée une nouvelle."""
+        items = tf.editable() + [("+ nouvelle salle à thème", None)]
+        try:
+            what = self.pick("Salles à thème de %s (dessinées par des.map)"
+                             % os.path.basename(path), items)
+            if what is None:
+                name = self.prompt("Nom de la nouvelle salle : ").strip()
+                if not name:
+                    raise Cancel()
+                if tf.find(name):
+                    self.msg = "La salle « %s » existe déjà." % name
+                    return False
+                s = self.prompt("Taille « largeur hauteur » : ", "9 7")
+                w, h = (max(3, int(v)) for v in s.replace("x", " ").split())
+                rows = (["-" * w] + ["|" + "." * (w - 2) + "|"] * (h - 2)
+                        + ["-" * w])
+                theme = {"path": path, "name": name, "k": 0, "new": True}
+                text = "\n".join(rows)
+            else:
+                name, k = what
+                theme = {"path": path, "name": name, "k": k, "new": False}
+                text = tf.map_text(name, k)
+        except Cancel:
+            return False
+        except ValueError:
+            self.msg = "Taille invalide."
+            return False
+        lvl = nhlevel.parse_level("des.map([[\n%s\n]]);" % text)[0]
+        lvl.source, lvl.theme = None, theme
+        self.set_level(lvl, path)
+        self.modified = theme["new"]    # pas encore dans le fichier
+        self.msg = ("Salle à thème « %s » : seule la carte est éditée ; son "
+                    "contenu (filler_region…) est conservé." % name)
+        return True
+
+    def set_level(self, lvl, path):
         self.lvl, self.path = lvl, path
         self.modified = False
         self.undo_stack.clear()
@@ -2013,6 +2078,8 @@ class Editor:
             if path != self.path and os.path.exists(path):
                 if not self.confirm("%s existe. Écraser ?" % path):
                     raise Cancel()
+        if self.lvl.theme and not as_new:
+            return self.save_theme()
         name = os.path.splitext(os.path.basename(path))[0]
         try:
             text = self.lvl.to_lua(name)
@@ -2024,8 +2091,40 @@ class Editor:
             self.msg = "Erreur d'écriture : %s" % e
             return False
         self.path = path
+        self.lvl.theme = None       # « enregistrer sous » : niveau à part
         self.modified = False
         self.msg = "Enregistré : %s" % path
+        return True
+
+    def save_theme(self):
+        """Remplace la carte de la salle dans themerms.lua (ou ajoute la
+        salle) ; le reste du fichier ne change pas."""
+        th, path = self.lvl.theme, self.lvl.theme["path"]
+        try:
+            with open(path, encoding="utf-8") as f:
+                tf = nhtheme.ThemeFile(f.read())
+            new = self.lvl.map_text()
+            if th["new"] and not tf.find(th["name"]):
+                text = tf.add_room(th["name"], new)
+            elif tf.find(th["name"]) and th["k"] < len(
+                    tf.find(th["name"])["maps"]):
+                text = tf.replace_map(th["name"], th["k"], new)
+            else:
+                self.msg = "Salle « %s » introuvable dans %s." % (
+                    th["name"], path)
+                return False
+            if not os.path.exists(path + "~"):
+                shutil.copy2(path, path + "~")
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(text)
+        except (OSError, ValueError) as e:
+            self.msg = "Erreur d'enregistrement : %s" % e
+            return False
+        th["new"] = False
+        self.modified = False
+        self.msg = "Enregistré : salle « %s » dans %s" % (th["name"], path)
+        if self.lvl.entities:
+            self.msg += " (sans les entités)"
         return True
 
     @staticmethod
@@ -2035,6 +2134,8 @@ class Editor:
 
     def test_in_game(self):
         """Copie l'état courant de la carte dans le répertoire du jeu."""
+        if self.lvl.theme:
+            return self.test_theme()
         if not self.hackdir:
             d = self.prompt("Répertoire de données de NetHack (nethackdir) : ",
                             HACKDIRS[1], self.path_completer)
@@ -2111,7 +2212,37 @@ class Editor:
             self.game_pane = None
         return bool(cmd)
 
-    def game_command(self):
+    def test_theme(self):
+        """Une salle à thème se teste avec THEMERM, une fois themerms.lua
+        rangé dans nhdat (le jeu lit nhdat avant les fichiers à part)."""
+        name = self.lvl.theme["name"]
+        self.message_box("Tester une salle à thème", "\n".join([
+            "themerms.lua est rangé dans nhdat : le jeu ne lit pas une",
+            "copie posée à côté. Pour voir la salle « %s » :" % name,
+            "",
+            "  1. enregistrez (s) : la carte est écrite dans",
+            "     " + self.lvl.theme["path"] + " ;",
+            "  2. dans les sources, lancez « make install » ;",
+            "  3. lancez le jeu en mode wizard avec la variable THEMERM :",
+            "     THEMERM=%s nethack -D" % shlex.quote(name),
+            "",
+            "Chaque salle des niveaux ordinaires est alors cette salle,",
+            "quand elle y tient. Ctrl-F révèle la carte, Ctrl-V change de",
+            "niveau pour en générer d'autres.",
+        ]))
+        if not (self.hackdir and shutil.which("tmux")):
+            return
+        if self.game_alive():
+            self.msg = ("Une partie lancée par l'éditeur est en cours : "
+                        "quittez-la pour relancer avec THEMERM.")
+            return
+        if self.confirm("Lancer NetHack avec THEMERM=%s (après make "
+                        "install) ?" % name):
+            if self.start_game({"THEMERM": name}):
+                self.msg = "NetHack lancé avec THEMERM=%s (%s)." % (
+                    name, self.game_where)
+
+    def game_command(self, env=None):
         d = self.hackdir
         opts = os.environ.get("NETHACKOPTIONS", "")
         # une valeur qui désigne un fichier remplace le .nethackrc : on
@@ -2119,11 +2250,13 @@ class Editor:
         if not opts.startswith(("/", "@")):
             opts = opts + "," + GAME_OPTIONS if opts else GAME_OPTIONS
         # -D : mode wizard ; -@ : personnage tiré au hasard, sans question
-        return "cd %s && HACKDIR=%s NETHACKOPTIONS=%s %s -D -@" % (
-            shlex.quote(d), shlex.quote(d), shlex.quote(opts),
+        extra = "".join("%s=%s " % (k, shlex.quote(v))
+                        for k, v in (env or {}).items())
+        return "cd %s && %sHACKDIR=%s NETHACKOPTIONS=%s %s -D -@" % (
+            shlex.quote(d), extra, shlex.quote(d), shlex.quote(opts),
             shlex.quote(os.path.join(d, "nethack")))
 
-    def start_game(self):
+    def start_game(self, env=None):
         """Lance NetHack dans tmux : un panneau ou une fenêtre de la
         session courante, sinon une session à part ouverte dans un
         nouveau terminal. Renvoie True si le jeu est prêt."""
@@ -2139,7 +2272,7 @@ class Editor:
             # même verrou de partie : un second jeu ne démarrerait pas
             self.msg = "Une partie de NetHack est déjà en cours."
             return False
-        cmd = self.game_command()
+        cmd = self.game_command(env)
         attach = None
         if os.environ.get("TMUX"):
             here = os.environ.get("TMUX_PANE", "")
@@ -2363,7 +2496,7 @@ class Editor:
         elif k == "m":
             self.place_entity()
         elif k == "r":
-            if self.template:
+            if self.template and not self.no_entities():
                 self.add_entity(self.template.copy())
             else:
                 self.msg = "Aucune entité à répéter (m pour en placer une)."

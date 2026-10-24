@@ -151,6 +151,8 @@ class Level:
         # Texte Lua d'origine découpé (None pour un niveau neuf)
         self.source = None
         self.map_partial = False    # des.map non littérale (contents=...)
+        # salle à thème de themerms.lua : {"path", "name", "k", "new"}
+        self.theme = None
 
     # --- grille ---------------------------------------------------------
     def get(self, x, y):

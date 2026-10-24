@@ -182,11 +182,38 @@ directement dans le répertoire du jeu, puisqu'il n'est pas dans `nhdat`.
 Le niveau apparaît dans les nouvelles parties ; en mode wizard,
 `#wizwhere` donne la profondeur des niveaux spéciaux.
 
+## Salles à thème
+
+Ouvrir `dat/themerms.lua` (en argument ou avec `o`) affiche la liste de ses
+salles à thème dessinées par `des.map()` : salles en L, en T, en croix,
+circulaires… La dernière ligne, « + nouvelle salle à thème », en crée une
+(nom et taille demandés, murs et sol déjà posés).
+
+- Seule la carte de la salle s'édite. Le reste de l'entrée (fonction
+  `contents`, `filler_region()`, fréquence…) et le reste du fichier ne
+  changent pas : `s` remplace seulement le texte de la carte.
+  L'original est gardé sous `themerms.lua~`.
+- Une nouvelle salle est ajoutée à la fin de la table `themerooms`, avec
+  `filler_region()` sur sa première case de sol, comme les salles du jeu.
+  Une carte de taille différente peut demander d'ajuster à la main les
+  coordonnées de `filler_region()` d'une salle existante.
+- Les salles écrites seulement en code (`des.room()` imbriqués, comme
+  « Fake Delphi ») n'ont pas de carte : elles n'apparaissent pas dans la
+  liste. Les entités ne sont pas enregistrées dans une salle à thème.
+- `w` (enregistrer sous) écrit la carte comme un niveau ordinaire.
+
+Pour voir la salle en jeu, `t` rappelle les étapes. `themerms.lua` est
+rangé dans `nhdat`, donc il faut lancer `make install` dans les sources.
+Ensuite, en mode wizard, la variable `THEMERM` impose la salle :
+`THEMERM="L-shaped" nethack -D`. Avec tmux, l'éditeur propose de lancer
+le jeu ainsi.
+
 ## Fichiers
 
 - `nhmapedit.py` : l'interface curses.
 - `nhlevel.py` : le modèle de niveau, la lecture et l'écriture du Lua.
 - `nhdungeon.py` : la lecture et la modification de `dat/dungeon.lua`.
+- `nhtheme.py` : les salles à thème de `dat/themerms.lua`.
 - `gen_data.py` : extrait des sources de NetHack les listes de monstres,
   d'objets et de pièges dans `nhdata.json`. À relancer si les sources
   changent : `python3 gen_data.py [chemin/vers/NetHack-5.0.0]`.
