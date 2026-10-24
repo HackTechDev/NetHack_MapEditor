@@ -101,7 +101,7 @@ reste invisible dans l'éditeur.
 
 ## 5. Vérification
 
-- **Connexité** **[moyen]** : vérifier par remplissage que l'escalier
+- ✅ **Fait** — **Connexité** **[moyen]** : vérifier par remplissage que l'escalier
   descendant est accessible depuis l'escalier montant, en tenant compte
   des portes et des couloirs secrets, de l'eau et de la lave. Signaler
   aussi les zones fermées.

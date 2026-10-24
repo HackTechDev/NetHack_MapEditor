@@ -49,7 +49,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | `f` | aperçu du retournement aléatoire que NetHack applique aux niveaux sans `noflip` : aucun → horizontal → vertical → les deux (l'édition reste possible, les règles gardent les vraies coordonnées) |
 | `J` | rendu « comme dans le jeu » : murs en traits avec leurs coins et jonctions, sol en points, symboles et couleurs du jeu, portes et couloirs secrets cachés (l'édition reste possible) |
 | `p` | propriétés : taille, `level_init`, drapeaux, placement (halign/valign ou x,y), éclairage, place du niveau dans le donjon (`dungeon.lua`, voir plus bas) |
-| `v` | vérifier la carte (largeur > 76, entités dans les murs, escaliers en double…) |
+| `v` | vérifier la carte : largeur > 76, entités dans les murs, escaliers en double, connexité… (voir « Vérification ») |
 | `t` | tester : copie la carte dans le répertoire du jeu ; avec tmux, lance NetHack et y charge la carte (voir plus bas) |
 | `u` / `U` (ou Ctrl-R) | annuler / rétablir |
 | `n`, `o`, `s`, `w` | nouveau, ouvrir, enregistrer, enregistrer sous (Tab complète les chemins) |
@@ -107,6 +107,22 @@ scripts NetHack. La barre d'état affiche aussi la position réelle de la
 case dans le niveau de 80x21 (`niveau (x,y)`), calculée comme le fait
 NetHack à partir de `halign`/`valign` ou de la position fixe de la carte ;
 elle vaut `(?)` quand la carte est placée au hasard.
+
+## Vérification
+
+La touche `v` liste les problèmes de la carte. Le premier caractère d'un
+message donne sa gravité : `!` erreur, `?` à vérifier, `-` remarque.
+
+**Connexité.** L'éditeur cherche un chemin de l'escalier (ou de
+l'échelle) montant au descendant, comme le héros se déplace : en huit
+directions, mais jamais en diagonale vers ou depuis une porte intacte.
+Les portes sans battant (`nodoor`) ou cassées font exception. Il précise
+si le chemin passe par une porte ou un couloir secret (`S`, `H`), ou s'il
+faut traverser l'eau ou la lave. Il signale aussi les zones fermées, par
+exemple une salle sans porte ou une salle dont les portes sont posées au
+hasard par le script. Une zone qui touche le bord d'une carte plus petite
+que le niveau peut être reliée au reste par le jeu : l'éditeur le
+précise.
 
 ## Tester un niveau dans NetHack
 

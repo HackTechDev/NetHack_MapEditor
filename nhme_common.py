@@ -283,7 +283,9 @@ NIVEAU ET FICHIERS
   p  propriétés (taille, drapeaux, level_init, alignement, éclairage) ;
      « Donjon » y ajoute le niveau à dat/dungeon.lua (profondeur,
      probabilité…), ou modifie et retire les niveaux spéciaux du donjon
-  v  vérifier la carte
+  v  vérifier la carte, dont la connexité : escalier descendant accessible
+     depuis le montant (portes sans diagonale, passages secrets, eau et
+     lave signalés) et zones fermées
   t  tester : copie la carte dans le répertoire du jeu, à charger avec
      #wizloaddes en mode wizard (nethack -D) ; avec tmux, l'éditeur
      lance le jeu (panneau, fenêtre ou session tmux) et y charge la carte

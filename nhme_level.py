@@ -3,6 +3,7 @@
 import os
 import shutil
 
+import nhcheck
 import nhlevel
 import nhtheme
 from nhlevel import Level
@@ -198,6 +199,7 @@ class LevelMixin:
                     if not (h or v):
                         out.append("? Porte en (%d,%d) qui n'est pas "
                                    "encadrée par des murs." % (x, y))
+        out += nhcheck.connectivity(lvl)
         if not out:
             out = ["Aucun problème détecté."]
         self.message_box("Vérification", "\n".join(out))
