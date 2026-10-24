@@ -162,6 +162,6 @@ reste invisible dans l'éditeur.
   depuis le dépôt officiel de NetHack, ou à embarquer comme échantillons.
 - **Paquet installable** **[facile]** : un `pyproject.toml` avec une
   commande `nhmapedit`, pour l'installer avec `pipx install`.
-- **Découpage de `nhmapedit.py`** **[moyen]** : le fichier dépasse
+- ✅ **Fait** — **Découpage de `nhmapedit.py`** **[moyen]** : le fichier dépasse
   1 400 lignes. On pourrait le séparer en plusieurs fichiers : affichage,
   fenêtres de saisie, outils et entités.

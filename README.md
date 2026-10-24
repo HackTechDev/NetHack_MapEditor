@@ -210,7 +210,17 @@ le jeu ainsi.
 
 ## Fichiers
 
-- `nhmapedit.py` : l'interface curses.
+- `nhmapedit.py` : point d'entrée ; la classe `Editor` (état, touches,
+  souris), qui hérite des modules `nhme_*` :
+  - `nhme_common.py` : constantes, couleurs, symboles, aide, géométrie ;
+  - `nhme_display.py` : affichage de la carte, des règles, du panneau et
+    de la barre d'état ;
+  - `nhme_dialogs.py` : fenêtres de saisie (invite, listes, formulaires) ;
+  - `nhme_tools.py` : outils de dessin, presse-papiers, annulation ;
+  - `nhme_entities.py` : entités, options, inventaires et contenus ;
+  - `nhme_level.py` : propriétés, vérification, ouverture et
+    enregistrement ;
+  - `nhme_game.py` : test dans le jeu (tmux) et `dungeon.lua`.
 - `nhlevel.py` : le modèle de niveau, la lecture et l'écriture du Lua.
 - `nhdungeon.py` : la lecture et la modification de `dat/dungeon.lua`.
 - `nhtheme.py` : les salles à thème de `dat/themerms.lua`.
