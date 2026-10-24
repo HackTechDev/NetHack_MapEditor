@@ -28,6 +28,8 @@ def drive(args, keys, rows=30, cols=110, delay=0.15, env=None):
     pid, fd = pty.fork()
     if pid == 0:
         os.environ["TERM"] = "xterm-256color"
+        # pas de configuration personnelle pendant les tests
+        os.environ["NHMAPEDIT_CONFIG"] = os.devnull
         os.environ.update(env or {})
         os.execvp(sys.executable, [sys.executable,
                                    os.path.join(ROOT, "nhmapedit.py")]
@@ -73,6 +75,19 @@ class Ui(unittest.TestCase):
             self.assertEqual([(e.kind, e.x, e.y, e.value)
                               for e in lvl.entities],
                              [("stair", 2, 2, "down")])
+
+    def test_config_keys_and_size(self):
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "essai.lua")
+            conf = os.path.join(d, "config")
+            with open(conf, "w", encoding="utf-8") as f:
+                f.write("[editeur]\ntaille = 12x5\n[touches]\nz = s\n")
+            out = drive([path], ["z"], env={"HOME": d,
+                                            "NHMAPEDIT_CONFIG": conf})
+            self.assertNotIn("Traceback", out)
+            with open(path, encoding="utf-8") as f:
+                lvl = nhlevel.parse_level(f.read())[0]
+            self.assertEqual((lvl.w, lvl.h), (12, 5))
 
 
 if __name__ == "__main__":

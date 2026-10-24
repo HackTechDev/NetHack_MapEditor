@@ -1,0 +1,37 @@
+# Fichier de configuration de nhmapedit, à copier dans
+#   ~/.config/nhmapedit/config
+# (ou dans le fichier désigné par la variable NHMAPEDIT_CONFIG).
+# Toutes les clés sont facultatives ; retirez le « # » pour les activer.
+
+[jeu]
+# Répertoire de données du jeu, pour la touche « t » (tester)
+#repertoire = ~/nh/install/games/lib/nethackdir
+# Fichier dungeon.lua modifié par la touche « D »
+#dungeon = ~/JEUX/NETHACK/NetHack-5.0.0/dat/dungeon.lua
+
+[editeur]
+# Taille d'une nouvelle carte
+#taille = 75x19
+# Règles de coordonnées et entités affichées au démarrage (oui / non)
+#regles = oui
+#entites = oui
+# Symboles Unicode des murs : auto, oui ou non
+#unicode = auto
+# Sauvegarde de secours toutes les N secondes (0 : désactivée)
+#sauvegarde = 60
+# Langue de l'interface : auto (selon LANG), fr ou en
+#langue = auto
+
+[couleurs]
+# Couleur d'un terrain : black, red, green, brown, blue, magenta, cyan,
+# gray, orange, bright_green, yellow, bright_blue, bright_magenta,
+# bright_cyan, white. La roche (espace) s'écrit « roche », le couloir
+# (#) « couloir ».
+#} = bright_blue
+#T = green
+
+[touches]
+# Remplacement de touches : touche tapée = touche de l'éditeur.
+# Noms possibles : espace, entree, tab, echap, ctrl-x.
+#z = u
+#ctrl-z = u

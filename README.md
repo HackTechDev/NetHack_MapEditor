@@ -227,7 +227,8 @@ si une partie de NetHack est déjà en cours.
 Après une modification, appuyez de nouveau sur `t` et refaites
 `#wizloaddes`, sans relancer le jeu.
 
-Le répertoire du jeu est cherché dans `$NHMAPEDIT_HACKDIR`, puis
+Le répertoire du jeu est cherché dans le fichier de configuration (clé
+`repertoire`), dans `$NHMAPEDIT_HACKDIR`, puis
 `~/nh/install/games/lib/nethackdir`, puis `../NetHack-5.0.0/playground`.
 S'il n'est trouvé dans aucun de ces endroits, l'éditeur le demande.
 
@@ -291,6 +292,36 @@ Ensuite, en mode wizard, la variable `THEMERM` impose la salle :
 `THEMERM="L-shaped" nethack -D`. Avec tmux, l'éditeur propose de lancer
 le jeu ainsi.
 
+## Configuration
+
+Le fichier facultatif `~/.config/nhmapedit/config` (ou celui désigné par
+`$NHMAPEDIT_CONFIG`) règle l'éditeur au démarrage. Il est au format INI ;
+copiez [`docs/config.exemple`](docs/config.exemple) pour partir d'un
+exemple commenté :
+
+```ini
+[jeu]
+repertoire = ~/nh/install/games/lib/nethackdir
+dungeon = ~/JEUX/NETHACK/NetHack-5.0.0/dat/dungeon.lua
+
+[editeur]
+taille = 75x19        ; taille d'une nouvelle carte
+regles = oui          ; règles de coordonnées au démarrage
+entites = oui         ; entités affichées au démarrage
+unicode = auto        ; murs en traits Unicode : auto, oui, non
+sauvegarde = 60       ; sauvegarde de secours (secondes, 0 : aucune)
+langue = auto         ; auto (selon LANG), fr ou en
+
+[couleurs]
+} = bright_blue       ; couleur d'un terrain (roche, couloir pour « » et #)
+
+[touches]
+ctrl-z = u            ; touche tapée = touche de l'éditeur
+```
+
+Une clé inconnue ou une valeur invalide est signalée dans la barre d'état
+au démarrage, sans empêcher l'éditeur de s'ouvrir.
+
 ## Fichiers
 
 - `nhmapedit.py` : point d'entrée ; la classe `Editor` (état, touches,
@@ -312,10 +343,12 @@ le jeu ainsi.
 - `nhcheck.py` : les vérifications (connexité, règles, Lua) ;
   `nhcheck_des.lua` est la bibliothèque `des` factice de la vérification
   Lua.
+- `nhconfig.py` : lecture du fichier de configuration ;
+  `docs/config.exemple` : un exemple commenté.
 - `gen_data.py` : extrait des sources de NetHack les listes de monstres
   (avec leurs formes féminines et neutres), d'objets (avec leurs noms sans
-  préfixe et leurs descriptions) et de pièges dans `nhdata.json`. À relancer si les sources
-  changent : `python3 gen_data.py [chemin/vers/NetHack-5.0.0]`.
+  préfixe et leurs descriptions) et de pièges dans `nhdata.json`. À
+  relancer si les sources changent : `python3 gen_data.py [chemin/vers/NetHack-5.0.0]`.
 - `nhdata.json` : les données générées (394 monstres, 422 objets, 24 pièges).
 - `docs/capture.py` : régénère la capture d'écran `docs/capture.svg` en
   pilotant l'éditeur dans un pseudo-terminal :

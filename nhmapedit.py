@@ -12,11 +12,13 @@ import os
 import sys
 import time
 
+import nhconfig
 import nhlevel
 from nhlevel import Level
 from nhme_common import (
-    AUTOSAVE_DELAY, Cancel, DUNGEON_FILES, FLIP_CYCLE, FLIP_NAME, HACKDIRS,
-    HELP, SYM_NAME, TOOL_KEY, TOOL_NAME, TWO_POINT, bresenham, load_data)
+    AUTOSAVE_DELAY, CONFIG_DIR, Cancel, DUNGEON_FILES, FLIP_CYCLE, FLIP_NAME,
+    HACKDIRS, HELP, SYM_NAME, TERRAIN_COLOR, TOOL_KEY, TOOL_NAME, TWO_POINT,
+    bresenham, load_data)
 from nhme_dialogs import DialogsMixin
 from nhme_display import DisplayMixin
 from nhme_entities import EntitiesMixin
@@ -33,15 +35,17 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
     """L'éditeur : état, boucle des touches et souris. Les méthodes sont
     réparties par thème dans les modules nhme_*."""
 
-    def __init__(self, scr, path=None, size=None):
+    def __init__(self, scr, path=None, size=None, config=None):
         self.scr = scr
+        # réglages du fichier de configuration (voir nhconfig)
+        self.config = config or {}
         self.data = load_data()
         # noms et alias (formes féminines, noms sans préfixe…)
         self.mon = {n: m for m in self.data["monsters"]
                     for n in [m["name"]] + m.get("aliases", [])}
         self.obj = {n: o for o in self.data["objects"]
                     for n in [o["name"]] + o.get("aliases", [])}
-        self.lvl = Level(*(size or (75, 19)))
+        self.lvl = Level(*(size or self.config.get("size", (75, 19))))
         self.path = None
         self.modified = False
         self.cx = self.cy = 0
@@ -51,26 +55,31 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.anchor = None
         self.pen_down = False
         self.advance = False
-        self.show_ents = True
-        self.rulers = True          # règles de coordonnées autour de la carte
+        self.show_ents = self.config.get("entities", True)
+        # règles de coordonnées autour de la carte
+        self.rulers = self.config.get("rulers", True)
         self.game = False           # rendu « comme dans le jeu »
         self.flip = 0               # aperçu retourné (bits de FLIP_NAME)
         self.sym = 0                # symétrie de dessin (mêmes bits)
         enc = locale.getpreferredencoding(False).lower().replace("-", "")
-        self.unicode = enc == "utf8"
+        self.unicode = self.config.get("unicode", enc == "utf8")
+        # remplacement de touches : [touches] du fichier de configuration
+        self.keymap = self.config.get("keys", {})
+        TERRAIN_COLOR.update(self.config.get("colors", {}))
         self.clip = None
         self.density = 30           # densité de l'outil Semis, en %
         self.replace = None         # (ancien, nouveau, %) de l'outil Remplacer
         self.template = None        # dernière entité placée
-        self.hackdir = next((d for d in HACKDIRS if self.is_hackdir(d)),
-                            None)
+        self.hackdir = next((d for d in [self.config.get("hackdir", "")]
+                             + HACKDIRS if self.is_hackdir(d)), None)
         self.game_pane = None       # panneau tmux du jeu lancé par « t »
-        self.dungeon_path = next((f for f in DUNGEON_FILES
+        self.dungeon_path = next((f for f in [self.config.get("dungeon")]
+                                  + DUNGEON_FILES
                                   if f and os.path.isfile(f)), "")
         self.game_where = ""
         self.launch = None          # réponse à « lancer le jeu ? »
         self.lua_refused = False    # compilation de Lua refusée
-        self.autosave_delay = AUTOSAVE_DELAY
+        self.autosave_delay = self.config.get("autosave", AUTOSAVE_DELAY)
         self.autosave_time = time.time()
         self.undo_stack, self.redo_stack = [], []
         # trait en cours (crayon baissé ou glisser à la souris) : un seul
@@ -106,6 +115,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                     k = self.scr.get_wch()
                 except curses.error:
                     continue
+                k = self.keymap.get(k, k)
                 try:
                     if self.handle(k) is False:
                         self.drop_autosave()
@@ -327,10 +337,14 @@ def main():
             path = a
     locale.setlocale(locale.LC_ALL, "")
     os.environ.setdefault("ESCDELAY", "25")
+    config, errors = nhconfig.load(nhconfig.default_path(CONFIG_DIR))
 
     def run(scr):
         scr.keypad(True)
-        Editor(scr, path, size).run()
+        ed = Editor(scr, path, size, config)
+        if errors:
+            ed.msg = "Configuration : %s" % "; ".join(errors)
+        ed.run()
 
     curses.wrapper(run)
 

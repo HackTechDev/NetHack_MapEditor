@@ -325,6 +325,11 @@ Sauvegarde de secours : une carte modifiée est copiée au plus chaque
 minute dans fichier.lua.nhme-autosave, proposé à la réouverture après un
 arrêt brutal, supprimé à l'enregistrement.
 
+Configuration : ~/.config/nhmapedit/config (ou $NHMAPEDIT_CONFIG), au
+format INI : répertoire du jeu, taille par défaut, couleurs des terrains,
+remplacement de touches, délai de la sauvegarde de secours, langue.
+Exemple commenté : docs/config.exemple.
+
 Pour un fichier existant, seuls la première carte des.map et les éléments
 à position fixe qui la suivent (avec leur inventaire ou contenu, s'il ne
 contient que des des.object simples) sont édités ; le reste du script Lua

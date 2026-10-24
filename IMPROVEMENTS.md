@@ -142,7 +142,7 @@ reste invisible dans l'éditeur.
 
 ## 8. Configuration et confort
 
-- **Fichier de configuration** **[facile]** : `~/.config/nhmapedit/config`
+- ✅ **Fait** — **Fichier de configuration** **[facile]** : `~/.config/nhmapedit/config`
   pour le répertoire du jeu (aujourd'hui, la variable
   `NHMAPEDIT_HACKDIR`), les couleurs, la taille par défaut et les
   raccourcis clavier.
