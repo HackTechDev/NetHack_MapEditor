@@ -5,6 +5,8 @@ créer et modifier les cartes des niveaux spéciaux de NetHack 5.0 / 3.7.
 Ces niveaux sont des scripts Lua (`dat/*.lua`) qui utilisent `des.map()`,
 `des.monster()`, `des.stair()`…
 
+![nhmapedit : le niveau de Médusa, avec une salle en cours de tracé](docs/capture.svg)
+
 ## Lancement
 
 ```sh
