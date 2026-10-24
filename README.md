@@ -178,8 +178,13 @@ elle vaut `(?)` quand la carte est placée au hasard.
   directement. Le PNG est converti avec `rsvg-convert` ou ImageMagick
   (`magick`/`convert`), s'ils sont installés.
 - **Modèles** : `b` ouvre la bibliothèque de modèles. Ce sont des morceaux
-  de carte prêts à coller : temple, boutique, fontaine décorée, salle du
-  trône, coffre-fort, île entourée de douves, escaliers. Le modèle choisi
+  de carte prêts à coller. Vingt sont livrés :
+
+  | Salles | Décors et terrain | Pièges et secrets |
+  |---|---|---|
+  | temple, boutique, salle du trône, bibliothèque (rouleaux et livres), armurerie (porte verrouillée), cuisine (évier, provisions), tour ronde, prison (cellules à barreaux), escaliers | fontaine décorée, bosquet, pont sur la rivière, île entourée de douves, îlot dans la lave (avec coffre), antre du dragon | coffre-fort, cachette secrète (coffre garni), crypte (sarcophage et morts-vivants), couloir piégé, petit labyrinthe |
+
+  Le modèle choisi
   va dans le presse-papiers, entités comprises, et l'outil Coller est
   activé ; `X`, `Y` et `O` le retournent ou le font pivoter. La dernière
   ligne de la liste enregistre le presse-papiers comme nouveau modèle.

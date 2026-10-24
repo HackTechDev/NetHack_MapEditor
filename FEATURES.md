@@ -117,9 +117,12 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 - Import d'une carte en texte brut (`o` sur un `.txt`).
 - Export de la carte seule en texte (`.txt`) ou en image (`.svg`, `.png`
   via `rsvg-convert` ou ImageMagick), telle qu'elle est affichée.
-- Bibliothèque de modèles (`b`) : temple, boutique, fontaine décorée,
-  salle du trône, coffre-fort, île entourée de douves, escaliers ;
-  enregistrement du presse-papiers comme nouveau modèle.
+- Bibliothèque de modèles (`b`), vingt livrés avec leurs entités :
+  temple, boutique, salle du trône, bibliothèque, armurerie, cuisine,
+  tour ronde, prison, escaliers, fontaine décorée, bosquet, pont sur la
+  rivière, île entourée de douves, îlot dans la lave, antre du dragon,
+  coffre-fort, cachette secrète, crypte, couloir piégé, petit
+  labyrinthe ; enregistrement du presse-papiers comme nouveau modèle.
 - Sauvegarde de secours régulière (`.nhme-autosave`), proposée à la
   réouverture après un arrêt brutal.
 - Salles à thème : ouverture de `themerms.lua`, édition des salles
