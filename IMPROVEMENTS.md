@@ -68,7 +68,7 @@ reste invisible dans l'éditeur.
 - **Mode symétrie** **[moyen]** : chaque coup de pinceau est reproduit en
   miroir (axe vertical, horizontal ou les deux). Très pratique pour les
   niveaux symétriques comme le château ou les grandes salles.
-- **Formes supplémentaires** **[facile]** : cercle et ellipse (pleins ou
+- ✅ **Fait** — **Formes supplémentaires** **[facile]** : cercle et ellipse (pleins ou
   non), et remplissage aléatoire d'une zone à un pourcentage donné (pour
   des arbres, des rochers ou de l'eau éparse).
 - **Rechercher et remplacer du terrain** **[facile]** : dans une zone ou

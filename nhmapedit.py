@@ -11,6 +11,7 @@ import glob
 import json
 import locale
 import os
+import random
 import re
 import sys
 
@@ -38,12 +39,17 @@ TOOLS = [
     ("fill", "Remplissage", "Remplir", "6"),
     ("copy", "Copier zone", "Copier", "7"),
     ("paste", "Coller", "Coller", "8"),
+    ("ellipse", "Ellipse", "Ellipse", "9"),
+    ("fillellipse", "Ellipse pleine", "Ell. pleine", "0"),
     ("cut", "Couper (déplacer) zone", "Couper", "D"),
+    ("scatter", "Semis aléatoire", "Semis", "G"),
 ]
 TOOL_NAME = {t: name for t, name, _, _ in TOOLS}
 TOOL_KEY = {key: t for t, _, _, key in TOOLS}
-TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut"}
-SELECT = {"copy", "cut"}        # outils qui sélectionnent sans dessiner
+TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut", "ellipse",
+             "fillellipse", "scatter"}
+# outils dont l'aperçu montre la zone sans y dessiner le pinceau
+SELECT = {"copy", "cut", "scatter"}
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
 FLIP_NAME = {0: "aucun", 1: "vertical", 2: "horizontal",
@@ -205,6 +211,9 @@ OUTILS (Espace ou Entrée pour appliquer)
   6 Remplissage   7 Copier une zone   8 Coller
   D Couper une zone (pour la déplacer : la zone est vidée, entités comprises,
     puis l'outil Coller la repose où l'on veut)
+  9 Ellipse   0 Ellipse pleine (un cercle est une ellipse dans un carré)
+  G Semis aléatoire : peint au hasard une partie des cases d'une zone,
+    selon une densité en % demandée au choix de l'outil
   Presse-papiers : X miroir gauche/droite   Y miroir haut/bas
                    O rotation d'un quart de tour (sens horaire)
   Les outils à deux points : 1er appui = ancre, 2e appui = tracé. Échap annule.
@@ -270,6 +279,22 @@ def bresenham(x0, y0, x1, y1):
             y0 += sy
 
 
+def ellipse_cells(lx, ly, hx, hy, filled):
+    """Cases de l'ellipse inscrite dans le rectangle (lx, ly)-(hx, hy).
+
+    Le contour garde toute case qui touche l'extérieur, diagonales
+    comprises : il n'a pas de trou en diagonale par où se faufiler."""
+    cx, cy = (lx + hx) / 2, (ly + hy) / 2
+    rx, ry = (hx - lx) / 2 + 0.5, (hy - ly) / 2 + 0.5
+    inside = {(x, y) for y in range(ly, hy + 1) for x in range(lx, hx + 1)
+              if ((x - cx) / rx) ** 2 + ((y - cy) / ry) ** 2 <= 1}
+    if filled:
+        return inside
+    return {(x, y) for x, y in inside
+            if any((x + dx, y + dy) not in inside
+                   for dx in (-1, 0, 1) for dy in (-1, 0, 1))}
+
+
 class Cancel(Exception):
     pass
 
@@ -297,6 +322,7 @@ class Editor:
         enc = locale.getpreferredencoding(False).lower().replace("-", "")
         self.unicode = enc == "utf8"
         self.clip = None
+        self.density = 30           # densité de l'outil Semis, en %
         self.template = None        # dernière entité placée
         self.hackdir = next((d for d in HACKDIRS if self.is_hackdir(d)),
                             None)
@@ -448,6 +474,13 @@ class Editor:
             for y in range(ly, hy + 1):
                 cells[(lx, y)] = cells[(hx, y)] = br
         elif t == "fillrect":
+            for y in range(ly, hy + 1):
+                for x in range(lx, hx + 1):
+                    cells[(x, y)] = br
+        elif t in ("ellipse", "fillellipse"):
+            for p in ellipse_cells(lx, ly, hx, hy, t == "fillellipse"):
+                cells[p] = br
+        elif t == "scatter":
             for y in range(ly, hy + 1):
                 for x in range(lx, hx + 1):
                     cells[(x, y)] = br
@@ -874,7 +907,14 @@ class Editor:
         else:
             a, b = self.anchor, (self.cx, self.cy)
             self.anchor = None
-            if t in SELECT:
+            if t == "scatter":
+                cells = self.shape_cells(a, b)
+                pick = {p: c for p, c in cells.items()
+                        if random.random() * 100 < self.density}
+                self.paint(pick)
+                self.msg = "Semis : %d cases sur %d (%d %%)." % (
+                    len(pick), len(cells), self.density)
+            elif t in SELECT:
                 self.copy(a, b, cut=t == "cut")
             else:
                 self.paint(self.shape_cells(a, b))
@@ -1578,6 +1618,14 @@ class Editor:
                 self.tool = "pen"
                 self.msg = "Outil Pinceau."
         elif k in TOOL_KEY:
+            if TOOL_KEY[k] == "scatter":
+                s = self.prompt("Densité du semis en %% (1-100) : ",
+                                str(self.density))
+                try:
+                    self.density = max(1, min(100, int(s)))
+                except ValueError:
+                    self.msg = "Densité invalide."
+                    return True
             self.tool = TOOL_KEY[k]
             self.anchor = None
             self.msg = "Outil : %s." % TOOL_NAME[self.tool]
