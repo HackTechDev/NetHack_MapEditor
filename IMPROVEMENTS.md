@@ -58,7 +58,7 @@ reste invisible dans l'éditeur.
 
 ## 3. Outils d'édition
 
-- **Pipette** **[facile]** : une touche (ou le clic droit) pour prendre
+- ✅ **Fait** — **Pipette** **[facile]** : une touche (ou le clic droit) pour prendre
   comme pinceau le terrain sous le curseur.
 - **Déplacer une zone** **[facile]** : couper, puis coller, en
   déplaçant aussi les entités. Aujourd'hui, il faut copier, coller, puis

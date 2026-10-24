@@ -185,7 +185,8 @@ DÉPLACEMENT
   c                      afficher / masquer les règles de coordonnées
   f                      aperçu du retournement aléatoire de NetHack :
                          aucun, horizontal, vertical, les deux
-  Souris                 clic = déplacer + appliquer l'outil, glisser = peindre
+  Souris                 clic = déplacer + appliquer l'outil, glisser = peindre,
+                         clic droit = pipette
 
 TERRAIN (le caractère tapé devient le pinceau, et peint en mode Pinceau)
   .  sol        #  couloir      -  mur horiz.   |  mur vert.   +  porte
@@ -193,6 +194,7 @@ TERRAIN (le caractère tapé devient le pinceau, et peint en mode Pinceau)
   }  douves     P  bassin       W  eau          L  lave        Z  mur de lave
   I  glace      T  arbre        F  barreaux     A  air         C  nuage
   B  limite     x  transparent  e  roche (espace)
+  y  pipette : prend comme pinceau le terrain sous le curseur
 
 OUTILS (Espace ou Entrée pour appliquer)
   1 Pinceau   2 Ligne   3 Rectangle   4 Rectangle plein   5 Salle (murs+sol)
@@ -897,6 +899,12 @@ class Editor:
                 self.lvl.entities.append(c)
         self.msg = "Collé."
 
+    def eyedropper(self):
+        """Pipette : le terrain sous le curseur devient le pinceau."""
+        self.brush = self.lvl.grid[self.cy][self.cx]
+        self.msg = "Pipette : pinceau %s." % nhlevel.TERRAIN_DESC.get(
+            self.brush, repr(self.brush))
+
     def move(self, dx, dy):
         """Déplace le curseur de (dx, dy) cases à l'écran."""
         if self.flip & 2:
@@ -1501,6 +1509,8 @@ class Editor:
             if self.pen_down and self.tool == "pen":
                 self.paint({(self.cx, self.cy): self.brush})
             self.msg = "Crayon %s." % ("baissé" if self.pen_down else "levé")
+        elif k == "y":
+            self.eyedropper()
         elif k == "a":
             self.advance = not self.advance
             self.msg = "Avance automatique %s." % (
@@ -1584,7 +1594,11 @@ class Editor:
         sx, sy = mx - left - 1, my - top - 1
         x, y = self.fl(sx + self.ox, sy + self.oy)
         inside = 0 <= sx < vw and 0 <= sy < vh
-        if bstate & curses.BUTTON1_PRESSED and inside:
+        if bstate & (curses.BUTTON3_PRESSED | curses.BUTTON3_CLICKED):
+            if inside:
+                self.cx, self.cy = x, y
+                self.eyedropper()
+        elif bstate & curses.BUTTON1_PRESSED and inside:
             self.mouse_down = True
             self.cx, self.cy = x, y
             self.apply()

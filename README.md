@@ -28,6 +28,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | Flèches, `h j k l` | déplacer le curseur (Maj+flèches, PgPréc/PgSuiv, Début/Fin : rapide) |
 | `. # - \| + S H { \ K } P W L Z I T F A C B x` | choisir ce terrain comme pinceau (et peindre si l'outil est le Pinceau) |
 | `e` | pinceau « roche » (espace) |
+| `y` | pipette : prend comme pinceau le terrain sous le curseur (aussi au clic droit) |
 | `1`…`8` | outil : Pinceau, Ligne, Rectangle, Rectangle plein, Salle, Remplissage, Copier, Coller |
 | Espace / Entrée | appliquer l'outil (outils à deux points : ancre puis tracé ; Échap annule) |
 | `d` | crayon baissé : peint en se déplaçant |
@@ -48,7 +49,8 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | `q` | quitter |
 
 La souris est gérée : clic = déplacer le curseur et appliquer l'outil,
-glisser = peindre (Pinceau) ou tracer (Rectangle, Ligne, Salle…).
+glisser = peindre (Pinceau) ou tracer (Rectangle, Ligne, Salle…),
+clic droit = pipette.
 
 Les listes de monstres et d'objets se filtrent en tapant une partie du nom.
 Une lettre seule (`d`, `D`…) donne un monstre aléatoire de cette classe, un
