@@ -16,7 +16,17 @@ file (see « Configuration »).*
 de A à Z (salles, couloir, portes, entités, vérification, essai dans le
 jeu).
 
+## Environnement de test
+
+L'éditeur a été développé sous **Lubuntu 26.04**, et testé avec
+**NetHack 5.0.0**, branche
+[`cybernethack`](https://github.com/HackTechDev/Nethack500_Lubuntu2604/tree/cybernethack)
+du dépôt
+[HackTechDev/Nethack500_Lubuntu2604](https://github.com/HackTechDev/Nethack500_Lubuntu2604).
+
 ## Fonctionnalités
+
+Résumé ci-dessous ; la liste complète est dans [FEATURES.md](FEATURES.md).
 
 - dessin au clavier ou à la souris : pinceau, ligne, rectangle, salle,
   ellipse, remplissage, semis aléatoire, remplacement, symétrie,
@@ -396,8 +406,9 @@ au démarrage, sans empêcher l'éditeur de s'ouvrir.
   préfixe et leurs descriptions) et de pièges dans `nhdata.json`. À
   relancer si les sources changent : `python3 gen_data.py [chemin/vers/NetHack-5.0.0]`.
 - `nhdata.json` : les données générées (394 monstres, 422 objets, 24 pièges).
-- `TUTORIAL.md` : le tutoriel ; `IMPROVEMENTS.md` : les améliorations
-  faites et possibles.
+- `TUTORIAL.md` : le tutoriel ; `FEATURES.md` : la liste des
+  fonctionnalités ; `IMPROVEMENTS.md` : les améliorations faites et
+  possibles.
 - `docs/capture.py` : régénère la capture d'écran `docs/capture.svg` en
   pilotant l'éditeur dans un pseudo-terminal :
   `python3 docs/capture.py [--level niveau.lua] [--size 108x30]`.

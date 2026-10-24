@@ -6,6 +6,28 @@ l'effort qu'elle demande :
 **[facile]** quelques heures, **[moyen]** une journée environ,
 **[gros]** plusieurs jours.
 
+Les idées réalisées sont marquées « ✅ **Fait** » ; la liste complète de
+ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
+
+## État d'avancement (2026-10-25)
+
+| Thème | Fait | Reste |
+|---|---|---|
+| 1. Couverture du format Lua | 0 / 5 | régions, entités manquantes, plusieurs cartes, `contents`, éléments aléatoires |
+| 2. Affichage | 5 / 5 | — |
+| 3. Outils d'édition | 8 / 9 | générateurs |
+| 4. Entités | 4 / 4 | — |
+| 5. Vérification | 3 / 3 | — |
+| 6. Intégration avec le jeu | 3 / 3 | — |
+| 7. Fichiers et formats | 4 / 4 | — |
+| 8. Configuration et confort | 3 / 3 | — |
+| 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
+| 10. Nouvelles idées | 0 / 6 | toutes |
+
+Prochaines étapes conseillées : les **régions** (thème 1), présentes dans
+presque tous les niveaux de `dat/`, puis l'**intégration continue**, peu
+coûteuse maintenant que les tests existent.
+
 ## 1. Couverture du format Lua des niveaux
 
 Aujourd'hui, l'éditeur ne gère que la première `des.map()` et les entités à
@@ -162,6 +184,28 @@ reste invisible dans l'éditeur.
   depuis le dépôt officiel de NetHack, ou à embarquer comme échantillons.
 - **Paquet installable** **[facile]** : un `pyproject.toml` avec une
   commande `nhmapedit`, pour l'installer avec `pipx install`.
-- ✅ **Fait** — **Découpage de `nhmapedit.py`** **[moyen]** : le fichier dépasse
-  1 400 lignes. On pourrait le séparer en plusieurs fichiers : affichage,
-  fenêtres de saisie, outils et entités.
+- ✅ **Fait** — **Découpage de `nhmapedit.py`** **[moyen]** : le fichier dépassait
+  1 400 lignes. Il est séparé en plusieurs fichiers : affichage,
+  fenêtres de saisie, outils et entités (`nhme_*.py`) ; `nhmapedit.py`
+  ne garde que la boucle des touches et la souris (environ 360 lignes).
+
+## 10. Nouvelles idées
+
+Idées apparues pendant le développement des thèmes précédents.
+
+- **Calques d'affichage** **[moyen]** : une touche pour n'afficher que le
+  terrain, que les entités ou que les régions (quand elles seront
+  gérées), utile sur les niveaux très chargés.
+- **Autres langues** **[facile]** : le mécanisme de traduction
+  (`nhi18n.py`) accepte d'autres catalogues que l'anglais ; il suffirait
+  d'un fichier `nhi18n_xx.py` et de l'ajouter au choix de la langue.
+- **Souris dans les fenêtres** **[facile]** : choisir dans les listes et
+  les formulaires d'un clic, faire défiler à la molette.
+- **Raccourcis vers les modèles** **[facile]** : associer un modèle
+  favori à une touche dans le fichier de configuration.
+- **Couverture des tests** **[facile]** : mesurer la part du code
+  exercée par les tests (module `trace` de la bibliothèque standard) et
+  ajouter des tests pour les fenêtres de saisie.
+- **Comparaison de versions** **[moyen]** : afficher les cases qui
+  diffèrent entre la carte en cours et le fichier enregistré (ou la
+  version d'origine `fichier.lua~`).
