@@ -686,7 +686,7 @@ class Editor:
             st += "   [symétrie : %s]" % SYM_NAME[self.sym]
         self.put(maxy - 3, 0, st[:maxx - 1], curses.A_BOLD)
         self.put(maxy - 2, 0, self.msg[:maxx - 1], self.attr("CLR_YELLOW"))
-        hint = (" ?:aide  1-8:outils  m:entité  i:liste  p:propriétés  "
+        hint = (" ?:aide  1-0 D G R:outils  m:entité  i:liste  p:propriétés  "
                 "t:tester  s:enregistrer  q:quitter")
         self.put(maxy - 1, 0, hint[:maxx - 1].ljust(maxx - 1),
                  curses.A_REVERSE)
