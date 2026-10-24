@@ -98,6 +98,75 @@ SHORT = {
     "x": "transp.",
 }
 
+# Rendu « comme dans le jeu » : symbole et couleur de chaque terrain
+# (include/defsym.h) ; les murs sont calculés à part
+GAME_GLYPH = {
+    " ": (" ", "CLR_GRAY"), ".": ("·", "CLR_GRAY"),
+    "#": ("#", "CLR_GRAY"), "+": ("+", "CLR_BROWN"),
+    "H": (" ", "CLR_GRAY"),             # couloir secret : roche
+    "B": ("·", "CLR_GRAY"),             # limite : devient du sol
+    "{": ("{", "CLR_BRIGHT_BLUE"), "\\": ("\\", "CLR_YELLOW"),
+    "K": ("{", "CLR_WHITE"), "}": ("}", "CLR_BLUE"), "P": ("}", "CLR_BLUE"),
+    "W": ("}", "CLR_BRIGHT_BLUE"), "L": ("}", "CLR_RED"),
+    "Z": ("}", "CLR_ORANGE"), "I": ("·", "CLR_CYAN"),
+    "T": ("#", "CLR_GREEN"), "F": ("#", "CLR_CYAN"),
+    "A": (" ", "CLR_CYAN"), "C": ("#", "CLR_GRAY"),
+}
+# Murs selon les murs voisins (haut, bas, gauche, droite)
+WALL_GLYPH = {
+    (0, 0, 0, 0): None, (1, 0, 0, 0): "│", (0, 1, 0, 0): "│",
+    (1, 1, 0, 0): "│", (0, 0, 1, 0): "─", (0, 0, 0, 1): "─",
+    (0, 0, 1, 1): "─", (0, 1, 0, 1): "┌", (0, 1, 1, 0): "┐",
+    (1, 0, 0, 1): "└", (1, 0, 1, 0): "┘", (1, 1, 0, 1): "├",
+    (1, 1, 1, 0): "┤", (0, 1, 1, 1): "┬", (1, 0, 1, 1): "┴",
+    (1, 1, 1, 1): "┼",
+}
+# Repli quand le terminal n'est pas en UTF-8
+ASCII_GLYPH = {"·": ".", "│": "|", "─": "-"}
+ASCII_GLYPH.update({c: "-" for c in "┌┐└┘├┤┬┴┼"})
+
+
+def game_view(grid, fill=" "):
+    """Grille de (caractère, couleur) proche de l'affichage du jeu.
+
+    Les portes secrètes sont dessinées comme le mur qui les entoure, les
+    couloirs secrets comme de la roche ; « x » montre le terrain de
+    remplissage de level_init."""
+    h, w = len(grid), len(grid[0])
+
+    def at(x, y):
+        if 0 <= x < w and 0 <= y < h:
+            c = grid[y][x]
+            return fill if c == "x" else c
+        return " "
+
+    def orient(x, y):
+        """'-' ou '|' : orientation d'un mur (une porte secrète prend
+        celle des murs qui l'encadrent)."""
+        c = at(x, y)
+        if c != "S":
+            return c
+        return "-" if at(x - 1, y) == "-" or at(x + 1, y) == "-" else "|"
+
+    out = []
+    for y in range(h):
+        row = []
+        for x in range(w):
+            c = at(x, y)
+            if c not in "-|S":
+                row.append(GAME_GLYPH.get(c, (c, "CLR_GRAY")))
+                continue
+            o = orient(x, y)
+            vert = set("|+S") | ({"-"} if o == "|" else set())
+            horiz = set("-+S") | ({"|"} if o == "-" else set())
+            key = (int(at(x, y - 1) in vert), int(at(x, y + 1) in vert),
+                   int(at(x - 1, y) in horiz), int(at(x + 1, y) in horiz))
+            row.append((WALL_GLYPH[key] or ("─" if o == "-" else "│"),
+                        "CLR_GRAY"))
+        out.append(row)
+    return out
+
+
 # Terrain sur lequel une entité (autre qu'une porte) n'a pas sa place
 SOLID = set(" -|STZFB")
 
@@ -130,6 +199,8 @@ ENTITÉS (coordonnées relatives à la carte)
   Suppr / Retour arrière / z   supprimer les entités sous le curseur
   i  liste des entités (Entrée: aller, e: modifier, d: supprimer)
   Tab  afficher / masquer les entités
+  J  rendu « comme dans le jeu » (murs en traits, sol en points, portes
+     et couloirs secrets cachés) ; l'édition reste possible
 
 NIVEAU ET FICHIERS
   p  propriétés (taille, drapeaux, level_init, alignement, éclairage)
@@ -203,6 +274,9 @@ class Editor:
         self.advance = False
         self.show_ents = True
         self.rulers = True          # règles de coordonnées autour de la carte
+        self.game = False           # rendu « comme dans le jeu »
+        enc = locale.getpreferredencoding(False).lower().replace("-", "")
+        self.unicode = enc == "utf8"
         self.clip = None
         self.template = None        # dernière entité placée
         self.hackdir = next((d for d in HACKDIRS if self.is_hackdir(d)),
@@ -385,14 +459,27 @@ class Editor:
             self.put(top + 1 + y, left + vw + 1, "|", frame)
         # carte
         prev = self.preview_cells()
+        if self.game:
+            grid = [row[:] for row in lvl.grid]
+            if self.tool != "copy":
+                for (x, y), c in prev.items():
+                    if 0 <= x < lvl.w and 0 <= y < lvl.h:
+                        grid[y][x] = c
+            view = game_view(grid, lvl.init.get("fg", " "))
         for sy in range(vh):
             y = self.oy + sy
             for sx in range(vw):
                 x = self.ox + sx
-                ch = lvl.grid[y][x]
-                a = self.attr(TERRAIN_COLOR.get(ch, "CLR_GRAY"))
+                if self.game:
+                    ch, clr = view[y][x]
+                    if not self.unicode:
+                        ch = ASCII_GLYPH.get(ch, ch)
+                    a = self.attr(clr)
+                else:
+                    ch = lvl.grid[y][x]
+                    a = self.attr(TERRAIN_COLOR.get(ch, "CLR_GRAY"))
                 if (x, y) in prev:
-                    if self.tool != "copy":
+                    if self.tool != "copy" and not self.game:
                         ch = prev[(x, y)]
                         a = self.attr(TERRAIN_COLOR.get(ch, "CLR_GRAY"))
                     a |= curses.A_REVERSE
@@ -476,6 +563,8 @@ class Editor:
                                abs(self.cy - self.anchor[1]) + 1))
         if not self.show_ents:
             st += "   [entités masquées]"
+        if self.game:
+            st += "   [rendu jeu]"
         self.put(maxy - 3, 0, st[:maxx - 1], curses.A_BOLD)
         self.put(maxy - 2, 0, self.msg[:maxx - 1], self.attr("CLR_YELLOW"))
         hint = (" ?:aide  1-8:outils  m:entité  i:liste  p:propriétés  "
@@ -1386,6 +1475,10 @@ class Editor:
             self.entity_list()
         elif k == "\t":
             self.show_ents = not self.show_ents
+        elif k == "J":
+            self.game = not self.game
+            self.msg = ("Rendu « comme dans le jeu »." if self.game
+                        else "Rendu des caractères de carte (des.map).")
         elif k == "c":
             self.rulers = not self.rulers
             self.msg = "Règles de coordonnées %s." % (

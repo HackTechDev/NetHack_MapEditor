@@ -42,7 +42,7 @@ reste invisible dans l'éditeur.
 - ✅ **Fait** — **Coordonnées absolues** **[facile]** : quand la carte est centrée
   (`halign`/`valign`), afficher dans la barre d'état la position réelle
   dans le niveau de 80x21, en plus de la position relative à la carte.
-- **Rendu « comme dans le jeu »** **[moyen]** : une touche pour basculer
+- ✅ **Fait** — **Rendu « comme dans le jeu »** **[moyen]** : une touche pour basculer
   vers un affichage proche du jeu. Les murs seraient dessinés en traits
   Unicode et les coins calculés comme le fait `wallification()`. Les
   portes secrètes et les couloirs secrets apparaîtraient comme des murs
