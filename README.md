@@ -12,6 +12,28 @@ locale (`LANG`): French when it starts with `fr`, English otherwise.
 Force it with `NHMAPEDIT_LANG=en` or `langue = en` in the configuration
 file (see « Configuration »).*
 
+**Premiers pas :** le [tutoriel](TUTORIAL.md) construit un petit niveau
+de A à Z (salles, couloir, portes, entités, vérification, essai dans le
+jeu).
+
+## Fonctionnalités
+
+- dessin au clavier ou à la souris : pinceau, ligne, rectangle, salle,
+  ellipse, remplissage, semis aléatoire, remplacement, symétrie,
+  copier/couper/coller avec miroirs et rotation, annulation illimitée ;
+- entités : escaliers, échelles, autels, monstres et objets (avec leurs
+  options, inventaires et contenus), pièges, portes, gravures ;
+- ouverture des niveaux de `dat/` sans rien perdre du script Lua, et des
+  salles à thème de `themerms.lua` ;
+- rendu « comme dans le jeu », aperçu des retournements aléatoires ;
+- vérification : connexité, règles de NetHack, exécution du script avec
+  le vrai Lua ;
+- essai immédiat dans NetHack (avec tmux, le jeu est lancé et la carte
+  chargée automatiquement), ajout du niveau au donjon (`dungeon.lua`) ;
+- import/export en texte brut, export en image SVG ou PNG, bibliothèque
+  de modèles, sauvegarde de secours ;
+- fichier de configuration, interface en français ou en anglais.
+
 ## Lancement
 
 ```sh
@@ -20,9 +42,10 @@ python3 nhmapedit.py mon_niveau.lua     # ouvre (ou crée) un fichier
 python3 nhmapedit.py --new 40x12 petit.lua
 ```
 
-Il faut un terminal d'au moins 80x24 ; à partir d'environ 105 colonnes, une
-palette (outils et terrains) s'affiche à droite de la carte. Les cartes plus
-grandes que l'écran défilent.
+Seul Python 3 (avec son module `curses`, présent sous Linux et macOS)
+est nécessaire. Il faut un terminal d'au moins 80x24 ; à partir
+d'environ 105 colonnes, une palette (outils et terrains) s'affiche à
+droite de la carte. Les cartes plus grandes que l'écran défilent.
 
 ## Utilisation
 
@@ -373,6 +396,8 @@ au démarrage, sans empêcher l'éditeur de s'ouvrir.
   préfixe et leurs descriptions) et de pièges dans `nhdata.json`. À
   relancer si les sources changent : `python3 gen_data.py [chemin/vers/NetHack-5.0.0]`.
 - `nhdata.json` : les données générées (394 monstres, 422 objets, 24 pièges).
+- `TUTORIAL.md` : le tutoriel ; `IMPROVEMENTS.md` : les améliorations
+  faites et possibles.
 - `docs/capture.py` : régénère la capture d'écran `docs/capture.svg` en
   pilotant l'éditeur dans un pseudo-terminal :
   `python3 docs/capture.py [--level niveau.lua] [--size 108x30]`.
@@ -391,12 +416,19 @@ Ils vérifient :
 - la lecture et l'écriture des entités, inventaires et contenus ;
 - les outils de dessin, le presse-papiers, la symétrie et l'annulation ;
 - les modifications de `dungeon.lua` et de `themerms.lua` ;
+- la vérification (connexité, règles, Lua), l'import et l'export, les
+  modèles et la sauvegarde de secours ;
+- le fichier de configuration et l'aide contextuelle ;
+- la traduction anglaise : catalogue complet, mêmes `%s` que l'original ;
 - un parcours complet de l'interface dans un pseudo-terminal.
+
+Les messages sont vérifiés en français, quelle que soit la locale.
 
 Les niveaux sont cherchés dans `../NetHack-5.0.0/dat`, ou dans
 `$NHMAPEDIT_DAT`. Les tests qui en ont besoin sont sautés s'ils sont
 absents. Le test de syntaxe utilise `luac` (ou `$NHMAPEDIT_LUAC`) quand il
-est disponible.
+est disponible, la vérification Lua l'interpréteur `$NHMAPEDIT_LUA` ou
+`lua5.4`.
 
 ## Licence
 
