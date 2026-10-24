@@ -63,9 +63,20 @@ Les listes de monstres et d'objets se filtrent en tapant une partie du nom.
 Une lettre seule (`d`, `D`…) donne un monstre aléatoire de cette classe, un
 symbole seul (`!`, `?`…) un objet aléatoire de cette classe. Sur la carte,
 les monstres et objets aléatoires ont un style commun : fond magenta, avec
-le symbole de leur classe, ou `?` quand tout est aléatoire. Les options Lua
-supplémentaires se saisissent sous la forme `peaceful=1, asleep=1` ou
-`buc="cursed", spe=2`.
+le symbole de leur classe, ou `?` quand tout est aléatoire.
+
+Après le choix d'un monstre ou d'un objet, un formulaire présente ses
+options courantes ; Entrée modifie la ligne choisie, Échap termine :
+
+- monstres : `peaceful`, `asleep`, `female`, `invisible`, `cancelled`,
+  `waiting`, `name`, `appear_as`, `m_lev_adj`, `keep_default_invent` ;
+- objets : `buc` (dans une liste), `spe`, `quantity` (un entier ou
+  `random`), `name`, `achievement`, `montype` (dans la liste des monstres),
+  `buried`, `locked`, `trapped`, `eroded`, `greased`, `lit`.
+
+Les cases à cocher passent de « défaut » (option absente) à oui (`1`), non
+(`0`), puis à nouveau défaut. Les autres options se saisissent sur la
+dernière ligne, sous la forme `fleeing=5, stunned=1`.
 
 ## Fichiers existants
 

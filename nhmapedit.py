@@ -184,6 +184,38 @@ def game_view(grid, fill=" "):
     return out
 
 
+# Formulaires d'options des monstres et des objets : (clé Lua, type,
+# libellé). Types : bool (1/0), str, int, intr (entier ou "random"),
+# buc (liste), mon (nom de monstre ou classe).
+MON_FORM = [
+    ("peaceful", "bool", "pacifique"),
+    ("asleep", "bool", "endormi"),
+    ("female", "bool", "femelle"),
+    ("invisible", "bool", "invisible"),
+    ("cancelled", "bool", "annulé"),
+    ("waiting", "bool", "attend le héros"),
+    ("name", "str", "nom"),
+    ("appear_as", "str", "apparence (obj:…, mon:…, ter:…)"),
+    ("m_lev_adj", "int", "ajustement du niveau"),
+    ("keep_default_invent", "bool", "garde l'inventaire par défaut"),
+]
+OBJ_FORM = [
+    ("buc", "buc", "béni / maudit"),
+    ("spe", "intr", "enchantement, charges"),
+    ("quantity", "intr", "quantité"),
+    ("name", "str", "nom"),
+    ("achievement", "bool", "succès (achievement)"),
+    ("montype", "mon", "monstre (statue, cadavre…)"),
+    ("buried", "bool", "enterré"),
+    ("locked", "bool", "verrouillé"),
+    ("trapped", "bool", "piégé"),
+    ("eroded", "int", "érosion"),
+    ("greased", "bool", "graissé"),
+    ("lit", "bool", "allumé"),
+]
+BUC = ["random", "blessed", "uncursed", "cursed", "not-cursed",
+       "not-uncursed", "not-blessed"]
+
 # Pseudo-couleur des monstres et objets aléatoires
 RANDOM = "RANDOM"
 
@@ -235,6 +267,8 @@ OUTILS (Espace ou Entrée pour appliquer)
 ENTITÉS (coordonnées relatives à la carte)
   m  placer une entité (escalier, échelle, autel, monstre, objet, piège,
      porte, gravure)        r  répéter la dernière entité au curseur
+     Monstres et objets : un formulaire présente leurs options courantes
+     (Entrée modifie : défaut -> oui -> non -> défaut ; Échap termine)
   Suppr / Retour arrière / z   supprimer les entités sous le curseur
   i  liste des entités (Entrée: aller, e: modifier, d: supprimer)
   Tab  afficher / masquer les entités
@@ -1222,6 +1256,105 @@ class Editor:
             txt = s
             self.msg = "Syntaxe invalide : clé = valeur, séparées par des virgules."
 
+    def edit_options(self, kind, extra):
+        """Formulaire des options courantes d'un monstre ou d'un objet.
+
+        Entrée modifie la ligne choisie (les booléens passent de « défaut »
+        à oui, non, puis défaut) ; Échap ou « Terminer » valide. Les autres
+        options se saisissent librement sur la dernière ligne."""
+        form = MON_FORM if kind == "monster" else OBJ_FORM
+        keys = [k for k, _, _ in form]
+        extra = dict(extra)
+        sel = "_done"
+        while True:
+            items = [("Terminer", "_done")]
+            for key, typ, label in form:
+                if key not in extra:
+                    shown = "(défaut)"
+                elif typ == "bool":
+                    shown = "oui" if extra[key] else "non"
+                else:
+                    shown = nhlevel.lua_value(extra[key])
+                items.append(("%-34s %s" % ("%s (%s)" % (label, key), shown),
+                              key))
+            rest = {k: v for k, v in extra.items() if k not in keys}
+            items.append(("Autres options : %s" % (", ".join(
+                "%s=%s" % (k, nhlevel.lua_value(v)) for k, v in rest.items())
+                or "(aucune)"), "_other"))
+            try:
+                sel = self.pick("Options %s (Entrée: modifier, Échap: "
+                                "terminer)" % ("du monstre" if kind == "monster"
+                                               else "de l'objet"),
+                                items, sel)
+            except Cancel:
+                return extra
+            if sel == "_done":
+                return extra
+            try:
+                if sel == "_other":
+                    new = self.ask_extra(rest)
+                    extra = {k: v for k, v in extra.items() if k in keys}
+                    extra.update(new)
+                    continue
+                typ = dict((k, t) for k, t, _ in form)[sel]
+                if typ == "bool":
+                    # défaut -> oui -> non -> défaut
+                    if sel not in extra:
+                        extra[sel] = 1
+                    elif extra[sel]:
+                        extra[sel] = 0
+                    else:
+                        del extra[sel]
+                elif typ == "buc":
+                    v = self.pick("Béni / maudit (buc)",
+                                  [("(défaut)", None)] +
+                                  [(b, b) for b in BUC], extra.get(sel))
+                    self.set_option(extra, sel, v)
+                elif typ == "mon":
+                    items = [("(défaut)", None)] + [
+                        ("%s  %s" % (m["sym"], m["name"]), m["name"])
+                        for m in self.data["monsters"]]
+                    v = self.pick("Monstre (tapez pour filtrer ; une lettre "
+                                  "seule = classe)", items, extra.get(sel),
+                                  custom=True)
+                    self.set_option(extra, sel, v)
+                else:
+                    self.ask_option(extra, sel, typ)
+            except Cancel:
+                pass
+
+    @staticmethod
+    def set_option(extra, key, v):
+        if v is None:
+            extra.pop(key, None)
+        else:
+            extra[key] = v
+
+    def ask_option(self, extra, key, typ):
+        """Saisie d'une option texte ou entière ; vide = valeur par défaut."""
+        cur = extra.get(key)
+        txt = "" if cur is None else str(cur)
+        hint = {"str": "texte", "int": "entier",
+                "intr": "entier ou random"}[typ]
+        while True:
+            s = self.prompt("%s (%s, vide = défaut) : " % (key, hint),
+                            txt).strip()
+            if not s:
+                extra.pop(key, None)
+                return
+            if typ == "str":
+                extra[key] = s
+                return
+            if typ == "intr" and s == "random":
+                extra[key] = s
+                return
+            try:
+                extra[key] = int(s)
+                return
+            except ValueError:
+                txt = s
+                self.msg = "Valeur invalide : %s attendu." % hint
+
     def edit_entity_fields(self, kind, value=None, extra=None):
         """Demande les paramètres d'une entité. Renvoie (value, extra)."""
         extra = dict(extra or {})
@@ -1241,14 +1374,14 @@ class Editor:
                 for m in self.data["monsters"]]
             value = self.pick("Monstre (tapez pour filtrer ; une lettre "
                               "seule = classe)", items, value, custom=True)
-            extra = self.ask_extra(extra)
+            extra = self.edit_options(kind, extra)
         elif kind == "object":
             items = [("(aléatoire)", None)] + [
                 ("%s  %s" % (o["sym"], o["name"]), o["name"])
                 for o in self.data["objects"]]
             value = self.pick("Objet (tapez pour filtrer ; un symbole "
                               "seul = classe)", items, value, custom=True)
-            extra = self.ask_extra(extra)
+            extra = self.edit_options(kind, extra)
         elif kind == "trap":
             value = self.pick("Type de piège",
                               [(t, t) for t in self.data["traps"]], value)

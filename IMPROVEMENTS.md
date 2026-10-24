@@ -84,7 +84,7 @@ reste invisible dans l'éditeur.
 
 ## 4. Entités
 
-- **Formulaires d'options** **[moyen]** : remplacer la saisie libre
+- ✅ **Fait** — **Formulaires d'options** **[moyen]** : remplacer la saisie libre
   `peaceful=1, asleep=1` par un formulaire à cases à cocher pour les
   options courantes. Pour les monstres : peaceful, asleep, female,
   invisible, name… Pour les objets : buc, spe, quantity, name,
