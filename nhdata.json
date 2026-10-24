@@ -1,0 +1,3690 @@
+{
+ "monsters": [
+  {
+   "name": "giant ant",
+   "sym": "a",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "killer bee",
+   "sym": "a",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "soldier ant",
+   "sym": "a",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "fire ant",
+   "sym": "a",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "giant beetle",
+   "sym": "a",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "queen bee",
+   "sym": "a",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "acid blob",
+   "sym": "b",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "quivering blob",
+   "sym": "b",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "gelatinous cube",
+   "sym": "b",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "chickatrice",
+   "sym": "c",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "cockatrice",
+   "sym": "c",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "pyrolisk",
+   "sym": "c",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "jackal",
+   "sym": "d",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "fox",
+   "sym": "d",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "coyote",
+   "sym": "d",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "werejackal",
+   "sym": "d",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "little dog",
+   "sym": "d",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "dingo",
+   "sym": "d",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "dog",
+   "sym": "d",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "large dog",
+   "sym": "d",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "wolf",
+   "sym": "d",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "werewolf",
+   "sym": "d",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "winter wolf cub",
+   "sym": "d",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "warg",
+   "sym": "d",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "winter wolf",
+   "sym": "d",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "hell hound pup",
+   "sym": "d",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "hell hound",
+   "sym": "d",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "Cerberus",
+   "sym": "d",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "gas spore",
+   "sym": "e",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "floating eye",
+   "sym": "e",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "freezing sphere",
+   "sym": "e",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "flaming sphere",
+   "sym": "e",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "shocking sphere",
+   "sym": "e",
+   "color": "HI_ZAP"
+  },
+  {
+   "name": "beholder",
+   "sym": "e",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "kitten",
+   "sym": "f",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "housecat",
+   "sym": "f",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "jaguar",
+   "sym": "f",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "lynx",
+   "sym": "f",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "panther",
+   "sym": "f",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "large cat",
+   "sym": "f",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "tiger",
+   "sym": "f",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "displacer beast",
+   "sym": "f",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "gremlin",
+   "sym": "g",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "gargoyle",
+   "sym": "g",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "winged gargoyle",
+   "sym": "g",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "hobbit",
+   "sym": "h",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "dwarf",
+   "sym": "h",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "bugbear",
+   "sym": "h",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "dwarf lord",
+   "sym": "h",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "dwarf king",
+   "sym": "h",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "mind flayer",
+   "sym": "h",
+   "color": "CLR_BRIGHT_MAGENTA"
+  },
+  {
+   "name": "master mind flayer",
+   "sym": "h",
+   "color": "CLR_BRIGHT_MAGENTA"
+  },
+  {
+   "name": "manes",
+   "sym": "i",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "homunculus",
+   "sym": "i",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "imp",
+   "sym": "i",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "lemure",
+   "sym": "i",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "quasit",
+   "sym": "i",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "tengu",
+   "sym": "i",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "blue jelly",
+   "sym": "j",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "spotted jelly",
+   "sym": "j",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "ochre jelly",
+   "sym": "j",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "kobold",
+   "sym": "k",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "large kobold",
+   "sym": "k",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "kobold lord",
+   "sym": "k",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "kobold shaman",
+   "sym": "k",
+   "color": "HI_ZAP"
+  },
+  {
+   "name": "leprechaun",
+   "sym": "l",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "small mimic",
+   "sym": "m",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "large mimic",
+   "sym": "m",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "giant mimic",
+   "sym": "m",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "wood nymph",
+   "sym": "n",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "water nymph",
+   "sym": "n",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "mountain nymph",
+   "sym": "n",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "goblin",
+   "sym": "o",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "hobgoblin",
+   "sym": "o",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "orc",
+   "sym": "o",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "hill orc",
+   "sym": "o",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "Mordor orc",
+   "sym": "o",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "Uruk-hai",
+   "sym": "o",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "orc shaman",
+   "sym": "o",
+   "color": "HI_ZAP"
+  },
+  {
+   "name": "orc-captain",
+   "sym": "o",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "rock piercer",
+   "sym": "p",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "iron piercer",
+   "sym": "p",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "glass piercer",
+   "sym": "p",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "rothe",
+   "sym": "q",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "mumak",
+   "sym": "q",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "leocrotta",
+   "sym": "q",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "wumpus",
+   "sym": "q",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "titanothere",
+   "sym": "q",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "baluchitherium",
+   "sym": "q",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "mastodon",
+   "sym": "q",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "sewer rat",
+   "sym": "r",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "giant rat",
+   "sym": "r",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "rabid rat",
+   "sym": "r",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "wererat",
+   "sym": "r",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "rock mole",
+   "sym": "r",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "woodchuck",
+   "sym": "r",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "cave spider",
+   "sym": "s",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "centipede",
+   "sym": "s",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "giant spider",
+   "sym": "s",
+   "color": "CLR_MAGENTA"
+  },
+  {
+   "name": "scorpion",
+   "sym": "s",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "lurker above",
+   "sym": "t",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "trapper",
+   "sym": "t",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "pony",
+   "sym": "u",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "white unicorn",
+   "sym": "u",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "gray unicorn",
+   "sym": "u",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "black unicorn",
+   "sym": "u",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "horse",
+   "sym": "u",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "warhorse",
+   "sym": "u",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "fog cloud",
+   "sym": "v",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "dust vortex",
+   "sym": "v",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "ice vortex",
+   "sym": "v",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "energy vortex",
+   "sym": "v",
+   "color": "HI_ZAP"
+  },
+  {
+   "name": "steam vortex",
+   "sym": "v",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "fire vortex",
+   "sym": "v",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "baby long worm",
+   "sym": "w",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "baby purple worm",
+   "sym": "w",
+   "color": "CLR_MAGENTA"
+  },
+  {
+   "name": "long worm",
+   "sym": "w",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "purple worm",
+   "sym": "w",
+   "color": "CLR_MAGENTA"
+  },
+  {
+   "name": "grid bug",
+   "sym": "x",
+   "color": "CLR_MAGENTA"
+  },
+  {
+   "name": "xan",
+   "sym": "x",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "yellow light",
+   "sym": "y",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "black light",
+   "sym": "y",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "zruty",
+   "sym": "z",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "couatl",
+   "sym": "A",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "Aleax",
+   "sym": "A",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "Angel",
+   "sym": "A",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "ki-rin",
+   "sym": "A",
+   "color": "HI_GOLD"
+  },
+  {
+   "name": "Archon",
+   "sym": "A",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "bat",
+   "sym": "B",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "giant bat",
+   "sym": "B",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "raven",
+   "sym": "B",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "vampire bat",
+   "sym": "B",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "plains centaur",
+   "sym": "C",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "forest centaur",
+   "sym": "C",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "mountain centaur",
+   "sym": "C",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "baby gray dragon",
+   "sym": "D",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "baby gold dragon",
+   "sym": "D",
+   "color": "HI_GOLD"
+  },
+  {
+   "name": "baby silver dragon",
+   "sym": "D",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "baby shimmering dragon",
+   "sym": "D",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "baby red dragon",
+   "sym": "D",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "baby white dragon",
+   "sym": "D",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "baby orange dragon",
+   "sym": "D",
+   "color": "CLR_ORANGE"
+  },
+  {
+   "name": "baby black dragon",
+   "sym": "D",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "baby blue dragon",
+   "sym": "D",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "baby green dragon",
+   "sym": "D",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "baby yellow dragon",
+   "sym": "D",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "gray dragon",
+   "sym": "D",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "gold dragon",
+   "sym": "D",
+   "color": "HI_GOLD"
+  },
+  {
+   "name": "silver dragon",
+   "sym": "D",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "shimmering dragon",
+   "sym": "D",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "red dragon",
+   "sym": "D",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "white dragon",
+   "sym": "D",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "orange dragon",
+   "sym": "D",
+   "color": "CLR_ORANGE"
+  },
+  {
+   "name": "black dragon",
+   "sym": "D",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "blue dragon",
+   "sym": "D",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "green dragon",
+   "sym": "D",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "yellow dragon",
+   "sym": "D",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "stalker",
+   "sym": "E",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "air elemental",
+   "sym": "E",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "fire elemental",
+   "sym": "E",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "earth elemental",
+   "sym": "E",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "water elemental",
+   "sym": "E",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "lichen",
+   "sym": "F",
+   "color": "CLR_BRIGHT_GREEN"
+  },
+  {
+   "name": "brown mold",
+   "sym": "F",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "yellow mold",
+   "sym": "F",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "green mold",
+   "sym": "F",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "red mold",
+   "sym": "F",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "shrieker",
+   "sym": "F",
+   "color": "CLR_MAGENTA"
+  },
+  {
+   "name": "violet fungus",
+   "sym": "F",
+   "color": "CLR_MAGENTA"
+  },
+  {
+   "name": "gnome",
+   "sym": "G",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "gnome lord",
+   "sym": "G",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "gnomish wizard",
+   "sym": "G",
+   "color": "HI_ZAP"
+  },
+  {
+   "name": "gnome king",
+   "sym": "G",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "giant",
+   "sym": "H",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "stone giant",
+   "sym": "H",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "hill giant",
+   "sym": "H",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "fire giant",
+   "sym": "H",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "frost giant",
+   "sym": "H",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "ettin",
+   "sym": "H",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "storm giant",
+   "sym": "H",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "titan",
+   "sym": "H",
+   "color": "CLR_MAGENTA"
+  },
+  {
+   "name": "minotaur",
+   "sym": "H",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "jabberwock",
+   "sym": "J",
+   "color": "CLR_ORANGE"
+  },
+  {
+   "name": "vorpal jabberwock",
+   "sym": "J",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Keystone Kop",
+   "sym": "K",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "Kop Sergeant",
+   "sym": "K",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "Kop Lieutenant",
+   "sym": "K",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "Kop Kaptain",
+   "sym": "K",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "lich",
+   "sym": "L",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "demilich",
+   "sym": "L",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "master lich",
+   "sym": "L",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "arch-lich",
+   "sym": "L",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "kobold mummy",
+   "sym": "M",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "gnome mummy",
+   "sym": "M",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "orc mummy",
+   "sym": "M",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "dwarf mummy",
+   "sym": "M",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "elf mummy",
+   "sym": "M",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "human mummy",
+   "sym": "M",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "ettin mummy",
+   "sym": "M",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "giant mummy",
+   "sym": "M",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "red naga hatchling",
+   "sym": "N",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "black naga hatchling",
+   "sym": "N",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "golden naga hatchling",
+   "sym": "N",
+   "color": "HI_GOLD"
+  },
+  {
+   "name": "guardian naga hatchling",
+   "sym": "N",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "red naga",
+   "sym": "N",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "black naga",
+   "sym": "N",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "golden naga",
+   "sym": "N",
+   "color": "HI_GOLD"
+  },
+  {
+   "name": "guardian naga",
+   "sym": "N",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "ogre",
+   "sym": "O",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "ogre lord",
+   "sym": "O",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "ogre king",
+   "sym": "O",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "gray ooze",
+   "sym": "P",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "brown pudding",
+   "sym": "P",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "green slime",
+   "sym": "P",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "black pudding",
+   "sym": "P",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "quantum mechanic",
+   "sym": "Q",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "genetic engineer",
+   "sym": "Q",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "rust monster",
+   "sym": "R",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "disenchanter",
+   "sym": "R",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "garter snake",
+   "sym": "S",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "snake",
+   "sym": "S",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "water moccasin",
+   "sym": "S",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "python",
+   "sym": "S",
+   "color": "CLR_MAGENTA"
+  },
+  {
+   "name": "pit viper",
+   "sym": "S",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "cobra",
+   "sym": "S",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "troll",
+   "sym": "T",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "ice troll",
+   "sym": "T",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "rock troll",
+   "sym": "T",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "water troll",
+   "sym": "T",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "Olog-hai",
+   "sym": "T",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "umber hulk",
+   "sym": "U",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "vampire",
+   "sym": "V",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "vampire lord",
+   "sym": "V",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "vampire mage",
+   "sym": "V",
+   "color": "HI_ZAP"
+  },
+  {
+   "name": "Vlad the Impaler",
+   "sym": "V",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "barrow wight",
+   "sym": "W",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "wraith",
+   "sym": "W",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "Nazgul",
+   "sym": "W",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "xorn",
+   "sym": "X",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "monkey",
+   "sym": "Y",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "ape",
+   "sym": "Y",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "owlbear",
+   "sym": "Y",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "yeti",
+   "sym": "Y",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "carnivorous ape",
+   "sym": "Y",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "sasquatch",
+   "sym": "Y",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "kobold zombie",
+   "sym": "Z",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "gnome zombie",
+   "sym": "Z",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "orc zombie",
+   "sym": "Z",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "dwarf zombie",
+   "sym": "Z",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "elf zombie",
+   "sym": "Z",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "human zombie",
+   "sym": "Z",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "ettin zombie",
+   "sym": "Z",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "ghoul",
+   "sym": "Z",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "giant zombie",
+   "sym": "Z",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "skeleton",
+   "sym": "Z",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "straw golem",
+   "sym": "'",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "paper golem",
+   "sym": "'",
+   "color": "HI_PAPER"
+  },
+  {
+   "name": "rope golem",
+   "sym": "'",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "gold golem",
+   "sym": "'",
+   "color": "HI_GOLD"
+  },
+  {
+   "name": "leather golem",
+   "sym": "'",
+   "color": "HI_LEATHER"
+  },
+  {
+   "name": "wood golem",
+   "sym": "'",
+   "color": "HI_WOOD"
+  },
+  {
+   "name": "flesh golem",
+   "sym": "'",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "clay golem",
+   "sym": "'",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "stone golem",
+   "sym": "'",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "glass golem",
+   "sym": "'",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "iron golem",
+   "sym": "'",
+   "color": "HI_METAL"
+  },
+  {
+   "name": "human",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "wererat",
+   "sym": "@",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "werejackal",
+   "sym": "@",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "werewolf",
+   "sym": "@",
+   "color": "CLR_ORANGE"
+  },
+  {
+   "name": "elf",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "Woodland-elf",
+   "sym": "@",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "Green-elf",
+   "sym": "@",
+   "color": "CLR_BRIGHT_GREEN"
+  },
+  {
+   "name": "Grey-elf",
+   "sym": "@",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "elf-lord",
+   "sym": "@",
+   "color": "CLR_BRIGHT_BLUE"
+  },
+  {
+   "name": "Elvenking",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "doppelganger",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "shopkeeper",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "guard",
+   "sym": "@",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "prisoner",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "Oracle",
+   "sym": "@",
+   "color": "HI_ZAP"
+  },
+  {
+   "name": "priest",
+   "sym": "@",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "high priest",
+   "sym": "@",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "soldier",
+   "sym": "@",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "sergeant",
+   "sym": "@",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "nurse",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "lieutenant",
+   "sym": "@",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "captain",
+   "sym": "@",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "watchman",
+   "sym": "@",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "watch captain",
+   "sym": "@",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "Medusa",
+   "sym": "@",
+   "color": "CLR_BRIGHT_GREEN"
+  },
+  {
+   "name": "Wizard of Yendor",
+   "sym": "@",
+   "color": "HI_OVERLORD"
+  },
+  {
+   "name": "Croesus",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Charon",
+   "sym": "@",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "ghost",
+   "sym": " ",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "shade",
+   "sym": " ",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "water demon",
+   "sym": "&",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "incubus",
+   "sym": "&",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "horned devil",
+   "sym": "&",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "erinys",
+   "sym": "&",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "barbed devil",
+   "sym": "&",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "marilith",
+   "sym": "&",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "vrock",
+   "sym": "&",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "hezrou",
+   "sym": "&",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "bone devil",
+   "sym": "&",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "ice devil",
+   "sym": "&",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "nalfeshnee",
+   "sym": "&",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "pit fiend",
+   "sym": "&",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "sandestin",
+   "sym": "&",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "balrog",
+   "sym": "&",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "Juiblex",
+   "sym": "&",
+   "color": "CLR_BRIGHT_GREEN"
+  },
+  {
+   "name": "Yeenoghu",
+   "sym": "&",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Orcus",
+   "sym": "&",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Geryon",
+   "sym": "&",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Dispater",
+   "sym": "&",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Baalzebub",
+   "sym": "&",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Asmodeus",
+   "sym": "&",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Demogorgon",
+   "sym": "&",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Death",
+   "sym": "&",
+   "color": "HI_OVERLORD"
+  },
+  {
+   "name": "Pestilence",
+   "sym": "&",
+   "color": "HI_OVERLORD"
+  },
+  {
+   "name": "Famine",
+   "sym": "&",
+   "color": "HI_OVERLORD"
+  },
+  {
+   "name": "mail daemon",
+   "sym": "&",
+   "color": "CLR_BRIGHT_BLUE"
+  },
+  {
+   "name": "djinni",
+   "sym": "&",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "jellyfish",
+   "sym": ";",
+   "color": "CLR_BLUE"
+  },
+  {
+   "name": "piranha",
+   "sym": ";",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "shark",
+   "sym": ";",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "giant eel",
+   "sym": ";",
+   "color": "CLR_CYAN"
+  },
+  {
+   "name": "electric eel",
+   "sym": ";",
+   "color": "CLR_BRIGHT_BLUE"
+  },
+  {
+   "name": "kraken",
+   "sym": ";",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "newt",
+   "sym": ":",
+   "color": "CLR_YELLOW"
+  },
+  {
+   "name": "gecko",
+   "sym": ":",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "iguana",
+   "sym": ":",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "baby crocodile",
+   "sym": ":",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "lizard",
+   "sym": ":",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "chameleon",
+   "sym": ":",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "crocodile",
+   "sym": ":",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "salamander",
+   "sym": ":",
+   "color": "CLR_ORANGE"
+  },
+  {
+   "name": "long worm tail",
+   "sym": "~",
+   "color": "CLR_BROWN"
+  },
+  {
+   "name": "archeologist",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "barbarian",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "caveman",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "healer",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "knight",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "monk",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "priest",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "ranger",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "rogue",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "samurai",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "tourist",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "valkyrie",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "wizard",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "Lord Carnarvon",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Pelias",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Shaman Karnov",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Earendil",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Elwing",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Hippocrates",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "King Arthur",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Grand Master",
+   "sym": "@",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "Arch Priest",
+   "sym": "@",
+   "color": "CLR_WHITE"
+  },
+  {
+   "name": "Orion",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Master of Thieves",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Lord Sato",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Twoflower",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "Norn",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Neferet the Green",
+   "sym": "@",
+   "color": "CLR_GREEN"
+  },
+  {
+   "name": "Minion of Huhetotl",
+   "sym": "&",
+   "color": "CLR_ORANGE"
+  },
+  {
+   "name": "Thoth Amon",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Chromatic Dragon",
+   "sym": "D",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Goblin King",
+   "sym": "o",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Cyclops",
+   "sym": "H",
+   "color": "CLR_GRAY"
+  },
+  {
+   "name": "Ixoth",
+   "sym": "D",
+   "color": "CLR_RED"
+  },
+  {
+   "name": "Master Kaen",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Nalzok",
+   "sym": "&",
+   "color": "CLR_ORANGE"
+  },
+  {
+   "name": "Scorpius",
+   "sym": "s",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Master Assassin",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Ashikaga Takauji",
+   "sym": "@",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Lord Surtur",
+   "sym": "H",
+   "color": "HI_LORD"
+  },
+  {
+   "name": "Dark One",
+   "sym": "@",
+   "color": "CLR_BLACK"
+  },
+  {
+   "name": "student",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "chieftain",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "neanderthal",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "High-elf",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "attendant",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "page",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "abbot",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "acolyte",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "hunter",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "thug",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "ninja",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "roshi",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "guide",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "warrior",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  },
+  {
+   "name": "apprentice",
+   "sym": "@",
+   "color": "HI_DOMESTIC"
+  }
+ ],
+ "objects": [
+  {
+   "name": "arrow",
+   "sym": ")"
+  },
+  {
+   "name": "elven arrow",
+   "sym": ")"
+  },
+  {
+   "name": "orcish arrow",
+   "sym": ")"
+  },
+  {
+   "name": "silver arrow",
+   "sym": ")"
+  },
+  {
+   "name": "ya",
+   "sym": ")"
+  },
+  {
+   "name": "crossbow bolt",
+   "sym": ")"
+  },
+  {
+   "name": "dart",
+   "sym": ")"
+  },
+  {
+   "name": "shuriken",
+   "sym": ")"
+  },
+  {
+   "name": "boomerang",
+   "sym": ")"
+  },
+  {
+   "name": "spear",
+   "sym": ")"
+  },
+  {
+   "name": "elven spear",
+   "sym": ")"
+  },
+  {
+   "name": "orcish spear",
+   "sym": ")"
+  },
+  {
+   "name": "dwarvish spear",
+   "sym": ")"
+  },
+  {
+   "name": "silver spear",
+   "sym": ")"
+  },
+  {
+   "name": "javelin",
+   "sym": ")"
+  },
+  {
+   "name": "trident",
+   "sym": ")"
+  },
+  {
+   "name": "dagger",
+   "sym": ")"
+  },
+  {
+   "name": "elven dagger",
+   "sym": ")"
+  },
+  {
+   "name": "orcish dagger",
+   "sym": ")"
+  },
+  {
+   "name": "silver dagger",
+   "sym": ")"
+  },
+  {
+   "name": "athame",
+   "sym": ")"
+  },
+  {
+   "name": "scalpel",
+   "sym": ")"
+  },
+  {
+   "name": "knife",
+   "sym": ")"
+  },
+  {
+   "name": "stiletto",
+   "sym": ")"
+  },
+  {
+   "name": "worm tooth",
+   "sym": ")"
+  },
+  {
+   "name": "crysknife",
+   "sym": ")"
+  },
+  {
+   "name": "axe",
+   "sym": ")"
+  },
+  {
+   "name": "battle-axe",
+   "sym": ")"
+  },
+  {
+   "name": "short sword",
+   "sym": ")"
+  },
+  {
+   "name": "elven short sword",
+   "sym": ")"
+  },
+  {
+   "name": "orcish short sword",
+   "sym": ")"
+  },
+  {
+   "name": "dwarvish short sword",
+   "sym": ")"
+  },
+  {
+   "name": "scimitar",
+   "sym": ")"
+  },
+  {
+   "name": "silver saber",
+   "sym": ")"
+  },
+  {
+   "name": "broadsword",
+   "sym": ")"
+  },
+  {
+   "name": "elven broadsword",
+   "sym": ")"
+  },
+  {
+   "name": "long sword",
+   "sym": ")"
+  },
+  {
+   "name": "two-handed sword",
+   "sym": ")"
+  },
+  {
+   "name": "katana",
+   "sym": ")"
+  },
+  {
+   "name": "tsurugi",
+   "sym": ")"
+  },
+  {
+   "name": "runesword",
+   "sym": ")"
+  },
+  {
+   "name": "partisan",
+   "sym": ")"
+  },
+  {
+   "name": "ranseur",
+   "sym": ")"
+  },
+  {
+   "name": "spetum",
+   "sym": ")"
+  },
+  {
+   "name": "glaive",
+   "sym": ")"
+  },
+  {
+   "name": "halberd",
+   "sym": ")"
+  },
+  {
+   "name": "bardiche",
+   "sym": ")"
+  },
+  {
+   "name": "voulge",
+   "sym": ")"
+  },
+  {
+   "name": "fauchard",
+   "sym": ")"
+  },
+  {
+   "name": "guisarme",
+   "sym": ")"
+  },
+  {
+   "name": "bill-guisarme",
+   "sym": ")"
+  },
+  {
+   "name": "lucern hammer",
+   "sym": ")"
+  },
+  {
+   "name": "bec de corbin",
+   "sym": ")"
+  },
+  {
+   "name": "dwarvish mattock",
+   "sym": ")"
+  },
+  {
+   "name": "lance",
+   "sym": ")"
+  },
+  {
+   "name": "mace",
+   "sym": ")"
+  },
+  {
+   "name": "silver mace",
+   "sym": ")"
+  },
+  {
+   "name": "morning star",
+   "sym": ")"
+  },
+  {
+   "name": "war hammer",
+   "sym": ")"
+  },
+  {
+   "name": "club",
+   "sym": ")"
+  },
+  {
+   "name": "rubber hose",
+   "sym": ")"
+  },
+  {
+   "name": "quarterstaff",
+   "sym": ")"
+  },
+  {
+   "name": "aklys",
+   "sym": ")"
+  },
+  {
+   "name": "flail",
+   "sym": ")"
+  },
+  {
+   "name": "bullwhip",
+   "sym": ")"
+  },
+  {
+   "name": "bow",
+   "sym": ")"
+  },
+  {
+   "name": "elven bow",
+   "sym": ")"
+  },
+  {
+   "name": "orcish bow",
+   "sym": ")"
+  },
+  {
+   "name": "yumi",
+   "sym": ")"
+  },
+  {
+   "name": "sling",
+   "sym": ")"
+  },
+  {
+   "name": "crossbow",
+   "sym": ")"
+  },
+  {
+   "name": "elven leather helm",
+   "sym": "["
+  },
+  {
+   "name": "orcish helm",
+   "sym": "["
+  },
+  {
+   "name": "dwarvish iron helm",
+   "sym": "["
+  },
+  {
+   "name": "fedora",
+   "sym": "["
+  },
+  {
+   "name": "cornuthaum",
+   "sym": "["
+  },
+  {
+   "name": "dunce cap",
+   "sym": "["
+  },
+  {
+   "name": "dented pot",
+   "sym": "["
+  },
+  {
+   "name": "helm of brilliance",
+   "sym": "["
+  },
+  {
+   "name": "helmet",
+   "sym": "["
+  },
+  {
+   "name": "helm of caution",
+   "sym": "["
+  },
+  {
+   "name": "helm of opposite alignment",
+   "sym": "["
+  },
+  {
+   "name": "helm of telepathy",
+   "sym": "["
+  },
+  {
+   "name": "plate mail",
+   "sym": "["
+  },
+  {
+   "name": "crystal plate mail",
+   "sym": "["
+  },
+  {
+   "name": "bronze plate mail",
+   "sym": "["
+  },
+  {
+   "name": "splint mail",
+   "sym": "["
+  },
+  {
+   "name": "banded mail",
+   "sym": "["
+  },
+  {
+   "name": "dwarvish mithril-coat",
+   "sym": "["
+  },
+  {
+   "name": "elven mithril-coat",
+   "sym": "["
+  },
+  {
+   "name": "chain mail",
+   "sym": "["
+  },
+  {
+   "name": "orcish chain mail",
+   "sym": "["
+  },
+  {
+   "name": "scale mail",
+   "sym": "["
+  },
+  {
+   "name": "studded leather armor",
+   "sym": "["
+  },
+  {
+   "name": "ring mail",
+   "sym": "["
+  },
+  {
+   "name": "orcish ring mail",
+   "sym": "["
+  },
+  {
+   "name": "leather armor",
+   "sym": "["
+  },
+  {
+   "name": "leather jacket",
+   "sym": "["
+  },
+  {
+   "name": "Hawaiian shirt",
+   "sym": "["
+  },
+  {
+   "name": "T-shirt",
+   "sym": "["
+  },
+  {
+   "name": "mummy wrapping",
+   "sym": "["
+  },
+  {
+   "name": "elven cloak",
+   "sym": "["
+  },
+  {
+   "name": "orcish cloak",
+   "sym": "["
+  },
+  {
+   "name": "dwarvish cloak",
+   "sym": "["
+  },
+  {
+   "name": "oilskin cloak",
+   "sym": "["
+  },
+  {
+   "name": "robe",
+   "sym": "["
+  },
+  {
+   "name": "alchemy smock",
+   "sym": "["
+  },
+  {
+   "name": "leather cloak",
+   "sym": "["
+  },
+  {
+   "name": "cloak of protection",
+   "sym": "["
+  },
+  {
+   "name": "cloak of invisibility",
+   "sym": "["
+  },
+  {
+   "name": "cloak of magic resistance",
+   "sym": "["
+  },
+  {
+   "name": "cloak of displacement",
+   "sym": "["
+  },
+  {
+   "name": "small shield",
+   "sym": "["
+  },
+  {
+   "name": "shield of drain resistance",
+   "sym": "["
+  },
+  {
+   "name": "shield of shock resistance",
+   "sym": "["
+  },
+  {
+   "name": "elven shield",
+   "sym": "["
+  },
+  {
+   "name": "Uruk-hai shield",
+   "sym": "["
+  },
+  {
+   "name": "orcish shield",
+   "sym": "["
+  },
+  {
+   "name": "large shield",
+   "sym": "["
+  },
+  {
+   "name": "dwarvish roundshield",
+   "sym": "["
+  },
+  {
+   "name": "shield of reflection",
+   "sym": "["
+  },
+  {
+   "name": "leather gloves",
+   "sym": "["
+  },
+  {
+   "name": "gauntlets of fumbling",
+   "sym": "["
+  },
+  {
+   "name": "gauntlets of power",
+   "sym": "["
+  },
+  {
+   "name": "gauntlets of dexterity",
+   "sym": "["
+  },
+  {
+   "name": "low boots",
+   "sym": "["
+  },
+  {
+   "name": "iron shoes",
+   "sym": "["
+  },
+  {
+   "name": "high boots",
+   "sym": "["
+  },
+  {
+   "name": "speed boots",
+   "sym": "["
+  },
+  {
+   "name": "water walking boots",
+   "sym": "["
+  },
+  {
+   "name": "jumping boots",
+   "sym": "["
+  },
+  {
+   "name": "elven boots",
+   "sym": "["
+  },
+  {
+   "name": "kicking boots",
+   "sym": "["
+  },
+  {
+   "name": "fumble boots",
+   "sym": "["
+  },
+  {
+   "name": "levitation boots",
+   "sym": "["
+  },
+  {
+   "name": "ring of adornment",
+   "sym": "="
+  },
+  {
+   "name": "ring of gain strength",
+   "sym": "="
+  },
+  {
+   "name": "ring of gain constitution",
+   "sym": "="
+  },
+  {
+   "name": "ring of increase accuracy",
+   "sym": "="
+  },
+  {
+   "name": "ring of increase damage",
+   "sym": "="
+  },
+  {
+   "name": "ring of protection",
+   "sym": "="
+  },
+  {
+   "name": "ring of regeneration",
+   "sym": "="
+  },
+  {
+   "name": "ring of searching",
+   "sym": "="
+  },
+  {
+   "name": "ring of stealth",
+   "sym": "="
+  },
+  {
+   "name": "ring of sustain ability",
+   "sym": "="
+  },
+  {
+   "name": "ring of levitation",
+   "sym": "="
+  },
+  {
+   "name": "ring of hunger",
+   "sym": "="
+  },
+  {
+   "name": "ring of aggravate monster",
+   "sym": "="
+  },
+  {
+   "name": "ring of conflict",
+   "sym": "="
+  },
+  {
+   "name": "ring of warning",
+   "sym": "="
+  },
+  {
+   "name": "ring of poison resistance",
+   "sym": "="
+  },
+  {
+   "name": "ring of fire resistance",
+   "sym": "="
+  },
+  {
+   "name": "ring of cold resistance",
+   "sym": "="
+  },
+  {
+   "name": "ring of shock resistance",
+   "sym": "="
+  },
+  {
+   "name": "ring of free action",
+   "sym": "="
+  },
+  {
+   "name": "ring of slow digestion",
+   "sym": "="
+  },
+  {
+   "name": "ring of teleportation",
+   "sym": "="
+  },
+  {
+   "name": "ring of teleport control",
+   "sym": "="
+  },
+  {
+   "name": "ring of polymorph",
+   "sym": "="
+  },
+  {
+   "name": "ring of polymorph control",
+   "sym": "="
+  },
+  {
+   "name": "ring of invisibility",
+   "sym": "="
+  },
+  {
+   "name": "ring of see invisible",
+   "sym": "="
+  },
+  {
+   "name": "ring of protection from shape changers",
+   "sym": "="
+  },
+  {
+   "name": "amulet of ESP",
+   "sym": "\""
+  },
+  {
+   "name": "amulet of life saving",
+   "sym": "\""
+  },
+  {
+   "name": "amulet of strangulation",
+   "sym": "\""
+  },
+  {
+   "name": "amulet of restful sleep",
+   "sym": "\""
+  },
+  {
+   "name": "amulet versus poison",
+   "sym": "\""
+  },
+  {
+   "name": "amulet of change",
+   "sym": "\""
+  },
+  {
+   "name": "amulet of unchanging",
+   "sym": "\""
+  },
+  {
+   "name": "amulet of reflection",
+   "sym": "\""
+  },
+  {
+   "name": "amulet of magical breathing",
+   "sym": "\""
+  },
+  {
+   "name": "amulet of guarding",
+   "sym": "\""
+  },
+  {
+   "name": "amulet of flying",
+   "sym": "\""
+  },
+  {
+   "name": "cheap plastic imitation of the Amulet of Yendor",
+   "sym": "\""
+  },
+  {
+   "name": "Amulet of Yendor",
+   "sym": "\""
+  },
+  {
+   "name": "large box",
+   "sym": "("
+  },
+  {
+   "name": "chest",
+   "sym": "("
+  },
+  {
+   "name": "ice box",
+   "sym": "("
+  },
+  {
+   "name": "sack",
+   "sym": "("
+  },
+  {
+   "name": "oilskin sack",
+   "sym": "("
+  },
+  {
+   "name": "bag of holding",
+   "sym": "("
+  },
+  {
+   "name": "bag of tricks",
+   "sym": "("
+  },
+  {
+   "name": "skeleton key",
+   "sym": "("
+  },
+  {
+   "name": "lock pick",
+   "sym": "("
+  },
+  {
+   "name": "credit card",
+   "sym": "("
+  },
+  {
+   "name": "tallow candle",
+   "sym": "("
+  },
+  {
+   "name": "wax candle",
+   "sym": "("
+  },
+  {
+   "name": "brass lantern",
+   "sym": "("
+  },
+  {
+   "name": "oil lamp",
+   "sym": "("
+  },
+  {
+   "name": "magic lamp",
+   "sym": "("
+  },
+  {
+   "name": "expensive camera",
+   "sym": "("
+  },
+  {
+   "name": "mirror",
+   "sym": "("
+  },
+  {
+   "name": "crystal ball",
+   "sym": "("
+  },
+  {
+   "name": "lenses",
+   "sym": "("
+  },
+  {
+   "name": "blindfold",
+   "sym": "("
+  },
+  {
+   "name": "towel",
+   "sym": "("
+  },
+  {
+   "name": "saddle",
+   "sym": "("
+  },
+  {
+   "name": "leash",
+   "sym": "("
+  },
+  {
+   "name": "stethoscope",
+   "sym": "("
+  },
+  {
+   "name": "tinning kit",
+   "sym": "("
+  },
+  {
+   "name": "tin opener",
+   "sym": "("
+  },
+  {
+   "name": "can of grease",
+   "sym": "("
+  },
+  {
+   "name": "figurine",
+   "sym": "("
+  },
+  {
+   "name": "magic marker",
+   "sym": "("
+  },
+  {
+   "name": "land mine",
+   "sym": "("
+  },
+  {
+   "name": "beartrap",
+   "sym": "("
+  },
+  {
+   "name": "tin whistle",
+   "sym": "("
+  },
+  {
+   "name": "magic whistle",
+   "sym": "("
+  },
+  {
+   "name": "wooden flute",
+   "sym": "("
+  },
+  {
+   "name": "magic flute",
+   "sym": "("
+  },
+  {
+   "name": "tooled horn",
+   "sym": "("
+  },
+  {
+   "name": "frost horn",
+   "sym": "("
+  },
+  {
+   "name": "fire horn",
+   "sym": "("
+  },
+  {
+   "name": "horn of plenty",
+   "sym": "("
+  },
+  {
+   "name": "wooden harp",
+   "sym": "("
+  },
+  {
+   "name": "magic harp",
+   "sym": "("
+  },
+  {
+   "name": "bell",
+   "sym": "("
+  },
+  {
+   "name": "bugle",
+   "sym": "("
+  },
+  {
+   "name": "leather drum",
+   "sym": "("
+  },
+  {
+   "name": "drum of earthquake",
+   "sym": "("
+  },
+  {
+   "name": "pick-axe",
+   "sym": "("
+  },
+  {
+   "name": "grappling hook",
+   "sym": "("
+  },
+  {
+   "name": "unicorn horn",
+   "sym": "("
+  },
+  {
+   "name": "Candelabrum of Invocation",
+   "sym": "("
+  },
+  {
+   "name": "Bell of Opening",
+   "sym": "("
+  },
+  {
+   "name": "tripe ration",
+   "sym": "%"
+  },
+  {
+   "name": "corpse",
+   "sym": "%"
+  },
+  {
+   "name": "egg",
+   "sym": "%"
+  },
+  {
+   "name": "meatball",
+   "sym": "%"
+  },
+  {
+   "name": "meat stick",
+   "sym": "%"
+  },
+  {
+   "name": "enormous meatball",
+   "sym": "%"
+  },
+  {
+   "name": "meat ring",
+   "sym": "%"
+  },
+  {
+   "name": "glob of gray ooze",
+   "sym": "%"
+  },
+  {
+   "name": "glob of brown pudding",
+   "sym": "%"
+  },
+  {
+   "name": "glob of green slime",
+   "sym": "%"
+  },
+  {
+   "name": "glob of black pudding",
+   "sym": "%"
+  },
+  {
+   "name": "kelp frond",
+   "sym": "%"
+  },
+  {
+   "name": "eucalyptus leaf",
+   "sym": "%"
+  },
+  {
+   "name": "apple",
+   "sym": "%"
+  },
+  {
+   "name": "orange",
+   "sym": "%"
+  },
+  {
+   "name": "pear",
+   "sym": "%"
+  },
+  {
+   "name": "melon",
+   "sym": "%"
+  },
+  {
+   "name": "banana",
+   "sym": "%"
+  },
+  {
+   "name": "carrot",
+   "sym": "%"
+  },
+  {
+   "name": "sprig of wolfsbane",
+   "sym": "%"
+  },
+  {
+   "name": "clove of garlic",
+   "sym": "%"
+  },
+  {
+   "name": "slime mold",
+   "sym": "%"
+  },
+  {
+   "name": "lump of royal jelly",
+   "sym": "%"
+  },
+  {
+   "name": "cream pie",
+   "sym": "%"
+  },
+  {
+   "name": "candy bar",
+   "sym": "%"
+  },
+  {
+   "name": "fortune cookie",
+   "sym": "%"
+  },
+  {
+   "name": "pancake",
+   "sym": "%"
+  },
+  {
+   "name": "lembas wafer",
+   "sym": "%"
+  },
+  {
+   "name": "cram ration",
+   "sym": "%"
+  },
+  {
+   "name": "food ration",
+   "sym": "%"
+  },
+  {
+   "name": "K-ration",
+   "sym": "%"
+  },
+  {
+   "name": "C-ration",
+   "sym": "%"
+  },
+  {
+   "name": "tin",
+   "sym": "%"
+  },
+  {
+   "name": "potion of gain ability",
+   "sym": "!"
+  },
+  {
+   "name": "potion of restore ability",
+   "sym": "!"
+  },
+  {
+   "name": "potion of confusion",
+   "sym": "!"
+  },
+  {
+   "name": "potion of blindness",
+   "sym": "!"
+  },
+  {
+   "name": "potion of paralysis",
+   "sym": "!"
+  },
+  {
+   "name": "potion of speed",
+   "sym": "!"
+  },
+  {
+   "name": "potion of levitation",
+   "sym": "!"
+  },
+  {
+   "name": "potion of hallucination",
+   "sym": "!"
+  },
+  {
+   "name": "potion of invisibility",
+   "sym": "!"
+  },
+  {
+   "name": "potion of see invisible",
+   "sym": "!"
+  },
+  {
+   "name": "potion of healing",
+   "sym": "!"
+  },
+  {
+   "name": "potion of extra healing",
+   "sym": "!"
+  },
+  {
+   "name": "potion of gain level",
+   "sym": "!"
+  },
+  {
+   "name": "potion of enlightenment",
+   "sym": "!"
+  },
+  {
+   "name": "potion of monster detection",
+   "sym": "!"
+  },
+  {
+   "name": "potion of object detection",
+   "sym": "!"
+  },
+  {
+   "name": "potion of gain energy",
+   "sym": "!"
+  },
+  {
+   "name": "potion of sleeping",
+   "sym": "!"
+  },
+  {
+   "name": "potion of full healing",
+   "sym": "!"
+  },
+  {
+   "name": "potion of polymorph",
+   "sym": "!"
+  },
+  {
+   "name": "potion of booze",
+   "sym": "!"
+  },
+  {
+   "name": "potion of sickness",
+   "sym": "!"
+  },
+  {
+   "name": "potion of fruit juice",
+   "sym": "!"
+  },
+  {
+   "name": "potion of acid",
+   "sym": "!"
+  },
+  {
+   "name": "potion of oil",
+   "sym": "!"
+  },
+  {
+   "name": "potion of water",
+   "sym": "!"
+  },
+  {
+   "name": "scroll of enchant armor",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of destroy armor",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of confuse monster",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of scare monster",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of remove curse",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of enchant weapon",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of create monster",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of taming",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of genocide",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of light",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of teleportation",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of gold detection",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of food detection",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of identify",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of magic mapping",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of amnesia",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of fire",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of earth",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of punishment",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of charging",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of stinking cloud",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of mail",
+   "sym": "?"
+  },
+  {
+   "name": "scroll of blank paper",
+   "sym": "?"
+  },
+  {
+   "name": "spellbook of dig",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of magic missile",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of fireball",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of cone of cold",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of sleep",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of finger of death",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of light",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of detect monsters",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of healing",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of knock",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of force bolt",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of confuse monster",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of cure blindness",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of drain life",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of slow monster",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of wizard lock",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of create monster",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of detect food",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of cause fear",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of clairvoyance",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of cure sickness",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of charm monster",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of haste self",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of detect unseen",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of levitation",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of extra healing",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of restore ability",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of invisibility",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of detect treasure",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of remove curse",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of magic mapping",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of identify",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of turn undead",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of polymorph",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of teleport away",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of create familiar",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of cancellation",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of protection",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of jumping",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of stone to flesh",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of chain lightning",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of flame sphere",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of freeze sphere",
+   "sym": "+"
+  },
+  {
+   "name": "spellbook of blank paper",
+   "sym": "+"
+  },
+  {
+   "name": "novel",
+   "sym": "+"
+  },
+  {
+   "name": "Book of the Dead",
+   "sym": "+"
+  },
+  {
+   "name": "wand of light",
+   "sym": "/"
+  },
+  {
+   "name": "wand of secret door detection",
+   "sym": "/"
+  },
+  {
+   "name": "wand of enlightenment",
+   "sym": "/"
+  },
+  {
+   "name": "wand of create monster",
+   "sym": "/"
+  },
+  {
+   "name": "wand of wishing",
+   "sym": "/"
+  },
+  {
+   "name": "wand of stasis",
+   "sym": "/"
+  },
+  {
+   "name": "wand of nothing",
+   "sym": "/"
+  },
+  {
+   "name": "wand of striking",
+   "sym": "/"
+  },
+  {
+   "name": "wand of make invisible",
+   "sym": "/"
+  },
+  {
+   "name": "wand of slow monster",
+   "sym": "/"
+  },
+  {
+   "name": "wand of speed monster",
+   "sym": "/"
+  },
+  {
+   "name": "wand of undead turning",
+   "sym": "/"
+  },
+  {
+   "name": "wand of polymorph",
+   "sym": "/"
+  },
+  {
+   "name": "wand of cancellation",
+   "sym": "/"
+  },
+  {
+   "name": "wand of teleportation",
+   "sym": "/"
+  },
+  {
+   "name": "wand of opening",
+   "sym": "/"
+  },
+  {
+   "name": "wand of locking",
+   "sym": "/"
+  },
+  {
+   "name": "wand of probing",
+   "sym": "/"
+  },
+  {
+   "name": "wand of digging",
+   "sym": "/"
+  },
+  {
+   "name": "wand of magic missile",
+   "sym": "/"
+  },
+  {
+   "name": "wand of fire",
+   "sym": "/"
+  },
+  {
+   "name": "wand of cold",
+   "sym": "/"
+  },
+  {
+   "name": "wand of sleep",
+   "sym": "/"
+  },
+  {
+   "name": "wand of death",
+   "sym": "/"
+  },
+  {
+   "name": "wand of lightning",
+   "sym": "/"
+  },
+  {
+   "name": "gold piece",
+   "sym": "$"
+  },
+  {
+   "name": "dilithium crystal",
+   "sym": "*"
+  },
+  {
+   "name": "diamond",
+   "sym": "*"
+  },
+  {
+   "name": "ruby",
+   "sym": "*"
+  },
+  {
+   "name": "jacinth",
+   "sym": "*"
+  },
+  {
+   "name": "sapphire",
+   "sym": "*"
+  },
+  {
+   "name": "black opal",
+   "sym": "*"
+  },
+  {
+   "name": "emerald",
+   "sym": "*"
+  },
+  {
+   "name": "turquoise",
+   "sym": "*"
+  },
+  {
+   "name": "citrine",
+   "sym": "*"
+  },
+  {
+   "name": "aquamarine",
+   "sym": "*"
+  },
+  {
+   "name": "amber",
+   "sym": "*"
+  },
+  {
+   "name": "topaz",
+   "sym": "*"
+  },
+  {
+   "name": "jet",
+   "sym": "*"
+  },
+  {
+   "name": "opal",
+   "sym": "*"
+  },
+  {
+   "name": "chrysoberyl",
+   "sym": "*"
+  },
+  {
+   "name": "garnet",
+   "sym": "*"
+  },
+  {
+   "name": "amethyst",
+   "sym": "*"
+  },
+  {
+   "name": "jasper",
+   "sym": "*"
+  },
+  {
+   "name": "fluorite",
+   "sym": "*"
+  },
+  {
+   "name": "obsidian",
+   "sym": "*"
+  },
+  {
+   "name": "agate",
+   "sym": "*"
+  },
+  {
+   "name": "jade",
+   "sym": "*"
+  },
+  {
+   "name": "worthless piece of white glass",
+   "sym": "*"
+  },
+  {
+   "name": "worthless piece of blue glass",
+   "sym": "*"
+  },
+  {
+   "name": "worthless piece of red glass",
+   "sym": "*"
+  },
+  {
+   "name": "worthless piece of yellowish brown glass",
+   "sym": "*"
+  },
+  {
+   "name": "worthless piece of orange glass",
+   "sym": "*"
+  },
+  {
+   "name": "worthless piece of yellow glass",
+   "sym": "*"
+  },
+  {
+   "name": "worthless piece of black glass",
+   "sym": "*"
+  },
+  {
+   "name": "worthless piece of green glass",
+   "sym": "*"
+  },
+  {
+   "name": "worthless piece of violet glass",
+   "sym": "*"
+  },
+  {
+   "name": "luckstone",
+   "sym": "`"
+  },
+  {
+   "name": "loadstone",
+   "sym": "`"
+  },
+  {
+   "name": "touchstone",
+   "sym": "`"
+  },
+  {
+   "name": "flint",
+   "sym": "`"
+  },
+  {
+   "name": "rock",
+   "sym": "`"
+  },
+  {
+   "name": "boulder",
+   "sym": "`"
+  },
+  {
+   "name": "statue",
+   "sym": "`"
+  },
+  {
+   "name": "heavy iron ball",
+   "sym": "0"
+  },
+  {
+   "name": "iron chain",
+   "sym": "_"
+  },
+  {
+   "name": "splash of blinding venom",
+   "sym": "."
+  },
+  {
+   "name": "splash of acid venom",
+   "sym": "."
+  }
+ ],
+ "traps": [
+  "arrow",
+  "dart",
+  "falling rock",
+  "board",
+  "bear",
+  "land mine",
+  "rolling boulder",
+  "sleep gas",
+  "rust",
+  "fire",
+  "pit",
+  "spiked pit",
+  "hole",
+  "trap door",
+  "teleport",
+  "level teleport",
+  "magic portal",
+  "web",
+  "statue",
+  "magic",
+  "anti magic",
+  "polymorph",
+  "vibrating square",
+  "random"
+ ]
+}

@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+# copies de sauvegarde faites par l'éditeur au premier enregistrement
+*.lua~
+# cartes d'essai
+essais/
