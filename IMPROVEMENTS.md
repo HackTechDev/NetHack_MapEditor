@@ -63,7 +63,7 @@ reste invisible dans l'éditeur.
 - ✅ **Fait** — **Déplacer une zone** **[facile]** : couper, puis coller, en
   déplaçant aussi les entités. Aujourd'hui, il faut copier, coller, puis
   effacer à la main.
-- **Retourner et faire pivoter le presse-papiers** **[facile]** : miroir
+- ✅ **Fait** — **Retourner et faire pivoter le presse-papiers** **[facile]** : miroir
   horizontal ou vertical, rotation de 90° (en échangeant `-` et `|`).
 - **Mode symétrie** **[moyen]** : chaque coup de pinceau est reproduit en
   miroir (axe vertical, horizontal ou les deux). Très pratique pour les

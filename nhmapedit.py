@@ -205,6 +205,8 @@ OUTILS (Espace ou Entrée pour appliquer)
   6 Remplissage   7 Copier une zone   8 Coller
   D Couper une zone (pour la déplacer : la zone est vidée, entités comprises,
     puis l'outil Coller la repose où l'on veut)
+  Presse-papiers : X miroir gauche/droite   Y miroir haut/bas
+                   O rotation d'un quart de tour (sens horaire)
   Les outils à deux points : 1er appui = ancre, 2e appui = tracé. Échap annule.
   d  crayon baissé (peint en se déplaçant)    a  avance automatique
   Un trait (crayon baissé ou glisser à la souris) s'annule en une fois.
@@ -496,6 +498,11 @@ class Editor:
         # carte
         prev = self.preview_cells()
         index = lvl.entity_index()
+        # entités du presse-papiers montrées dans l'aperçu de Coller
+        prev_ents = {}
+        if self.tool == "paste" and self.clip:
+            for e in self.clip[1]:
+                prev_ents[(self.cx + e.x, self.cy + e.y)] = e
         if self.game:
             grid = [row[:] for row in lvl.grid]
             if self.tool not in SELECT:
@@ -524,6 +531,9 @@ class Editor:
                     if self.tool not in SELECT and not self.game:
                         ch = prev[(x, y)]
                         a = self.attr(TERRAIN_COLOR.get(ch, "CLR_GRAY"))
+                    if (x, y) in prev_ents and self.show_ents:
+                        ch, clr = self.entity_glyph(prev_ents[(x, y)])
+                        a = self.attr(clr)
                     a |= curses.A_REVERSE
                 elif self.show_ents:
                     e = self.top_entity(x, y, index)
@@ -917,6 +927,41 @@ class Editor:
         self.msg = ("Zone %dx%d %s (%d entités). Outil Coller actif."
                     % (hx - lx + 1, hy - ly + 1,
                        "coupée" if cut else "copiée", len(ents)))
+
+    def transform_clip(self, how):
+        """Miroir (« x » : gauche/droite, « y » : haut/bas) ou rotation
+        d'un quart de tour dans le sens horaire (« rot ») du
+        presse-papiers, entités comprises."""
+        if not self.clip:
+            self.msg = "Presse-papiers vide (outil 7 ou D pour en remplir un)."
+            return
+        g, ents = self.clip
+        h, w = len(g), len(g[0])
+        if how == "x":
+            g = [row[::-1] for row in g]
+            pos = lambda x, y: (w - 1 - x, y)
+        elif how == "y":
+            g = g[::-1]
+            pos = lambda x, y: (x, h - 1 - y)
+        else:
+            swap = {"-": "|", "|": "-"}
+            g = [[swap.get(g[h - 1 - y][x], g[h - 1 - y][x])
+                  for y in range(h)] for x in range(w)]
+            # les coins et jonctions des cartes NetHack s'écrivent « - »
+            for row in g:
+                for x, c in enumerate(row):
+                    side = (row[x - 1] if x else " ") + (
+                        row[x + 1] if x + 1 < h else " ")
+                    if c == "|" and any(n in side for n in "-+S"):
+                        row[x] = "-"
+            pos = lambda x, y: (h - 1 - y, x)
+        for e in ents:
+            e.x, e.y = pos(e.x, e.y)
+        self.clip = (g, ents)
+        self.tool = "paste"
+        self.msg = "Presse-papiers %s (%dx%d). Outil Coller actif." % (
+            {"x": "retourné gauche/droite", "y": "retourné haut/bas",
+             "rot": "tourné d'un quart de tour"}[how], len(g[0]), len(g))
 
     def paste(self):
         if not self.clip:
@@ -1554,6 +1599,8 @@ class Editor:
             self.msg = "Crayon %s." % ("baissé" if self.pen_down else "levé")
         elif k == "y":
             self.eyedropper()
+        elif k in ("X", "Y", "O"):
+            self.transform_clip({"X": "x", "Y": "y", "O": "rot"}[k])
         elif k == "a":
             self.advance = not self.advance
             self.msg = "Avance automatique %s." % (
