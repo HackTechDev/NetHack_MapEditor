@@ -61,7 +61,9 @@ clic droit = pipette.
 
 Les listes de monstres et d'objets se filtrent en tapant une partie du nom.
 Une lettre seule (`d`, `D`…) donne un monstre aléatoire de cette classe, un
-symbole seul (`!`, `?`…) un objet aléatoire de cette classe. Les options Lua
+symbole seul (`!`, `?`…) un objet aléatoire de cette classe. Sur la carte,
+les monstres et objets aléatoires ont un style commun : fond magenta, avec
+le symbole de leur classe, ou `?` quand tout est aléatoire. Les options Lua
 supplémentaires se saisissent sous la forme `peaceful=1, asleep=1` ou
 `buc="cursed", spe=2`.
 

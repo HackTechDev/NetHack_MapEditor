@@ -184,6 +184,9 @@ def game_view(grid, fill=" "):
     return out
 
 
+# Pseudo-couleur des monstres et objets aléatoires
+RANDOM = "RANDOM"
+
 # Terrain sur lequel une entité (autre qu'une porte) n'a pas sa place
 SOLID = set(" -|STZFB")
 
@@ -235,6 +238,8 @@ ENTITÉS (coordonnées relatives à la carte)
   Suppr / Retour arrière / z   supprimer les entités sous le curseur
   i  liste des entités (Entrée: aller, e: modifier, d: supprimer)
   Tab  afficher / masquer les entités
+  Monstres et objets aléatoires : sur fond magenta, avec le symbole de leur
+  classe (d, !…) ou « ? » quand tout est aléatoire
   Un symbole souligné signale plusieurs entités sur la case (seule la plus
   importante est dessinée ; la barre d'état les liste toutes)
   J  rendu « comme dans le jeu » (murs en traits, sol en points, portes
@@ -369,8 +374,13 @@ class Editor:
         for i, c in enumerate(range(8)):
             curses.init_pair(i + 1, c, bg)
             self.pairs[c] = curses.color_pair(i + 1)
+        # style commun des monstres et objets aléatoires : fond magenta
+        curses.init_pair(9, curses.COLOR_WHITE, curses.COLOR_MAGENTA)
+        self.pairs[RANDOM] = curses.color_pair(9)
 
     def attr(self, clr):
+        if clr == RANDOM:
+            return self.pairs.get(RANDOM, curses.A_DIM) | curses.A_BOLD
         clr = HI_COLORS.get(clr, clr)
         c, bold = NH_COLORS.get(clr, (curses.COLOR_WHITE, False))
         a = self.pairs.get(c, 0)
@@ -387,21 +397,17 @@ class Editor:
             return ("<" if v == "up" else ">"), "CLR_BROWN"
         if k == "altar":
             return "_", "CLR_GRAY"
-        if k == "monster":
-            if v in self.mon:
-                return self.mon[v]["sym"], self.mon[v]["color"]
-            if v and len(v) == 1:
-                return v, "CLR_RED"
-            return "M", "CLR_BRIGHT_MAGENTA"
-        if k == "object":
-            sym = None
-            if v in self.obj:
-                sym = self.obj[v]["sym"]
-            elif v and len(v) == 1:
-                sym = v
-            if sym:
-                return sym, OBJ_CLASS_COLOR.get(sym, "CLR_GRAY")
-            return "]", "CLR_BRIGHT_MAGENTA"
+        if k in ("monster", "object"):
+            data = self.mon if k == "monster" else self.obj
+            if v in data:
+                sym = data[v]["sym"]
+                return sym, (data[v]["color"] if k == "monster"
+                             else OBJ_CLASS_COLOR.get(sym, "CLR_GRAY"))
+            # aléatoire : symbole de la classe, ou « ? » si tout est
+            # aléatoire, sur fond magenta
+            if not v or len(v) == 1:
+                return v or "?", RANDOM
+            return "?", "CLR_WHITE"     # nom absent de nhdata.json
         if k == "trap":
             return "^", ("CLR_MAGENTA" if v in ("magic portal",
                                                "vibrating square")

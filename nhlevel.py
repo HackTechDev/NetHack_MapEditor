@@ -90,6 +90,10 @@ class Entity:
         s = ENTITY_LABEL[self.kind]
         if self.value is not None:
             s += " " + str(self.value)
+            if self.kind in ("monster", "object") and len(self.value) == 1:
+                s += " (classe, aléatoire)"
+        elif self.kind in ("monster", "object"):
+            s += " aléatoire"
         if self.extra:
             s += " {" + ", ".join("%s=%s" % (k, lua_value(v))
                                   for k, v in self.extra.items()) + "}"

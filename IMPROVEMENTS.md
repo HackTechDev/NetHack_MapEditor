@@ -95,7 +95,7 @@ reste invisible dans l'éditeur.
 - ✅ **Fait** — **Plusieurs entités par case** **[facile]** : l'affichage ne montre
   qu'une entité par case (la plus prioritaire). Il faudrait signaler
   qu'il y en a plusieurs, par exemple en soulignant le symbole.
-- **Monstres et objets aléatoires plus lisibles** **[facile]** : les
+- ✅ **Fait** — **Monstres et objets aléatoires plus lisibles** **[facile]** : les
   symboles `M` et `]` sont arbitraires. Une couleur ou un style
   « aléatoire » commun serait plus clair.
 
