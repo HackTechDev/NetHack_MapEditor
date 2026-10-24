@@ -20,6 +20,7 @@ import subprocess
 import sys
 import time
 
+import nhdungeon
 import nhlevel
 from nhlevel import Entity, Level
 
@@ -30,6 +31,11 @@ HACKDIRS = [
     os.environ.get("NHMAPEDIT_HACKDIR", ""),
     os.path.expanduser("~/nh/install/games/lib/nethackdir"),
     os.path.join(HERE, "..", "NetHack-5.0.0", "playground"),
+]
+# Fichiers dungeon.lua essayés pour « placer le niveau dans le donjon »
+DUNGEON_FILES = [
+    os.environ.get("NHMAPEDIT_DUNGEON", ""),
+    os.path.join(HERE, "..", "NetHack-5.0.0", "dat", "dungeon.lua"),
 ]
 # Préfixe des copies de test, pour ne jamais masquer un niveau de nhdat
 TEST_PREFIX = "nhme-"
@@ -294,7 +300,9 @@ ENTITÉS (coordonnées relatives à la carte)
      et couloirs secrets cachés) ; l'édition reste possible
 
 NIVEAU ET FICHIERS
-  p  propriétés (taille, drapeaux, level_init, alignement, éclairage)
+  p  propriétés (taille, drapeaux, level_init, alignement, éclairage) ;
+     « Donjon » y ajoute le niveau à dat/dungeon.lua (profondeur,
+     probabilité…), ou modifie et retire les niveaux spéciaux du donjon
   v  vérifier la carte
   t  tester : copie la carte dans le répertoire du jeu, à charger avec
      #wizloaddes en mode wizard (nethack -D) ; avec tmux, l'éditeur
@@ -396,6 +404,8 @@ class Editor:
         self.hackdir = next((d for d in HACKDIRS if self.is_hackdir(d)),
                             None)
         self.game_pane = None       # panneau tmux du jeu lancé par « t »
+        self.dungeon_path = next((f for f in DUNGEON_FILES
+                                  if f and os.path.isfile(f)), "")
         self.game_where = ""
         self.launch = None          # réponse à « lancer le jeu ? »
         self.undo_stack, self.redo_stack = [], []
@@ -1277,12 +1287,19 @@ class Editor:
             self.msg = "Syntaxe invalide : clé = valeur, séparées par des virgules."
 
     def edit_options(self, kind, extra):
-        """Formulaire des options courantes d'un monstre ou d'un objet.
+        """Formulaire des options courantes d'un monstre ou d'un objet."""
+        return self.form("Options %s" % ("du monstre" if kind == "monster"
+                                         else "de l'objet"),
+                         MON_FORM if kind == "monster" else OBJ_FORM, extra)
+
+    def form(self, title, form, extra, free=True):
+        """Formulaire : form = [(clé, type, libellé)], extra = valeurs.
 
         Entrée modifie la ligne choisie (les booléens passent de « défaut »
-        à oui, non, puis défaut) ; Échap ou « Terminer » valide. Les autres
-        options se saisissent librement sur la dernière ligne."""
-        form = MON_FORM if kind == "monster" else OBJ_FORM
+        à oui, non, puis défaut) ; Échap ou « Terminer » valide. Avec
+        free, les autres options se saisissent librement sur la dernière
+        ligne. Types : voir MON_FORM, plus ("choice", valeurs) et
+        ("flags", valeurs) pour une liste à cocher."""
         keys = [k for k, _, _ in form]
         extra = dict(extra)
         sel = "_done"
@@ -1297,19 +1314,20 @@ class Editor:
                     c = extra[key]
                     shown = c.summary() + " " + ", ".join(
                         it.value or "aléatoire" for it in c.items)
+                elif isinstance(extra[key], list):
+                    shown = ", ".join(map(str, extra[key]))
                 else:
                     shown = nhlevel.lua_value(extra[key])
                 items.append(("%-34s %s" % ("%s (%s)" % (label, key), shown),
                               key))
             rest = {k: v for k, v in extra.items() if k not in keys}
-            items.append(("Autres options : %s" % (", ".join(
-                "%s=%s" % (k, nhlevel.lua_value(v)) for k, v in rest.items())
-                or "(aucune)"), "_other"))
+            if free:
+                items.append(("Autres options : %s" % (", ".join(
+                    "%s=%s" % (k, nhlevel.lua_value(v))
+                    for k, v in rest.items()) or "(aucune)"), "_other"))
             try:
-                sel = self.pick("Options %s (Entrée: modifier, Échap: "
-                                "terminer)" % ("du monstre" if kind == "monster"
-                                               else "de l'objet"),
-                                items, sel)
+                sel = self.pick("%s (Entrée: modifier, Échap: terminer)"
+                                % title, items, sel)
             except Cancel:
                 return extra
             if sel == "_done":
@@ -1329,11 +1347,14 @@ class Editor:
                         extra[sel] = 0
                     else:
                         del extra[sel]
-                elif typ == "buc":
-                    v = self.pick("Béni / maudit (buc)",
-                                  [("(défaut)", None)] +
-                                  [(b, b) for b in BUC], extra.get(sel))
+                elif typ == "buc" or typ[0] == "choice":
+                    values = BUC if typ == "buc" else typ[1]
+                    v = self.pick(sel, [("(défaut)", None)] +
+                                  [(b, b) for b in values], extra.get(sel))
                     self.set_option(extra, sel, v)
+                elif typ[0] == "flags":
+                    v = self.check_list(sel, typ[1], extra.get(sel) or [])
+                    self.set_option(extra, sel, v or None)
                 elif typ == "contents":
                     v = self.edit_contents(extra.get(sel), "%s (%s)" % (
                         dict((k, l) for k, _, l in form)[sel].capitalize(),
@@ -1351,6 +1372,23 @@ class Editor:
                     self.ask_option(extra, sel, typ)
             except Cancel:
                 pass
+
+    def check_list(self, title, values, checked):
+        """Liste à cocher (Entrée coche ou décoche, Échap termine)."""
+        checked = list(checked)
+        sel = values[0]
+        while True:
+            items = [("[%s] %s" % ("x" if v in checked else " ", v), v)
+                     for v in values]
+            try:
+                sel = self.pick("%s (Entrée: cocher/décocher, Échap: "
+                                "terminer)" % title, items, sel)
+            except Cancel:
+                return [v for v in values if v in checked]
+            if sel in checked:
+                checked.remove(sel)
+            else:
+                checked.append(sel)
 
     def edit_contents(self, cont, title):
         """Liste des objets d'un contenu ou d'un inventaire.
@@ -1606,6 +1644,7 @@ class Editor:
                 ("Placement : %s" % place, "place"),
                 ("Carte éclairée (lit) : %s" % ("oui" if lvl.lit else "non"),
                  "lit"),
+                ("Donjon : placer le niveau dans dungeon.lua…", "dungeon"),
             ]
             try:
                 what = self.pick("Propriétés du niveau", items,
@@ -1625,8 +1664,170 @@ class Editor:
                 elif what == "lit":
                     self.checkpoint()
                     lvl.lit = not lvl.lit
+                elif what == "dungeon":
+                    self.edit_dungeon()
             except Cancel:
                 pass
+
+    # ------------------------------------------------------------------
+    # Donjon (dungeon.lua)
+    # ------------------------------------------------------------------
+    def edit_dungeon(self):
+        """Ajoute, modifie ou supprime un niveau spécial de dungeon.lua."""
+        path = self.prompt("Fichier dungeon.lua (dans dat/ des sources) : ",
+                           self.dungeon_path, self.path_completer)
+        path = os.path.expanduser(path.strip())
+        try:
+            with open(path, encoding="utf-8") as f:
+                df = nhdungeon.DungeonFile(f.read())
+        except (OSError, ValueError) as e:
+            self.msg = "%s : %s" % (path, e)
+            return
+        self.dungeon_path = path
+        di = 0
+        while True:
+            items = [("%-24s %d niveau(x) spécial(aux)" % (
+                df.dungeon_name(d), len(df.levels(d))), i)
+                for i, d in enumerate(df.dungeons())]
+            try:
+                di = self.pick("Donjons de %s (%d niveaux spéciaux sur %d)"
+                               % (os.path.basename(path),
+                                  len(df.all_level_names()),
+                                  nhdungeon.LEV_LIMIT), items, di)
+            except Cancel:
+                return
+            df = self.dungeon_levels(df, di)
+
+    def dungeon_levels(self, df, di):
+        """Liste des niveaux spéciaux d'un donjon. Renvoie le fichier
+        tel qu'il est après les modifications (déjà enregistrées)."""
+        sel = 0
+        while True:
+            d = df.dungeons()[di]
+            levels = [l.py() for l in df.levels(d)]
+            items = [("%-10s %s" % (l.get("name"), " ".join(
+                "%s=%s" % (k, v if not isinstance(v, (list, str)) or
+                           k == "name" else nhlevel.lua_value(v))
+                for k, v in l.items() if k != "name")), i)
+                for i, l in enumerate(levels)]
+            items.append(("+ ajouter ce niveau", "add"))
+            hint = "Entrée/e: modifier  d: supprimer  Échap: retour"
+            try:
+                i, action = self.pick_action(df.dungeon_name(d), items, sel,
+                                             hint)
+            except Cancel:
+                return df
+            try:
+                if i == "add":
+                    base = os.path.splitext(os.path.basename(
+                        self.path or "niveau"))[0]
+                    fields = self.dungeon_form(df, di, None, {"name": base})
+                    if fields:
+                        df = self.write_dungeon(df.add_level(di, fields))
+                        sel = len(levels)
+                        if df:
+                            self.after_dungeon_add(df, di, fields)
+                elif action == "delete":
+                    if self.confirm("Retirer %s du donjon ?"
+                                    % levels[i].get("name")):
+                        df = self.write_dungeon(df.delete_level(di, i))
+                        sel = max(0, i - 1)
+                else:
+                    fields = self.dungeon_form(df, di, i, levels[i])
+                    if fields:
+                        df = self.write_dungeon(df.replace_level(di, i,
+                                                                 fields))
+                        sel = i
+            except Cancel:
+                pass
+            if df is None:          # erreur d'écriture
+                return self.reload_dungeon()
+
+    def reload_dungeon(self):
+        with open(self.dungeon_path, encoding="utf-8") as f:
+            return nhdungeon.DungeonFile(f.read())
+
+    def dungeon_form(self, df, di, li, fields):
+        """Formulaire d'un niveau du donjon ; None si abandon."""
+        fields = dict(fields)
+        if isinstance(fields.get("flags"), str):
+            fields["flags"] = [fields["flags"]]
+        form = [
+            ("name", "str", "nom du fichier, sans .lua"),
+            ("base", "int", "profondeur (négatif : depuis le bas)"),
+            ("range", "int", "profondeur : tirage en plus"),
+            ("chance", "int", "probabilité de présence, en %"),
+            ("nlevels", "int", "variantes (nom-1.lua … nom-N.lua)"),
+            ("alignment", ("choice", nhdungeon.ALIGNMENTS), "alignement"),
+            ("flags", ("flags", nhdungeon.LEVEL_FLAGS), "drapeaux"),
+            ("bonetag", "str", "lettre des fichiers bones"),
+            ("chainlevel", ("choice", df.names_before(di, li)),
+             "base comptée depuis ce niveau"),
+        ]
+        while True:
+            fields = self.form("Niveau du donjon", form, fields, free=False)
+            errs = nhdungeon.check_level(df, fields, di, li)
+            if not errs:
+                return fields
+            if not self.confirm("%s. Corriger ?" % " ; ".join(errs)
+                                .capitalize()):
+                return None
+
+    def write_dungeon(self, df):
+        """Enregistre dungeon.lua (l'original est gardé sous ~)."""
+        path = self.dungeon_path
+        try:
+            if not os.path.exists(path + "~"):
+                shutil.copy2(path, path + "~")
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(df.text)
+        except OSError as e:
+            self.msg = "Erreur d'écriture : %s" % e
+            return None
+        self.msg = "Enregistré : %s" % path
+        return df
+
+    def after_dungeon_add(self, df, di, fields):
+        """Propose de copier la carte dans le répertoire du jeu, puis
+        rappelle les étapes pour jouer le niveau."""
+        name = fields["name"]
+        if fields.get("nlevels"):
+            name += "-1"
+        dest = None
+        if self.hackdir and self.confirm(
+                "Copier la carte dans %s/%s.lua ?" % (self.hackdir, name)):
+            dest = os.path.join(self.hackdir, name + ".lua")
+            try:
+                if not os.path.exists(dest) or self.confirm(
+                        "%s existe. Écraser ?" % dest):
+                    with open(dest, "w", encoding="utf-8") as f:
+                        f.write(self.lvl.to_lua(name))
+                else:
+                    dest = None
+            except OSError as e:
+                self.msg = "Erreur d'écriture : %s" % e
+                dest = None
+        self.message_box("Niveau ajouté au donjon", "\n".join([
+            "%s ajouté à « %s » dans :" % (fields["name"],
+                                           df.dungeon_name(
+                                               df.dungeons()[di])),
+            "  " + self.dungeon_path,
+            "",
+            "Pour le jouer :",
+            ("  1. la carte est copiée dans " + dest) if dest else
+            "  1. copiez la carte sous %s.lua dans le répertoire du jeu"
+            % name,
+            "     (le jeu la lit là, puisqu'elle n'est pas dans nhdat) ;",
+            "  2. dans les sources, « make install » range le nouveau",
+            "     dungeon.lua dans nhdat ;",
+            "  3. commencez une nouvelle partie (les parties en cours",
+            "     gardent l'ancien donjon). En mode wizard, #wizwhere",
+            "     donne la profondeur des niveaux spéciaux et Ctrl-V",
+            "     téléporte de niveau.",
+        ] + (["", "Avec nlevels, il faut un fichier par variante :",
+              "%s-1.lua … %s-%d.lua." % (fields["name"], fields["name"],
+                                          fields["nlevels"])]
+             if fields.get("nlevels") else [])))
 
     def ask_size(self):
         s = self.prompt("Nouvelle taille « largeur hauteur » (max %dx%d) : "

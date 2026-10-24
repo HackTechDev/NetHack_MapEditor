@@ -48,7 +48,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | `c` | afficher / masquer les règles de coordonnées (colonnes en haut, lignes à gauche) |
 | `f` | aperçu du retournement aléatoire que NetHack applique aux niveaux sans `noflip` : aucun → horizontal → vertical → les deux (l'édition reste possible, les règles gardent les vraies coordonnées) |
 | `J` | rendu « comme dans le jeu » : murs en traits avec leurs coins et jonctions, sol en points, symboles et couleurs du jeu, portes et couloirs secrets cachés (l'édition reste possible) |
-| `p` | propriétés : taille, `level_init`, drapeaux, placement (halign/valign ou x,y), éclairage |
+| `p` | propriétés : taille, `level_init`, drapeaux, placement (halign/valign ou x,y), éclairage, place du niveau dans le donjon (`dungeon.lua`, voir plus bas) |
 | `v` | vérifier la carte (largeur > 76, entités dans les murs, escaliers en double…) |
 | `t` | tester : copie la carte dans le répertoire du jeu ; avec tmux, lance NetHack et y charge la carte (voir plus bas) |
 | `u` / `U` (ou Ctrl-R) | annuler / rétablir |
@@ -152,10 +152,41 @@ Pour remplacer un vrai niveau du jeu, mettez le fichier dans `dat/` des
 sources et recompilez/réinstallez (`make install`), ou référencez-le dans
 `dat/dungeon.lua`.
 
+## Ajouter le niveau au donjon
+
+`#wizloaddes` charge une carte à la place du niveau courant. Pour que le
+jeu la place lui-même dans le donjon, à une profondeur donnée, il faut la
+déclarer dans `dat/dungeon.lua`. Dans les propriétés (`p`), « Donjon :
+placer le niveau dans dungeon.lua… » le fait sans éditer le fichier à la
+main :
+
+1. choisissez le fichier (par défaut `../NetHack-5.0.0/dat/dungeon.lua`,
+   ou `$NHMAPEDIT_DUNGEON`), puis le donjon (Dungeons of Doom, Gehennom,
+   Mines…) ;
+2. la liste de ses niveaux spéciaux s'affiche : « + ajouter ce niveau »
+   ouvre un formulaire (nom du fichier, `base`, `range`, `chance`,
+   `nlevels`, alignement, drapeaux `town`/`hellish`/`mazelike`/`roguelike`,
+   `bonetag`, `chainlevel`) ; Entrée ou `e` modifie un niveau existant,
+   `d` le retire ;
+3. l'éditeur vérifie l'entrée (nom unique et d'au plus 14 caractères,
+   `base` présente, `chainlevel` défini plus haut dans le fichier, au plus
+   50 niveaux spéciaux), puis enregistre `dungeon.lua` aussitôt.
+   L'original est gardé sous `dungeon.lua~`. Seule l'entrée du niveau est
+   écrite : le reste du fichier, commentaires compris, ne change pas ;
+4. après un ajout, l'éditeur propose de copier la carte sous
+   `<nom>.lua` dans le répertoire du jeu.
+
+Il reste à lancer `make install` dans les sources : cette commande range
+le nouveau `dungeon.lua` dans `nhdat`. Le fichier du niveau, lui, est lu
+directement dans le répertoire du jeu, puisqu'il n'est pas dans `nhdat`.
+Le niveau apparaît dans les nouvelles parties ; en mode wizard,
+`#wizwhere` donne la profondeur des niveaux spéciaux.
+
 ## Fichiers
 
 - `nhmapedit.py` : l'interface curses.
 - `nhlevel.py` : le modèle de niveau, la lecture et l'écriture du Lua.
+- `nhdungeon.py` : la lecture et la modification de `dat/dungeon.lua`.
 - `gen_data.py` : extrait des sources de NetHack les listes de monstres,
   d'objets et de pièges dans `nhdata.json`. À relancer si les sources
   changent : `python3 gen_data.py [chemin/vers/NetHack-5.0.0]`.

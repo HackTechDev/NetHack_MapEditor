@@ -120,7 +120,7 @@ reste invisible dans l'éditeur.
   fichier, mais il faut encore lancer NetHack et taper `#wizloaddes`. On
   pourrait ouvrir le jeu dans un nouveau terminal ou un panneau tmux, et
   lui envoyer la commande automatiquement.
-- **Éditer `dungeon.lua`** **[gros]** : ajouter un nouveau niveau
+- ✅ **Fait** — **Éditer `dungeon.lua`** **[gros]** : ajouter un nouveau niveau
   spécial au donjon (branche, profondeur, probabilité) sans éditer le
   fichier à la main.
 - **Salles à thème** **[gros]** : éditer les salles de `themerms.lua`,
