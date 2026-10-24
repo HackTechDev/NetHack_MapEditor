@@ -17,6 +17,8 @@ DUNGEON_FILES = [
     os.environ.get("NHMAPEDIT_DUNGEON", ""),
     os.path.join(HERE, "..", "NetHack-5.0.0", "dat", "dungeon.lua"),
 ]
+# Extensions de « enregistrer sous » qui exportent la carte seule
+EXPORTS = (".txt",)
 # Préfixe des copies de test, pour ne jamais masquer un niveau de nhdat
 TEST_PREFIX = "nhme-"
 # Session tmux du jeu lancé par l'éditeur (hors de tmux)
@@ -295,6 +297,8 @@ NIVEAU ET FICHIERS
      lui-même, puis la recharge à chaque nouvel appui sur t
   u  annuler      U / Ctrl-R  rétablir
   n  nouveau      o  ouvrir      s  enregistrer      w  enregistrer sous
+     o sur un .txt : importe une carte en texte brut ;
+     w vers un .txt : exporte la carte seule
   q  quitter      ?  cette aide
 
 Salles à thème : ouvrir themerms.lua (o) propose ses salles dessinées par

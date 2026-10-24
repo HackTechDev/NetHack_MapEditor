@@ -52,7 +52,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | `v` | vérifier la carte : largeur > 76, entités dans les murs, escaliers en double, connexité… (voir « Vérification ») |
 | `t` | tester : copie la carte dans le répertoire du jeu ; avec tmux, lance NetHack et y charge la carte (voir plus bas) |
 | `u` / `U` (ou Ctrl-R) | annuler / rétablir |
-| `n`, `o`, `s`, `w` | nouveau, ouvrir, enregistrer, enregistrer sous (Tab complète les chemins) |
+| `n`, `o`, `s`, `w` | nouveau, ouvrir, enregistrer, enregistrer sous (Tab complète les chemins) ; `o` sur un `.txt` importe une carte en texte brut, `w` vers un `.txt` l'exporte (voir « Import et export ») |
 | `q` | quitter |
 
 La souris est gérée : clic = déplacer le curseur et appliquer l'outil,
@@ -107,6 +107,16 @@ scripts NetHack. La barre d'état affiche aussi la position réelle de la
 case dans le niveau de 80x21 (`niveau (x,y)`), calculée comme le fait
 NetHack à partir de `halign`/`valign` ou de la position fixe de la carte ;
 elle vaut `(?)` quand la carte est placée au hasard.
+
+## Import et export
+
+- **Texte brut** : `o` sur un fichier `.txt` importe une carte ASCII seule,
+  sans le Lua autour, comme un nouveau niveau. `s` l'enregistre ensuite
+  en `.lua` à côté du fichier texte. Les lignes vides autour sont
+  ignorées, et les lignes courtes complétées par de la roche ; un
+  caractère inconnu est signalé. À l'inverse, `w` (enregistrer sous)
+  vers un nom en `.txt` exporte la carte seule, sans changer le fichier
+  en cours.
 
 ## Vérification
 

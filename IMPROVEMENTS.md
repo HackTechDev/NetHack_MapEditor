@@ -128,7 +128,7 @@ reste invisible dans l'éditeur.
 
 ## 7. Fichiers et formats
 
-- **Import et export en texte brut** **[facile]** : coller ou exporter
+- ✅ **Fait** — **Import et export en texte brut** **[facile]** : coller ou exporter
   une carte ASCII seule, sans le Lua autour.
 - **Export en image** **[facile]** : réutiliser `docs/capture.py` pour
   exporter la carte seule (en SVG ou en PNG) depuis l'éditeur, par

@@ -4,10 +4,11 @@ import os
 import shutil
 
 import nhcheck
+import nhexport
 import nhlevel
 import nhtheme
 from nhlevel import Level
-from nhme_common import Cancel
+from nhme_common import Cancel, EXPORTS
 
 
 class LevelMixin:
@@ -182,6 +183,8 @@ class LevelMixin:
         return lua
 
     def open_file(self, path):
+        if path.lower().endswith(".txt"):
+            return self.import_text(path)
         try:
             with open(path, encoding="utf-8") as f:
                 text = f.read()
@@ -198,6 +201,22 @@ class LevelMixin:
             self.msg = "Erreur à l'ouverture : %s" % e
             return False
         return self.set_level(lvl, path)
+
+    def import_text(self, path):
+        """Ouvre une carte ASCII seule comme un nouveau niveau ; « s »
+        l'enregistrera en .lua à côté du fichier texte."""
+        try:
+            with open(path, encoding="utf-8") as f:
+                lvl = nhexport.import_text(f.read())
+        except (OSError, ValueError, UnicodeDecodeError) as e:
+            self.msg = "Erreur à l'import : %s" % e
+            return False
+        lua = os.path.splitext(path)[0] + ".lua"
+        self.set_level(lvl, None if os.path.exists(lua) else lua)
+        self.modified = True
+        self.msg = "Carte importée de %s (%dx%d) ; s l'enregistre en %s." % (
+            path, lvl.w, lvl.h, os.path.basename(self.path or "Lua"))
+        return True
 
     def open_theme(self, path, tf):
         """Choisit une salle à thème (dessinée par des.map) à éditer, ou
@@ -258,11 +277,13 @@ class LevelMixin:
             if not path.strip():
                 raise Cancel()
             path = os.path.expanduser(path.strip())
-            if not path.endswith(".lua"):
+            if os.path.splitext(path)[1].lower() not in EXPORTS:
                 path += ".lua"
             if path != self.path and os.path.exists(path):
                 if not self.confirm("%s existe. Écraser ?" % path):
                     raise Cancel()
+            if not path.endswith(".lua"):
+                return self.export(path)
         if self.lvl.theme and not as_new:
             return self.save_theme()
         name = os.path.splitext(os.path.basename(path))[0]
@@ -279,6 +300,22 @@ class LevelMixin:
         self.lvl.theme = None       # « enregistrer sous » : niveau à part
         self.modified = False
         self.msg = "Enregistré : %s" % path
+        return True
+
+    def export(self, path):
+        """Exporte la carte seule (texte brut, image) sans changer le
+        fichier en cours."""
+        ext = os.path.splitext(path)[1].lower()
+        try:
+            if ext == ".txt":
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(nhexport.export_text(self.lvl))
+            else:
+                self.export_image(path)
+        except (OSError, ValueError) as e:
+            self.msg = "Erreur d'export : %s" % e
+            return False
+        self.msg = "Carte exportée : %s" % path
         return True
 
     def save_theme(self):
