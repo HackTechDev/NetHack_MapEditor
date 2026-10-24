@@ -182,8 +182,8 @@ def main():
                          "sources de NetHack)")
     ap.add_argument("--out", default=os.path.join(DOCS, "capture.svg"),
                     help="fichier SVG produit (défaut : docs/capture.svg)")
-    ap.add_argument("--size", default="108x28",
-                    help="taille du terminal simulé (défaut : 108x28)")
+    ap.add_argument("--size", default="108x30",
+                    help="taille du terminal simulé (défaut : 108x30)")
     args = ap.parse_args()
     if not os.path.isfile(args.level):
         sys.exit("Niveau introuvable : %s (utilisez --level)" % args.level)

@@ -108,7 +108,7 @@ sources et recompilez/réinstallez (`make install`), ou référencez-le dans
 - `nhdata.json` : les données générées (394 monstres, 422 objets, 24 pièges).
 - `docs/capture.py` : régénère la capture d'écran `docs/capture.svg` en
   pilotant l'éditeur dans un pseudo-terminal :
-  `python3 docs/capture.py [--level niveau.lua] [--size 108x28]`.
+  `python3 docs/capture.py [--level niveau.lua] [--size 108x30]`.
 
 ## Licence
 
