@@ -217,6 +217,8 @@ OUTILS (Espace ou Entrée pour appliquer)
     selon une densité en % demandée au choix de l'outil
   R Remplacer un terrain par un autre, sur toute la carte ou dans une zone,
     avec une proportion en % (comme des.replace_terrain)
+  E  insérer ou supprimer une ligne ou une colonne au curseur (la carte et
+     les entités sont décalées)
   Presse-papiers : X miroir gauche/droite   Y miroir haut/bas
                    O rotation d'un quart de tour (sens horaire)
   Les outils à deux points : 1er appui = ancre, 2e appui = tracé. Échap annule.
@@ -851,8 +853,9 @@ class Editor:
     # ------------------------------------------------------------------
     # Modifications
     # ------------------------------------------------------------------
-    def checkpoint(self):
-        self.undo_stack.append(self.lvl.snapshot())
+    def checkpoint(self, snap=None):
+        """Point d'annulation ; snap : état pris avant la modification."""
+        self.undo_stack.append(snap or self.lvl.snapshot())
         if len(self.undo_stack) > 300:
             del self.undo_stack[0]
         self.redo_stack.clear()
@@ -976,6 +979,57 @@ class Editor:
         self.paint(cells)
         self.msg = "%d case(s) « %s » remplacée(s) par « %s »." % (
             len(cells), nhlevel.TERRAIN_DESC[old], nhlevel.TERRAIN_DESC[new])
+
+    def edit_rows_cols(self):
+        """Menu : insérer ou supprimer une ligne ou une colonne."""
+        lvl = self.lvl
+        what = self.pick("Lignes et colonnes (curseur en %d,%d)"
+                         % (self.cx, self.cy), [
+                             ("insérer une ligne au-dessus", "row-above"),
+                             ("insérer une ligne en dessous", "row-below"),
+                             ("supprimer la ligne", "row-del"),
+                             ("insérer une colonne à gauche", "col-left"),
+                             ("insérer une colonne à droite", "col-right"),
+                             ("supprimer la colonne", "col-del")])
+        # « au-dessus » et « à gauche » s'entendent à l'écran, même dans
+        # l'aperçu retourné
+        if self.flip & 1:
+            what = {"row-above": "row-below",
+                    "row-below": "row-above"}.get(what, what)
+        if self.flip & 2:
+            what = {"col-left": "col-right",
+                    "col-right": "col-left"}.get(what, what)
+        fill = lvl.init.get("fg", " ")
+        if fill not in nhlevel.TERRAIN_CHARS or fill == "x":
+            fill = " "
+        snap = lvl.snapshot()
+        n = len(lvl.entities)
+        if what == "row-above":
+            ok = lvl.insert_row(self.cy, fill)
+        elif what == "row-below":
+            ok = lvl.insert_row(self.cy + 1, fill)
+            self.cy += ok
+        elif what == "row-del":
+            ok = lvl.delete_row(self.cy)
+        elif what == "col-left":
+            ok = lvl.insert_col(self.cx, fill)
+        elif what == "col-right":
+            ok = lvl.insert_col(self.cx + 1, fill)
+            self.cx += ok
+        else:
+            ok = lvl.delete_col(self.cx)
+        if not ok:
+            self.msg = ("Taille maximale atteinte (%dx%d)."
+                        % (nhlevel.MAX_W, nhlevel.MAX_H)
+                        if "del" not in what else
+                        "Impossible : la carte n'a plus qu'une ligne "
+                        "ou colonne.")
+            return
+        self.checkpoint(snap)
+        self.clamp_cursor()
+        self.msg = "Carte maintenant en %dx%d%s." % (
+            lvl.w, lvl.h, "" if len(lvl.entities) == n else
+            " (%d entité(s) supprimée(s))" % (n - len(lvl.entities)))
 
     def copy(self, a, b, cut=False):
         """Copie la zone (terrain et entités) dans le presse-papiers.
@@ -1691,6 +1745,8 @@ class Editor:
             self.msg = "Crayon %s." % ("baissé" if self.pen_down else "levé")
         elif k == "y":
             self.eyedropper()
+        elif k == "E":
+            self.edit_rows_cols()
         elif k in ("X", "Y", "O"):
             self.transform_clip({"X": "x", "Y": "y", "O": "rot"}[k])
         elif k == "a":

@@ -73,7 +73,7 @@ reste invisible dans l'éditeur.
   des arbres, des rochers ou de l'eau éparse).
 - ✅ **Fait** — **Rechercher et remplacer du terrain** **[facile]** : dans une zone ou
   sur toute la carte, comme `des.replace_terrain()`.
-- **Insérer ou supprimer une ligne ou une colonne** **[facile]** : en
+- ✅ **Fait** — **Insérer ou supprimer une ligne ou une colonne** **[facile]** : en
   décalant la carte et les entités.
 - ✅ **Fait** — **Annulation par trait** **[facile]** : avec le crayon baissé, chaque
   déplacement crée aujourd'hui son propre point d'annulation. Il vaudrait

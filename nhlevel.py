@@ -151,6 +151,54 @@ class Level:
         self.grid, self.w, self.h = g, w, h
         self.entities = [e for e in self.entities if e.x < w and e.y < h]
 
+    def insert_row(self, y, fill=" "):
+        """Insère une ligne avant la ligne y ; les entités suivent."""
+        if self.h >= MAX_H:
+            return False
+        self.grid.insert(y, [fill] * self.w)
+        self.h += 1
+        for e in self.entities:
+            if e.y >= y:
+                e.y += 1
+        return True
+
+    def delete_row(self, y):
+        """Supprime la ligne y et ses entités ; les suivantes remontent."""
+        if self.h <= 1:
+            return False
+        del self.grid[y]
+        self.h -= 1
+        self.entities = [e for e in self.entities if e.y != y]
+        for e in self.entities:
+            if e.y > y:
+                e.y -= 1
+        return True
+
+    def insert_col(self, x, fill=" "):
+        """Insère une colonne avant la colonne x ; les entités suivent."""
+        if self.w >= MAX_W:
+            return False
+        for row in self.grid:
+            row.insert(x, fill)
+        self.w += 1
+        for e in self.entities:
+            if e.x >= x:
+                e.x += 1
+        return True
+
+    def delete_col(self, x):
+        """Supprime la colonne x et ses entités ; les suivantes reculent."""
+        if self.w <= 1:
+            return False
+        for row in self.grid:
+            del row[x]
+        self.w -= 1
+        self.entities = [e for e in self.entities if e.x != x]
+        for e in self.entities:
+            if e.x > x:
+                e.x -= 1
+        return True
+
     def entities_at(self, x, y):
         return [e for e in self.entities if e.x == x and e.y == y]
 
