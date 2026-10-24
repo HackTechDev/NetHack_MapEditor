@@ -52,6 +52,18 @@ python3 nhmapedit.py mon_niveau.lua     # ouvre (ou crée) un fichier
 python3 nhmapedit.py --new 40x12 petit.lua
 ```
 
+Le script `nhmapedit.sh` fait la même chose, en vérifiant d'abord que
+Python 3 et son module `curses` sont présents. `--install` crée un lien
+`~/.local/bin/nhmapedit` pour lancer l'éditeur depuis n'importe quel
+dossier :
+
+```sh
+./nhmapedit.sh mon_niveau.lua
+./nhmapedit.sh --install        # puis, partout : nhmapedit mon_niveau.lua
+```
+
+La variable `PYTHON` choisit un autre interpréteur (`PYTHON=python3.13`).
+
 Seul Python 3 (avec son module `curses`, présent sous Linux et macOS)
 est nécessaire. Il faut un terminal d'au moins 80x24 ; à partir
 d'environ 105 colonnes, une palette (outils et terrains) s'affiche à
@@ -378,6 +390,7 @@ au démarrage, sans empêcher l'éditeur de s'ouvrir.
 
 ## Fichiers
 
+- `nhmapedit.sh` : script de lancement (et `--install`).
 - `nhmapedit.py` : point d'entrée ; la classe `Editor` (état, touches,
   souris), qui hérite des modules `nhme_*` :
   - `nhme_common.py` : constantes, couleurs, symboles, aide, géométrie ;
