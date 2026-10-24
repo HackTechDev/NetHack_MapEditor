@@ -28,18 +28,22 @@ HACKDIRS = [
 # Préfixe des copies de test, pour ne jamais masquer un niveau de nhdat
 TEST_PREFIX = "nhme-"
 
+# Outils : identifiant, nom, nom court (palette), touche
 TOOLS = [
-    ("pen", "Pinceau"),
-    ("line", "Ligne"),
-    ("rect", "Rectangle"),
-    ("fillrect", "Rectangle plein"),
-    ("room", "Salle"),
-    ("fill", "Remplissage"),
-    ("copy", "Copier zone"),
-    ("paste", "Coller"),
+    ("pen", "Pinceau", "Pinceau", "1"),
+    ("line", "Ligne", "Ligne", "2"),
+    ("rect", "Rectangle", "Rectangle", "3"),
+    ("fillrect", "Rectangle plein", "Rect plein", "4"),
+    ("room", "Salle", "Salle", "5"),
+    ("fill", "Remplissage", "Remplir", "6"),
+    ("copy", "Copier zone", "Copier", "7"),
+    ("paste", "Coller", "Coller", "8"),
+    ("cut", "Couper (déplacer) zone", "Couper", "D"),
 ]
-TOOL_NAME = dict(TOOLS)
-TWO_POINT = {"line", "rect", "fillrect", "room", "copy"}
+TOOL_NAME = {t: name for t, name, _, _ in TOOLS}
+TOOL_KEY = {key: t for t, _, _, key in TOOLS}
+TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut"}
+SELECT = {"copy", "cut"}        # outils qui sélectionnent sans dessiner
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
 FLIP_NAME = {0: "aucun", 1: "vertical", 2: "horizontal",
@@ -199,6 +203,8 @@ TERRAIN (le caractère tapé devient le pinceau, et peint en mode Pinceau)
 OUTILS (Espace ou Entrée pour appliquer)
   1 Pinceau   2 Ligne   3 Rectangle   4 Rectangle plein   5 Salle (murs+sol)
   6 Remplissage   7 Copier une zone   8 Coller
+  D Couper une zone (pour la déplacer : la zone est vidée, entités comprises,
+    puis l'outil Coller la repose où l'on veut)
   Les outils à deux points : 1er appui = ancre, 2e appui = tracé. Échap annule.
   d  crayon baissé (peint en se déplaçant)    a  avance automatique
   Un trait (crayon baissé ou glisser à la souris) s'annule en une fois.
@@ -434,7 +440,7 @@ class Editor:
         if t == "line":
             for x, y in bresenham(x0, y0, x1, y1):
                 cells[(x, y)] = br
-        elif t in ("rect", "copy"):
+        elif t in ("rect", "copy", "cut"):
             for x in range(lx, hx + 1):
                 cells[(x, ly)] = cells[(x, hy)] = br
             for y in range(ly, hy + 1):
@@ -492,7 +498,7 @@ class Editor:
         index = lvl.entity_index()
         if self.game:
             grid = [row[:] for row in lvl.grid]
-            if self.tool != "copy":
+            if self.tool not in SELECT:
                 for (x, y), c in prev.items():
                     if 0 <= x < lvl.w and 0 <= y < lvl.h:
                         grid[y][x] = c
@@ -515,7 +521,7 @@ class Editor:
                     ch = lvl.grid[y][x]
                     a = self.attr(TERRAIN_COLOR.get(ch, "CLR_GRAY"))
                 if (x, y) in prev:
-                    if self.tool != "copy" and not self.game:
+                    if self.tool not in SELECT and not self.game:
                         ch = prev[(x, y)]
                         a = self.attr(TERRAIN_COLOR.get(ch, "CLR_GRAY"))
                     a |= curses.A_REVERSE
@@ -554,10 +560,12 @@ class Editor:
 
     def draw_side(self, y, x, maxy):
         self.put(y, x, "Outils", curses.A_BOLD)
-        for i, (t, label) in enumerate(TOOLS):
+        rows = (len(TOOLS) + 1) // 2
+        for i, (t, _, short, key) in enumerate(TOOLS):
             a = curses.A_REVERSE if t == self.tool else 0
-            self.put(y + 1 + i, x, " %d %s " % (i + 1, label), a)
-        y += len(TOOLS) + 2
+            self.put(y + 1 + i % rows, x + i // rows * 13,
+                     "%s %s" % (key, short), a)
+        y += rows + 2
         self.put(y, x, "Terrain", curses.A_BOLD)
         y += 1
         cols = 2
@@ -856,8 +864,8 @@ class Editor:
         else:
             a, b = self.anchor, (self.cx, self.cy)
             self.anchor = None
-            if t == "copy":
-                self.copy(a, b)
+            if t in SELECT:
+                self.copy(a, b, cut=t == "cut")
             else:
                 self.paint(self.shape_cells(a, b))
                 self.msg = "%s tracé." % TOOL_NAME[t]
@@ -877,22 +885,38 @@ class Editor:
                 stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
         self.msg = "%d cases remplies." % n
 
-    def copy(self, a, b):
+    def copy(self, a, b, cut=False):
+        """Copie la zone (terrain et entités) dans le presse-papiers.
+
+        Avec cut=True, la zone est vidée : son terrain devient celui de
+        remplissage du niveau et ses entités sont retirées."""
         lx, hx = sorted((a[0], b[0]))
         ly, hy = sorted((a[1], b[1]))
         g = [self.lvl.grid[y][lx:hx + 1] for y in range(ly, hy + 1)]
+        inside = [e for e in self.lvl.entities
+                  if lx <= e.x <= hx and ly <= e.y <= hy]
         ents = []
-        for e in self.lvl.entities:
-            if lx <= e.x <= hx and ly <= e.y <= hy:
-                c = e.copy()
-                c.origin = None
-                c.x -= lx
-                c.y -= ly
-                ents.append(c)
+        for e in inside:
+            c = e.copy()
+            c.origin = None
+            c.x -= lx
+            c.y -= ly
+            ents.append(c)
         self.clip = ([r[:] for r in g], ents)
+        if cut:
+            self.checkpoint()
+            fill = self.lvl.init.get("fg", " ")
+            if fill not in nhlevel.TERRAIN_CHARS or fill == "x":
+                fill = " "
+            for y in range(ly, hy + 1):
+                for x in range(lx, hx + 1):
+                    self.lvl.set(x, y, fill)
+            self.lvl.entities = [e for e in self.lvl.entities
+                                 if e not in inside]
         self.tool = "paste"
-        self.msg = ("Zone %dx%d copiée (%d entités). Outil Coller actif."
-                    % (hx - lx + 1, hy - ly + 1, len(ents)))
+        self.msg = ("Zone %dx%d %s (%d entités). Outil Coller actif."
+                    % (hx - lx + 1, hy - ly + 1,
+                       "coupée" if cut else "copiée", len(ents)))
 
     def paste(self):
         if not self.clip:
@@ -1508,8 +1532,8 @@ class Editor:
             elif self.tool == "paste":
                 self.tool = "pen"
                 self.msg = "Outil Pinceau."
-        elif isinstance(k, str) and k in "12345678":
-            self.tool = TOOLS[int(k) - 1][0]
+        elif k in TOOL_KEY:
+            self.tool = TOOL_KEY[k]
             self.anchor = None
             self.msg = "Outil : %s." % TOOL_NAME[self.tool]
             if self.tool == "paste" and not self.clip:

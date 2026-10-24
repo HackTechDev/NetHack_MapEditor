@@ -60,7 +60,7 @@ reste invisible dans l'éditeur.
 
 - ✅ **Fait** — **Pipette** **[facile]** : une touche (ou le clic droit) pour prendre
   comme pinceau le terrain sous le curseur.
-- **Déplacer une zone** **[facile]** : couper, puis coller, en
+- ✅ **Fait** — **Déplacer une zone** **[facile]** : couper, puis coller, en
   déplaçant aussi les entités. Aujourd'hui, il faut copier, coller, puis
   effacer à la main.
 - **Retourner et faire pivoter le presse-papiers** **[facile]** : miroir

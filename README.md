@@ -30,6 +30,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | `e` | pinceau « roche » (espace) |
 | `y` | pipette : prend comme pinceau le terrain sous le curseur (aussi au clic droit) |
 | `1`…`8` | outil : Pinceau, Ligne, Rectangle, Rectangle plein, Salle, Remplissage, Copier, Coller |
+| `D` | outil Couper : pour déplacer une zone, terrain et entités compris ; la zone est vidée puis l'outil Coller la repose |
 | Espace / Entrée | appliquer l'outil (outils à deux points : ancre puis tracé ; Échap annule) |
 | `d` | crayon baissé : peint en se déplaçant (tout le trait s'annule en une fois) |
 | `a` | avance automatique après chaque caractère tapé (pratique pour « taper » une carte) |
