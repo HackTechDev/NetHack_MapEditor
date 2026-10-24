@@ -44,7 +44,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | `r` | répéter la dernière entité placée sous le curseur |
 | Suppr, Retour arrière, `z` | supprimer les entités sous le curseur |
 | `i` | liste des entités (Entrée : y aller, `e` : modifier, `d` : supprimer) |
-| Tab | afficher / masquer les entités |
+| Tab | afficher / masquer les entités (un symbole souligné signale plusieurs entités sur la case ; la barre d'état les liste toutes) |
 | `c` | afficher / masquer les règles de coordonnées (colonnes en haut, lignes à gauche) |
 | `f` | aperçu du retournement aléatoire que NetHack applique aux niveaux sans `noflip` : aucun → horizontal → vertical → les deux (l'édition reste possible, les règles gardent les vraies coordonnées) |
 | `J` | rendu « comme dans le jeu » : murs en traits avec leurs coins et jonctions, sol en points, symboles et couleurs du jeu, portes et couloirs secrets cachés (l'édition reste possible) |

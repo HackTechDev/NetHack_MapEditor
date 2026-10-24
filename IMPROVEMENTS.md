@@ -92,7 +92,7 @@ reste invisible dans l'éditeur.
 - **Contenu des conteneurs et inventaire des monstres** **[gros]** :
   éditer les fonctions `contents` des coffres et l'`inventory` des
   monstres.
-- **Plusieurs entités par case** **[facile]** : l'affichage ne montre
+- ✅ **Fait** — **Plusieurs entités par case** **[facile]** : l'affichage ne montre
   qu'une entité par case (la plus prioritaire). Il faudrait signaler
   qu'il y en a plusieurs, par exemple en soulignant le symbole.
 - **Monstres et objets aléatoires plus lisibles** **[facile]** : les

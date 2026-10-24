@@ -235,6 +235,8 @@ ENTITÉS (coordonnées relatives à la carte)
   Suppr / Retour arrière / z   supprimer les entités sous le curseur
   i  liste des entités (Entrée: aller, e: modifier, d: supprimer)
   Tab  afficher / masquer les entités
+  Un symbole souligné signale plusieurs entités sur la case (seule la plus
+  importante est dessinée ; la barre d'état les liste toutes)
   J  rendu « comme dans le jeu » (murs en traits, sol en points, portes
      et couloirs secrets cachés) ; l'édition reste possible
 
@@ -599,6 +601,9 @@ class Editor:
                     if e:
                         ch, clr = self.entity_glyph(e)
                         a = self.attr(clr)
+                        # plusieurs entités sur la case : symbole souligné
+                        if len(index[(x, y)]) > 1:
+                            a |= curses.A_UNDERLINE
                 self.put(top + 1 + sy, left + 1 + sx, ch, a)
         if side:
             self.draw_side(top, left + vw + 3, maxy)
