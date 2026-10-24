@@ -1,5 +1,6 @@
 """Constantes et fonctions communes aux modules de l'éditeur."""
 
+import collections
 import curses
 import json
 import os
@@ -33,6 +34,11 @@ AUTOSAVE_DELAY = 60
 AUTOSAVE_SUFFIX = ".nhme-autosave"
 CACHE_DIR = os.path.join(os.environ.get("XDG_CACHE_HOME")
                          or os.path.expanduser("~/.cache"), "nhmapedit")
+# Historique des commandes (annuler / rétablir) : nom de la commande,
+# état du niveau, numéro unique, position du curseur ; nombre maximal
+HistoryEntry = collections.namedtuple("HistoryEntry",
+                                      "label snap serial pos")
+HISTORY_MAX = 300
 # Préfixe des copies de test, pour ne jamais masquer un niveau de nhdat
 TEST_PREFIX = "nhme-"
 # Session tmux du jeu lancé par l'éditeur (hors de tmux)
@@ -313,7 +319,10 @@ NIVEAU ET FICHIERS
      #wizloaddes en mode wizard (nethack -D) ; avec tmux, l'éditeur
      lance le jeu (panneau, fenêtre ou session tmux) et y charge la carte
      lui-même, puis la recharge à chaque nouvel appui sur t
-  u  annuler      U / Ctrl-R  rétablir
+  u / Ctrl-Z  annuler      U / Ctrl-R / Ctrl-Y  rétablir
+  V  historique des commandes : chaque modification y est nommée (« Salle :
+     sol », « Ajout : escalier up »…) ; Entrée ramène la carte à l'état
+     choisi, en avant comme en arrière (300 commandes au plus)
   n  nouveau      o  ouvrir      s  enregistrer      w  enregistrer sous
      o sur un .txt : importe une carte en texte brut ;
      w vers un .txt : exporte la carte seule ; vers un .svg ou un .png :

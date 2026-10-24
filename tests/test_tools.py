@@ -124,6 +124,64 @@ class Undo(unittest.TestCase):
         ed.undo()
         self.assertEqual(grid(ed.lvl), ["....."])
 
+    def test_labels_and_messages(self):
+        ed = editor(["....", "...."])
+        two_points(ed, "line", (0, 0), (3, 0), "W")
+        ed.cx, ed.cy = 1, 1
+        ed.add_entity(Entity("stair", 0, 0, "up"))
+        self.assertEqual([e.label for e in ed.undo_stack],
+                         ["Ligne : eau", "Ajout : escalier up"])
+        ed.undo()
+        self.assertEqual(ed.msg, "Annulé : Ajout : escalier up.")
+        self.assertEqual(ed.lvl.entities, [])
+        ed.redo()
+        self.assertEqual(ed.msg, "Rétabli : Ajout : escalier up.")
+        self.assertEqual(len(ed.lvl.entities), 1)
+
+    def test_cursor_back_to_command(self):
+        ed = editor(["....", "...."])
+        ed.tool, ed.brush, ed.cx, ed.cy = "pen", "W", 2, 1
+        ed.apply()
+        ed.cx, ed.cy = 0, 0
+        ed.undo()
+        self.assertEqual((ed.cx, ed.cy), (2, 1))
+
+    def test_properties_undone(self):
+        ed = editor(["...."])
+        ed.checkpoint("Drapeaux")
+        ed.lvl.flags = ["noflip"]
+        ed.lvl.init = {"style": "mines"}
+        ed.undo()
+        self.assertEqual(ed.lvl.flags, ["mazelevel"])
+        self.assertEqual(ed.lvl.init, {"style": "solidfill", "fg": " "})
+
+    def test_modified_follows_saved_state(self):
+        ed = editor(["...."])
+        ed.mark_saved()
+        ed.tool, ed.brush = "pen", "W"
+        ed.apply()
+        self.assertTrue(ed.modified)
+        ed.undo()
+        self.assertFalse(ed.modified)       # retour à l'état enregistré
+        ed.redo()
+        self.assertTrue(ed.modified)
+
+    def test_history_jump(self):
+        ed = editor(["...."])
+        ed.tool = "pen"
+        for x, c in enumerate("WLT"):
+            ed.cx, ed.brush = x, c
+            ed.apply()
+        answers = iter([1, 3])          # revenir après la 1re, puis la 3e
+        ed.pick = lambda *a, **k: next(answers)
+        ed.history()
+        self.assertEqual(grid(ed.lvl), ["W..."])
+        self.assertEqual((len(ed.undo_stack), len(ed.redo_stack)), (1, 2))
+        self.assertEqual(ed.msg, "2 commande(s) annulée(s).")
+        ed.history()
+        self.assertEqual(grid(ed.lvl), ["WLT."])
+        self.assertEqual(ed.msg, "2 commande(s) rétablie(s).")
+
 
 class ContextHint(unittest.TestCase):
     def test_states(self):

@@ -234,13 +234,18 @@ class Level:
         return index
 
     def snapshot(self):
+        """État complet de ce que l'éditeur modifie (annulation)."""
         return ([row[:] for row in self.grid],
-                [e.copy() for e in self.entities], self.w, self.h)
+                [e.copy() for e in self.entities], self.w, self.h,
+                copy.deepcopy(self.init), list(self.flags), self.lit,
+                self.pos, self.halign, self.valign)
 
     def restore(self, snap):
-        g, ents, self.w, self.h = snap
+        (g, ents, self.w, self.h, init, flags, self.lit, self.pos,
+         self.halign, self.valign) = snap
         self.grid = [row[:] for row in g]
         self.entities = [e.copy() for e in ents]
+        self.init, self.flags = copy.deepcopy(init), list(flags)
 
     def map_text(self):
         return "\n".join("".join(row) for row in self.grid)

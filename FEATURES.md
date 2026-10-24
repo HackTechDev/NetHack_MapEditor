@@ -15,8 +15,14 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 - Palette des outils et des terrains à droite de la carte quand le
   terminal est assez large ; défilement des cartes plus grandes que
   l'écran ; terminal de 80x24 au minimum.
-- Annulation et rétablissement illimités (`u`, `U` / Ctrl-R) ; un trait
-  au crayon ou à la souris s'annule en une fois.
+- Annulation et rétablissement (`u` / Ctrl-Z, `U` / Ctrl-R / Ctrl-Y) sur
+  300 commandes, terrain, entités et propriétés du niveau compris ; un
+  trait au crayon ou à la souris s'annule en une fois ; le curseur
+  revient où la commande a eu lieu.
+- Historique des commandes (`V`) : chaque modification est nommée
+  (« Salle : sol », « Ajout : escalier up », « Drapeaux : noflip »…) ;
+  on revient d'un coup à n'importe quel état, en avant ou en arrière.
+- `[modifié]` disparaît quand l'annulation ramène à l'état enregistré.
 - Interface en français ou en anglais.
 
 ## Affichage
@@ -167,7 +173,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 66 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 71 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

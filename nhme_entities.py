@@ -138,7 +138,7 @@ class EntitiesMixin:
 
     def add_entity(self, e):
         e.x, e.y = self.cx, self.cy
-        self.checkpoint()
+        self.checkpoint(_("Ajout : %s") % e.describe())
         if e.kind in ("stair", "ladder", "altar", "door"):
             # une seule de ces entités par case
             self.lvl.entities = [o for o in self.lvl.entities if not (
@@ -156,7 +156,8 @@ class EntitiesMixin:
         if not ents:
             self.msg = _("Aucune entité ici.")
             return
-        self.checkpoint()
+        self.checkpoint(_("Suppression : %s")
+                        % " ; ".join(e.describe() for e in ents))
         self.lvl.entities = [e for e in self.lvl.entities if e not in ents]
         self.msg = _("%d entité(s) supprimée(s).") % len(ents)
 
@@ -187,7 +188,7 @@ class EntitiesMixin:
                 self.cx, self.cy = e.x, e.y
                 return
             if action == "delete":
-                self.checkpoint()
+                self.checkpoint(_("Suppression : %s") % e.describe())
                 ents.remove(e)
                 self.msg = _("Supprimé : %s") % e.describe()
                 sel = max(0, i - 1)
@@ -197,6 +198,6 @@ class EntitiesMixin:
                                                            e.extra)
                 except Cancel:
                     continue
-                self.checkpoint()
+                self.checkpoint(_("Modification : %s") % e.describe())
                 e.value, e.extra = value, extra
                 self.msg = _("Modifié : %s") % e.describe()

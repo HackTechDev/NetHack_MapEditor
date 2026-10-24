@@ -22,7 +22,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 7. Fichiers et formats | 4 / 4 | — |
 | 8. Configuration et confort | 3 / 3 | — |
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
-| 10. Nouvelles idées | 0 / 6 | toutes |
+| 10. Nouvelles idées | 1 / 7 | calques, langues, souris, raccourcis, couverture, comparaison |
 
 Prochaines étapes conseillées : les **régions** (thème 1), présentes dans
 presque tous les niveaux de `dat/`, puis l'**intégration continue**, peu
@@ -192,6 +192,12 @@ reste invisible dans l'éditeur.
 ## 10. Nouvelles idées
 
 Idées apparues pendant le développement des thèmes précédents.
+
+- ✅ **Fait** — **Historique des commandes** **[moyen]** : chaque point
+  d'annulation porte le nom de sa commande (« Salle : sol », « Ajout :
+  escalier up »…), la touche `V` affiche la liste et ramène la carte à
+  n'importe quel état ; l'annulation couvre aussi les propriétés du
+  niveau, ramène le curseur et rétablit l'état « non modifié ».
 
 - **Calques d'affichage** **[moyen]** : une touche pour n'afficher que le
   terrain, que les entités ou que les régions (quand elles seront

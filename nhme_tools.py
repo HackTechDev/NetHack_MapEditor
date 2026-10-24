@@ -8,7 +8,8 @@ import nhexport
 import nhlevel
 from nhi18n import _
 from nhme_common import (
-    Cancel, SELECT, TEMPLATE_DIRS, TOOL_NAME, bresenham, ellipse_cells)
+    HISTORY_MAX, Cancel, HistoryEntry, SELECT, TEMPLATE_DIRS, TOOL_NAME,
+    bresenham, ellipse_cells)
 
 
 class ToolsMixin:
@@ -63,33 +64,86 @@ class ToolsMixin:
                         cells[(x, y)] = "."
         return cells
 
-    def checkpoint(self, snap=None):
-        """Point d'annulation ; snap : état pris avant la modification."""
-        self.undo_stack.append(snap or self.lvl.snapshot())
-        if len(self.undo_stack) > 300:
+    # Historique des commandes : undo_stack et redo_stack contiennent des
+    # HistoryEntry. Une entrée de undo_stack garde l'état d'avant sa
+    # commande ; annuler l'échange avec l'état courant et la passe dans
+    # redo_stack (et inversement pour rétablir).
+
+    def checkpoint(self, label=None, snap=None):
+        """Point d'annulation nommé label ; snap : état pris avant la
+        modification (sinon, l'état actuel)."""
+        self.serial += 1
+        self.undo_stack.append(HistoryEntry(
+            label or _("Modification"), snap or self.lvl.snapshot(),
+            self.serial, (self.cx, self.cy)))
+        if len(self.undo_stack) > HISTORY_MAX:
             del self.undo_stack[0]
         self.redo_stack.clear()
         self.modified = True
 
-    def undo(self):
+    def history_state(self):
+        """Numéro de l'état courant (0 : état d'ouverture)."""
+        return self.undo_stack[-1].serial if self.undo_stack else 0
+
+    def mark_saved(self, saved=True):
+        """L'état courant est celui du fichier (saved), ou n'y est pas
+        encore (carte importée, récupérée…)."""
+        self.saved_state = self.history_state() if saved else -1
+        self.modified = not saved
+
+    def _swap(self, src, dst):
+        e = src.pop()
+        dst.append(e._replace(snap=self.lvl.snapshot()))
+        self.lvl.restore(e.snap)
+        self.cx, self.cy = e.pos
+        self.clamp_cursor()
+        self.modified = self.history_state() != self.saved_state
+        return e
+
+    def undo(self, quiet=False):
         if not self.undo_stack:
             self.msg = _("Rien à annuler.")
-            return
-        self.redo_stack.append(self.lvl.snapshot())
-        self.lvl.restore(self.undo_stack.pop())
-        self.clamp_cursor()
-        self.modified = True
-        self.msg = _("Annulé.")
+            return False
+        e = self._swap(self.undo_stack, self.redo_stack)
+        if not quiet:
+            self.msg = _("Annulé : %s.") % e.label
+        return True
 
-    def redo(self):
+    def redo(self, quiet=False):
         if not self.redo_stack:
             self.msg = _("Rien à rétablir.")
+            return False
+        e = self._swap(self.redo_stack, self.undo_stack)
+        if not quiet:
+            self.msg = _("Rétabli : %s.") % e.label
+        return True
+
+    def history(self):
+        """Fenêtre de l'historique : choisir une commande y ramène la
+        carte (annulations ou rétablissements successifs)."""
+        done, undone = self.undo_stack, self.redo_stack[::-1]
+        if not done and not undone:
+            self.msg = _("Historique vide.")
             return
-        self.undo_stack.append(self.lvl.snapshot())
-        self.lvl.restore(self.redo_stack.pop())
-        self.clamp_cursor()
-        self.modified = True
-        self.msg = _("Rétabli.")
+        items = [(_("   0. (ouverture de la carte)"), 0)]
+        for i, e in enumerate(done, 1):
+            items.append(("%s%4d. %s" % ("●" if i == len(done) else " ", i,
+                                          e.label), i))
+        for i, e in enumerate(undone, len(done) + 1):
+            items.append(("%4d. %s %s" % (i, e.label, _("(annulé)")), i))
+        if not done:
+            items[0] = ("●" + items[0][0][1:], 0)
+        target = self.pick(
+            _("Historique : %d commande(s), %d annulée(s) (● état actuel)")
+            % (len(done) + len(undone), len(undone)), items, len(done),
+            hint=_("Entrée: revenir à cet état  Échap: fermer"))
+        steps = target - len(done)
+        for _i in range(abs(steps)):
+            (self.redo if steps > 0 else self.undo)(quiet=True)
+        if steps < 0:
+            self.msg = _("%d commande(s) annulée(s).") % -steps
+        elif steps > 0:
+            self.msg = _("%d commande(s) rétablie(s).") % steps
 
     def clamp_cursor(self):
         self.cx = max(0, min(self.cx, self.lvl.w - 1))
@@ -120,13 +174,20 @@ class ToolsMixin:
                 out[p] = c
         return out
 
-    def paint(self, cells, sym=True):
+    def paint_label(self):
+        """Nom dans l'historique d'une commande qui peint au pinceau."""
+        what = nhlevel.TERRAIN_DESC[self.brush].split(" (")[0]
+        if self.stroke:
+            return _("Trait au crayon : %s") % what
+        return "%s : %s" % (TOOL_NAME[self.tool], what)
+
+    def paint(self, cells, sym=True, label=None):
         if sym:
             cells = self.mirrored(cells)
         if any(self.lvl.grid[y][x] != c for (x, y), c in cells.items()
                if 0 <= x < self.lvl.w and 0 <= y < self.lvl.h):
             if not (self.stroke and self.stroke_saved):
-                self.checkpoint()
+                self.checkpoint(label or self.paint_label())
                 self.stroke_saved = self.stroke
             for (x, y), c in cells.items():
                 self.lvl.set(x, y, c)
@@ -165,7 +226,8 @@ class ToolsMixin:
         old = self.lvl.grid[y][x]
         if old == c:
             return
-        self.checkpoint()
+        self.checkpoint(_("Remplissage : %s")
+                        % nhlevel.TERRAIN_DESC[c].split(" (")[0])
         # en symétrie, on remplit aussi depuis les reflets du point de départ
         stack = [p for p in self.mirror_points(x, y)
                  if self.lvl.grid[p[1]][p[0]] == old]
@@ -216,21 +278,24 @@ class ToolsMixin:
         cells = {(x, y): new for x, y in zone
                  if self.lvl.grid[y][x] == old
                  and random.random() * 100 < pct}
-        self.paint(cells, sym=False)
+        self.paint(cells, sym=False, label=_("Remplacer « %s » par « %s »") % (
+            nhlevel.TERRAIN_DESC[old].split(" (")[0],
+            nhlevel.TERRAIN_DESC[new].split(" (")[0]))
         self.msg = _("%d case(s) « %s » remplacée(s) par « %s ».") % (
             len(cells), nhlevel.TERRAIN_DESC[old], nhlevel.TERRAIN_DESC[new])
 
     def edit_rows_cols(self):
         """Menu : insérer ou supprimer une ligne ou une colonne."""
         lvl = self.lvl
+        choices = [(_("insérer une ligne au-dessus"), "row-above"),
+                   (_("insérer une ligne en dessous"), "row-below"),
+                   (_("supprimer la ligne"), "row-del"),
+                   (_("insérer une colonne à gauche"), "col-left"),
+                   (_("insérer une colonne à droite"), "col-right"),
+                   (_("supprimer la colonne"), "col-del")]
         what = self.pick(_("Lignes et colonnes (curseur en %d,%d)")
-                         % (self.cx, self.cy), [
-                             (_("insérer une ligne au-dessus"), "row-above"),
-                             (_("insérer une ligne en dessous"), "row-below"),
-                             (_("supprimer la ligne"), "row-del"),
-                             (_("insérer une colonne à gauche"), "col-left"),
-                             (_("insérer une colonne à droite"), "col-right"),
-                             (_("supprimer la colonne"), "col-del")])
+                         % (self.cx, self.cy), choices)
+        label = dict((v, k) for k, v in choices)[what].capitalize()
         # « au-dessus » et « à gauche » s'entendent à l'écran, même dans
         # l'aperçu retourné
         if self.flip & 1:
@@ -265,7 +330,7 @@ class ToolsMixin:
                         _("Impossible : la carte n'a plus qu'une ligne "
                           "ou colonne."))
             return
-        self.checkpoint(snap)
+        self.checkpoint(label, snap)
         self.clamp_cursor()
         self.msg = _("Carte maintenant en %dx%d%s.") % (
             lvl.w, lvl.h, "" if len(lvl.entities) == n else
@@ -290,7 +355,7 @@ class ToolsMixin:
             ents.append(c)
         self.clip = ([r[:] for r in g], ents)
         if cut:
-            self.checkpoint()
+            self.checkpoint(_("Couper une zone %dx%d") % (len(g[0]), len(g)))
             fill = self.lvl.init.get("fg", " ")
             if fill not in nhlevel.TERRAIN_CHARS or fill == "x":
                 fill = " "
@@ -345,7 +410,7 @@ class ToolsMixin:
             self.msg = _("Presse-papiers vide (outil 7 pour copier).")
             return
         g, ents = self.clip
-        self.checkpoint()
+        self.checkpoint(_("Coller %dx%d") % (len(g[0]), len(g)))
         for y, row in enumerate(g):
             for x, c in enumerate(row):
                 self.lvl.set(self.cx + x, self.cy + y, c)

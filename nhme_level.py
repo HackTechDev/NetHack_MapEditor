@@ -56,7 +56,8 @@ class LevelMixin:
                 elif what == "place" and not lvl.map_partial:
                     self.edit_place()
                 elif what == "lit":
-                    self.checkpoint()
+                    self.checkpoint(_("Carte éclairée (lit) : %s") % (
+                        _("non") if lvl.lit else _("oui")))
                     lvl.lit = not lvl.lit
                 elif what == "dungeon":
                     self.edit_dungeon()
@@ -72,7 +73,7 @@ class LevelMixin:
         except ValueError:
             self.msg = _("Taille invalide.")
             return
-        self.checkpoint()
+        self.checkpoint(_("Taille de la carte : %dx%d") % (w, h))
         self.lvl.resize(w, h)
         self.clamp_cursor()
         self.msg = _("Carte redimensionnée en %dx%d.") % (self.lvl.w,
@@ -101,7 +102,7 @@ class LevelMixin:
                     init.update(d)
             except (nhlevel.NotLiteral, ValueError):
                 self.msg = _("Options ignorées (syntaxe invalide).")
-        self.checkpoint()
+        self.checkpoint(_("level_init : %s") % nhlevel.lua_value(init))
         self.lvl.init = init
 
     def edit_flags(self):
@@ -123,7 +124,8 @@ class LevelMixin:
             else:
                 flags.append(f)
         if flags != self.lvl.flags:
-            self.checkpoint()
+            self.checkpoint(_("Drapeaux : %s") % (", ".join(flags)
+                                                  or _("(aucun)")))
             self.lvl.flags = flags
 
     def edit_place(self):
@@ -140,14 +142,16 @@ class LevelMixin:
             except ValueError:
                 self.msg = _("Position invalide.")
                 return
-            self.checkpoint()
+            self.checkpoint(_("Placement : %s") % (
+                _("position fixe x=%d y=%d") % (x, y)))
             lvl.pos = (x, y)
         else:
             h = self.pick(_("Alignement horizontal"),
                           [(a, a) for a in nhlevel.HALIGNS], lvl.halign)
             v = self.pick(_("Alignement vertical"),
                           [(a, a) for a in nhlevel.VALIGNS], lvl.valign)
-            self.checkpoint()
+            self.checkpoint(_("Placement : %s")
+                            % ("halign=%s valign=%s" % (h, v)))
             lvl.pos, lvl.halign, lvl.valign = None, h, v
 
     def check(self):
@@ -219,7 +223,7 @@ class LevelMixin:
             return False
         lua = os.path.splitext(path)[0] + ".lua"
         self.set_level(lvl, None if os.path.exists(lua) else lua)
-        self.modified = True
+        self.mark_saved(False)
         self.msg = _("Carte importée de %s (%dx%d) ; s l'enregistre en "
                      "%s.") % (
             path, lvl.w, lvl.h, os.path.basename(self.path or "Lua"))
@@ -257,16 +261,16 @@ class LevelMixin:
         lvl = nhlevel.parse_level("des.map([[\n%s\n]]);" % text)[0]
         lvl.source, lvl.theme = None, theme
         self.set_level(lvl, path)
-        self.modified = theme["new"]    # pas encore dans le fichier
+        self.mark_saved(not theme["new"])   # nouvelle : pas dans le fichier
         self.msg = (_("Salle à thème « %s » : seule la carte est éditée ; son "
                       "contenu (filler_region…) est conservé.") % name)
         return True
 
     def set_level(self, lvl, path):
         self.lvl, self.path = lvl, path
-        self.modified = False
         self.undo_stack.clear()
         self.redo_stack.clear()
+        self.mark_saved()
         self.cx = self.cy = self.ox = self.oy = 0
         self.anchor = None
         n = len(lvl.entities)
@@ -306,7 +310,7 @@ class LevelMixin:
         self.drop_autosave()        # celle de l'ancien nom
         self.path = path
         self.lvl.theme = None       # « enregistrer sous » : niveau à part
-        self.modified = False
+        self.mark_saved()
         self.drop_autosave()
         self.msg = _("Enregistré : %s") % path
         return True
@@ -382,7 +386,7 @@ class LevelMixin:
             return
         path = self.path
         self.set_level(lvl, path)
-        self.modified = True
+        self.mark_saved(False)
         self.msg = (_("Sauvegarde de secours récupérée ; s pour l'enregistrer "
                       "dans %s.") % (path or _("un fichier")))
 
@@ -411,7 +415,7 @@ class LevelMixin:
             self.msg = _("Erreur d'enregistrement : %s") % e
             return False
         th["new"] = False
-        self.modified = False
+        self.mark_saved()
         self.msg = _("Enregistré : salle « %s » dans %s") % (th["name"], path)
         if self.lvl.entities:
             self.msg += _(" (sans les entités)")
@@ -450,8 +454,8 @@ class LevelMixin:
                 self.lvl.set(x, y, c)
             self.tool = t
         self.path = None
-        self.modified = False
         self.undo_stack.clear()
         self.redo_stack.clear()
+        self.mark_saved()
         self.cx = self.cy = self.ox = self.oy = 0
         self.msg = _("Nouvelle carte %dx%d.") % (self.lvl.w, self.lvl.h)

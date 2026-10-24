@@ -578,7 +578,6 @@ EN = {
     "Nom de la nouvelle salle : ": "Name of the new room: ",
 
     # nhme_tools.py
-    "Rétabli.": "Redone.",
     "Collé.": "Pasted.",
     "Rien à annuler.": "Nothing to undo.",
     "Rien à rétablir.": "Nothing to redo.",
@@ -634,6 +633,28 @@ EN = {
     "tourné d'un quart de tour": "rotated a quarter turn",
     "Semis : %d cases sur %d (%d %%).": "Scatter: %d cells out of %d (%d %%).",
     "%s tracé.": "%s drawn.",
+
+    # historique des commandes
+    "Modification": "Change",
+    "Trait au crayon : %s": "Pen stroke: %s",
+    "Remplissage : %s": "Flood fill: %s",
+    "Remplacer « %s » par « %s »": "Replace '%s' with '%s'",
+    "Couper une zone %dx%d": "Cut a %dx%d area",
+    "Coller %dx%d": "Paste %dx%d",
+    "Annulé : %s.": "Undone: %s.",
+    "Rétabli : %s.": "Redone: %s.",
+    "Historique vide.": "History is empty.",
+    "   0. (ouverture de la carte)": "   0. (map opened)",
+    "(annulé)": "(undone)",
+    "Historique : %d commande(s), %d annulée(s) (● état actuel)":
+        "History: %d command(s), %d undone (● current state)",
+    "Entrée: revenir à cet état  Échap: fermer":
+        "Enter: go back to this state  Esc: close",
+    "%d commande(s) annulée(s).": "%d command(s) undone.",
+    "%d commande(s) rétablie(s).": "%d command(s) redone.",
+    "Ajout : %s": "Add: %s",
+    "Suppression : %s": "Delete: %s",
+    "Modification : %s": "Edit: %s",
 }
 
 HELP = """\
@@ -712,7 +733,10 @@ LEVEL AND FILES
      #wizloaddes in wizard mode (nethack -D); with tmux, the editor
      starts the game (pane, window or tmux session) and loads the map
      itself, then reloads it each time t is pressed again
-  u  undo      U / Ctrl-R  redo
+  u / Ctrl-Z  undo      U / Ctrl-R / Ctrl-Y  redo
+  V  command history: every change is named there ("Room: floor",
+     "Add: stairs up"…); Enter brings the map back to the chosen state,
+     forward or backward (300 commands at most)
   n  new       o  open      s  save      w  save as
      o on a .txt: imports a plain text map;
      w to a .txt: exports the map alone; to a .svg or a .png: exports

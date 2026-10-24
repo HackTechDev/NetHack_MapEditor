@@ -82,7 +82,10 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.lua_refused = False    # compilation de Lua refusée
         self.autosave_delay = self.config.get("autosave", AUTOSAVE_DELAY)
         self.autosave_time = time.time()
+        # historique des commandes (voir ToolsMixin.checkpoint) ;
+        # saved_state : numéro de l'état enregistré dans le fichier
         self.undo_stack, self.redo_stack = [], []
+        self.serial = self.saved_state = 0
         # trait en cours (crayon baissé ou glisser à la souris) : un seul
         # point d'annulation pour tout le trait
         self.stroke = self.stroke_saved = False
@@ -252,10 +255,12 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                 self.clamp_cursor()
             except ValueError:
                 self.msg = _("Position invalide.")
-        elif k == "u":
+        elif k in ("u", "\x1a"):
             self.undo()
-        elif k in ("U", "\x12"):
+        elif k in ("U", "\x12", "\x19"):
             self.redo()
+        elif k == "V":
+            self.history()
         elif k == "n":
             self.new_level()
         elif k == "b":

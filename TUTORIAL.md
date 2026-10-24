@@ -69,7 +69,9 @@ L'outil **Salle** trace un rectangle de murs rempli de sol.
    curseur, en vidéo inverse, et la barre d'état donne sa taille.
 4. `[Espace]` trace la salle.
 
-Une erreur ? `[u]` annule, `[U]` rétablit. Pendant le tracé, `[Échap]`
+Une erreur ? `[u]` annule, `[U]` rétablit ; le message nomme la commande
+concernée. `[V]` affiche l'**historique** de toutes vos commandes : en
+choisir une ramène la carte à cet état. Pendant le tracé, `[Échap]`
 retire l'ancre sans rien dessiner.
 
 > Avec la souris : cliquez sur un coin et glissez jusqu'au coin opposé.
