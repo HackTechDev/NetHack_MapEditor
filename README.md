@@ -100,6 +100,9 @@ sources et recompilez/réinstallez (`make install`), ou référencez-le dans
   d'objets et de pièges dans `nhdata.json`. À relancer si les sources
   changent : `python3 gen_data.py [chemin/vers/NetHack-5.0.0]`.
 - `nhdata.json` : les données générées (394 monstres, 422 objets, 24 pièges).
+- `docs/capture.py` : régénère la capture d'écran `docs/capture.svg` en
+  pilotant l'éditeur dans un pseudo-terminal :
+  `python3 docs/capture.py [--level niveau.lua] [--size 108x28]`.
 
 ## Licence
 
