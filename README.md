@@ -50,7 +50,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | `J` | rendu « comme dans le jeu » : murs en traits avec leurs coins et jonctions, sol en points, symboles et couleurs du jeu, portes et couloirs secrets cachés (l'édition reste possible) |
 | `p` | propriétés : taille, `level_init`, drapeaux, placement (halign/valign ou x,y), éclairage |
 | `v` | vérifier la carte (largeur > 76, entités dans les murs, escaliers en double…) |
-| `t` | tester : copie la carte dans le répertoire du jeu (voir plus bas) |
+| `t` | tester : copie la carte dans le répertoire du jeu ; avec tmux, lance NetHack et y charge la carte (voir plus bas) |
 | `u` / `U` (ou Ctrl-R) | annuler / rétablir |
 | `n`, `o`, `s`, `w` | nouveau, ouvrir, enregistrer, enregistrer sous (Tab complète les chemins) |
 | `q` | quitter |
@@ -113,7 +113,30 @@ elle vaut `(?)` quand la carte est placée au hasard.
 Appuyez sur `t` : l'éditeur écrit l'état actuel de la carte (même non
 enregistré) dans le répertoire de données du jeu, sous le nom
 `nhme-<nom>.lua`. Le préfixe `nhme-` évite qu'un niveau du jeu portant le
-même nom, rangé dans `nhdat`, soit chargé à la place du vôtre. Ensuite :
+même nom, rangé dans `nhdat`, soit chargé à la place du vôtre.
+
+### Avec tmux : le jeu est lancé et la carte chargée automatiquement
+
+Si `tmux` est installé, le premier appui sur `t` propose de lancer le jeu.
+L'éditeur démarre alors `nethack -D -@` (mode wizard, personnage tiré au
+hasard, sans introduction ni question du tutoriel), puis il tape lui-même
+`#wizloaddes` et le nom du niveau. Le jeu s'ouvre :
+
+- dans un panneau tmux à droite de l'éditeur, si l'éditeur tourne dans
+  tmux et que la fenêtre fait au moins 170 colonnes ;
+- sinon dans une nouvelle fenêtre tmux nommée `nethack` ;
+- hors de tmux, dans une session `nhmapedit-jeu`, affichée dans un nouveau
+  terminal (`$TERMINAL` ou `x-terminal-emulator`) si un affichage
+  graphique est disponible, ou à rejoindre avec `tmux attach -t
+  nhmapedit-jeu`.
+
+Ensuite, chaque appui sur `t` recharge la carte dans ce même jeu. Si le
+jeu attend une réponse (un menu, un message `--Plus--`), l'éditeur envoie
+d'abord Échap pour revenir aux commandes. Quand on quitte le jeu, le
+prochain `t` propose de le relancer. L'éditeur ne lance pas de second jeu
+si une partie de NetHack est déjà en cours.
+
+### Sans tmux
 
 1. lancez le jeu en mode wizard : `nethack -D` ;
 2. tapez `#wizloaddes`, puis le nom indiqué (par ex. `nhme-medusa-1`).

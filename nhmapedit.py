@@ -14,7 +14,11 @@ import locale
 import os
 import random
 import re
+import shlex
+import shutil
+import subprocess
 import sys
+import time
 
 import nhlevel
 from nhlevel import Entity, Level
@@ -29,6 +33,11 @@ HACKDIRS = [
 ]
 # Préfixe des copies de test, pour ne jamais masquer un niveau de nhdat
 TEST_PREFIX = "nhme-"
+# Session tmux du jeu lancé par l'éditeur (hors de tmux)
+GAME_SESSION = "nhmapedit-jeu"
+# Options ajoutées au .nethackrc : ni introduction ni question du
+# tutoriel, pour que #wizloaddes arrive au jeu
+GAME_OPTIONS = "!legacy,!tutorial"
 
 # Outils : identifiant, nom, nom court (palette), touche
 TOOLS = [
@@ -288,7 +297,9 @@ NIVEAU ET FICHIERS
   p  propriétés (taille, drapeaux, level_init, alignement, éclairage)
   v  vérifier la carte
   t  tester : copie la carte dans le répertoire du jeu, à charger avec
-     #wizloaddes en mode wizard (nethack -D)
+     #wizloaddes en mode wizard (nethack -D) ; avec tmux, l'éditeur
+     lance le jeu (panneau, fenêtre ou session tmux) et y charge la carte
+     lui-même, puis la recharge à chaque nouvel appui sur t
   u  annuler      U / Ctrl-R  rétablir
   n  nouveau      o  ouvrir      s  enregistrer      w  enregistrer sous
   q  quitter      ?  cette aide
@@ -384,6 +395,9 @@ class Editor:
         self.template = None        # dernière entité placée
         self.hackdir = next((d for d in HACKDIRS if self.is_hackdir(d)),
                             None)
+        self.game_pane = None       # panneau tmux du jeu lancé par « t »
+        self.game_where = ""
+        self.launch = None          # réponse à « lancer le jeu ? »
         self.undo_stack, self.redo_stack = [], []
         # trait en cours (crayon baissé ou glisser à la souris) : un seul
         # point d'annulation pour tout le trait
@@ -1845,6 +1859,16 @@ class Editor:
         finally:
             self.lvl.flags = flags
         self.msg = "Copié pour test : %s" % dest
+        if self.game_alive():
+            self.load_in_game(name)
+            return
+        if shutil.which("tmux") and self.launch is None:
+            self.launch = self.confirm(
+                "Lancer NetHack (mode wizard) et y charger la carte ?")
+        if self.launch and shutil.which("tmux"):
+            if self.start_game():
+                self.load_in_game(name)
+                return
         self.message_box("Tester dans NetHack", "\n".join([
             "Carte copiée (état actuel, même non enregistré) dans :",
             "  " + dest,
@@ -1859,7 +1883,138 @@ class Editor:
             "Ctrl-F révèle toute la carte, Ctrl-T téléporte.",
             "(La copie de test a le drapeau noflip : sinon NetHack",
             "retourne la carte au hasard à chaque chargement.)",
+            "",
+            "Avec tmux installé, l'éditeur peut lancer le jeu et",
+            "charger la carte lui-même.",
         ]))
+
+    # ------------------------------------------------------------------
+    # Jeu lancé dans tmux
+    # ------------------------------------------------------------------
+    @staticmethod
+    def tmux(*args):
+        try:
+            r = subprocess.run(["tmux"] + list(args), capture_output=True,
+                               text=True, timeout=5)
+        except (OSError, subprocess.SubprocessError):
+            return None
+        return r.stdout.strip() if r.returncode == 0 else None
+
+    def game_alive(self):
+        """Le panneau du jeu existe-t-il encore ? (il se ferme avec le jeu)"""
+        if not self.game_pane:
+            return False
+        cmd = self.tmux("display-message", "-p", "-t", self.game_pane,
+                        "#{pane_current_command}")
+        if cmd is None:
+            self.game_pane = None
+        return bool(cmd)
+
+    def game_command(self):
+        d = self.hackdir
+        opts = os.environ.get("NETHACKOPTIONS", "")
+        # une valeur qui désigne un fichier remplace le .nethackrc : on
+        # n'y touche pas
+        if not opts.startswith(("/", "@")):
+            opts = opts + "," + GAME_OPTIONS if opts else GAME_OPTIONS
+        # -D : mode wizard ; -@ : personnage tiré au hasard, sans question
+        return "cd %s && HACKDIR=%s NETHACKOPTIONS=%s %s -D -@" % (
+            shlex.quote(d), shlex.quote(d), shlex.quote(opts),
+            shlex.quote(os.path.join(d, "nethack")))
+
+    def start_game(self):
+        """Lance NetHack dans tmux : un panneau ou une fenêtre de la
+        session courante, sinon une session à part ouverte dans un
+        nouveau terminal. Renvoie True si le jeu est prêt."""
+        if not os.access(os.path.join(self.hackdir, "nethack"), os.X_OK):
+            self.msg = "Pas d'exécutable nethack dans %s." % self.hackdir
+            return False
+        try:
+            busy = subprocess.run(["pgrep", "-x", "nethack"],
+                                  capture_output=True).returncode == 0
+        except OSError:
+            busy = False
+        if busy:
+            # même verrou de partie : un second jeu ne démarrerait pas
+            self.msg = "Une partie de NetHack est déjà en cours."
+            return False
+        cmd = self.game_command()
+        attach = None
+        if os.environ.get("TMUX"):
+            here = os.environ.get("TMUX_PANE", "")
+            width = int(self.tmux("display-message", "-p", "-t", here,
+                                  "#{window_width}") or 0)
+            # assez large : panneau à droite (80 colonnes pour le jeu),
+            # sinon une fenêtre tmux à part
+            if width >= 170:
+                pane = self.tmux("split-window", "-h", "-d", "-t", here,
+                                 "-P", "-F", "#{pane_id}", cmd)
+                where = "panneau tmux à droite"
+            else:
+                pane = self.tmux("new-window", "-d", "-n", "nethack", "-P",
+                                 "-F", "#{pane_id}", cmd)
+                where = "fenêtre tmux « nethack »"
+        else:
+            self.tmux("kill-session", "-t", GAME_SESSION)
+            pane = self.tmux("new-session", "-d", "-s", GAME_SESSION,
+                             "-x", "100", "-y", "32", "-P", "-F",
+                             "#{pane_id}", cmd)
+            attach = "tmux attach -t " + GAME_SESSION
+            where = "session tmux « %s »" % GAME_SESSION
+            term = (os.environ.get("TERMINAL")
+                    or shutil.which("x-terminal-emulator"))
+            if pane and os.environ.get("DISPLAY") and term:
+                try:
+                    subprocess.Popen([term, "-e", "tmux", "attach", "-t",
+                                      GAME_SESSION],
+                                     stdin=subprocess.DEVNULL,
+                                     stdout=subprocess.DEVNULL,
+                                     stderr=subprocess.DEVNULL,
+                                     start_new_session=True)
+                    attach = None
+                except OSError:
+                    pass
+        if not pane:
+            self.msg = "Impossible de lancer le jeu dans tmux."
+            return False
+        self.game_pane = pane
+        self.game_where = where
+        self.msg = "Lancement de NetHack…"
+        self.draw()
+        # attend que l'écran du jeu ne bouge plus
+        last, stable, end = None, 0, time.time() + 15
+        while time.time() < end and stable < 3:
+            time.sleep(0.4)
+            screen = self.tmux("capture-pane", "-p", "-t", pane)
+            if screen is None:
+                self.game_pane = None
+                self.msg = "Le jeu s'est arrêté au démarrage."
+                return False
+            stable = stable + 1 if screen.strip() and screen == last else 0
+            last = screen
+        if attach:
+            self.message_box("NetHack lancé", "\n".join([
+                "Le jeu tourne dans la session tmux « %s »." % GAME_SESSION,
+                "Pour le voir, dans un autre terminal :",
+                "  " + attach,
+            ]))
+        return True
+
+    def load_in_game(self, name):
+        """Envoie #wizloaddes au jeu ; Échap ferme d'abord un éventuel
+        message ou menu en attente."""
+        p = self.game_pane
+        self.tmux("send-keys", "-t", p, "Escape")
+        time.sleep(0.3)
+        self.tmux("send-keys", "-t", p, "-l", "#")
+        time.sleep(0.2)
+        self.tmux("send-keys", "-t", p, "-l", "wizloaddes")
+        self.tmux("send-keys", "-t", p, "Enter")
+        time.sleep(0.3)
+        self.tmux("send-keys", "-t", p, "-l", name)
+        self.tmux("send-keys", "-t", p, "Enter")
+        self.msg = ("Carte chargée dans NetHack (%s, %s) ; t la recharge "
+                    "après une modification." % (name, self.game_where))
 
     def check_unsaved(self):
         if not self.modified:

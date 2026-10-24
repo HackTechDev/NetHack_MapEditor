@@ -116,7 +116,7 @@ reste invisible dans l'éditeur.
 
 ## 6. Intégration avec le jeu
 
-- **Lancer le jeu directement** **[moyen]** : la touche `t` copie le
+- ✅ **Fait** — **Lancer le jeu directement** **[moyen]** : la touche `t` copie le
   fichier, mais il faut encore lancer NetHack et taper `#wizloaddes`. On
   pourrait ouvrir le jeu dans un nouveau terminal ou un panneau tmux, et
   lui envoyer la commande automatiquement.
