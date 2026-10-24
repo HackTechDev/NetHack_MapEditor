@@ -4,6 +4,12 @@ Chaque fonction renvoie une liste de messages ; le premier caractère
 indique la gravité : « ! » erreur, « ? » à vérifier, « - » remarque.
 """
 
+import glob
+import os
+import shutil
+import subprocess
+import tempfile
+
 import nhlevel
 
 # Terrain praticable à pied (« x » : transparent, le terrain d'avant reste
@@ -217,6 +223,9 @@ def rules(lvl, monsters=None, objects=None):
             out.append("- Pas d'escalier/échelle %s à position fixe "
                        "(peut être placé ailleurs dans le script)." % lab)
     temples = temple_regions(lvl)
+    # NetHack compare les noms sans tenir compte de la casse
+    monsters = {n.lower() for n in monsters or ()}
+    objects = {n.lower() for n in objects or ()}
     for e in lvl.entities:
         if not (0 <= e.x < lvl.w and 0 <= e.y < lvl.h):
             # permis par NetHack (coordonnées relatives à la carte)
@@ -243,10 +252,10 @@ def rules(lvl, monsters=None, objects=None):
                        "(des.region type « temple ») : pas de prêtre."
                        % (e.x, e.y))
         if e.kind == "monster" and e.value and len(e.value) > 1 \
-                and monsters and e.value not in monsters:
+                and monsters and e.value.lower() not in monsters:
             out.append("? Monstre inconnu : %s" % e.value)
         if e.kind == "object" and e.value and len(e.value) > 1 \
-                and objects and e.value not in objects:
+                and objects and e.value.lower() not in objects:
             out.append("? Objet inconnu (vérifiez le nom) : %s" % e.value)
     seen = {}
     for e in lvl.entities:
@@ -271,3 +280,85 @@ def check(lvl, monsters=None, objects=None):
     """Toutes les vérifications ; ["Aucun problème détecté."] sinon."""
     out = rules(lvl, monsters, objects) + connectivity(lvl)
     return out or ["Aucun problème détecté."]
+
+
+# ----------------------------------------------------------------------
+# Vérification avec le vrai Lua
+# ----------------------------------------------------------------------
+HERE = os.path.dirname(os.path.abspath(__file__))
+SOURCES = os.path.join(HERE, "..", "NetHack-5.0.0")
+CACHE = os.path.join(os.environ.get("XDG_CACHE_HOME")
+                     or os.path.expanduser("~/.cache"), "nhmapedit")
+
+
+def lua_sources():
+    """Sources de Lua livrées avec NetHack (lib/lua-5.x.y), ou None."""
+    found = sorted(glob.glob(os.path.join(SOURCES, "lib", "lua-5.*")))
+    return found[-1] if found else None
+
+
+def find_lua():
+    """Interpréteur Lua : $NHMAPEDIT_LUA, lua5.4 ou lua dans le PATH,
+    ou celui compilé par build_lua() ; None si aucun."""
+    for c in (os.environ.get("NHMAPEDIT_LUA"), "lua5.4", "lua"):
+        if c and shutil.which(c):
+            return shutil.which(c)
+    built = os.path.join(CACHE, "lua", "src", "lua")
+    return built if os.access(built, os.X_OK) else None
+
+
+def build_lua():
+    """Compile l'interpréteur Lua des sources de NetHack dans le cache.
+    Renvoie son chemin, ou lève OSError avec la sortie de make."""
+    src = lua_sources()
+    if not src:
+        raise OSError("sources de Lua introuvables dans %s/lib" % SOURCES)
+    dest = os.path.join(CACHE, "lua")
+    shutil.rmtree(dest, ignore_errors=True)
+    shutil.copytree(src, dest)
+    r = subprocess.run(["make", "-C", os.path.join(dest, "src"),
+                        "linux-noreadline"], capture_output=True, text=True)
+    lua = os.path.join(dest, "src", "lua")
+    if r.returncode or not os.access(lua, os.X_OK):
+        raise OSError((r.stdout + r.stderr)[-500:])
+    return lua
+
+
+def nhlib():
+    for d in (os.environ.get("NHMAPEDIT_DAT"), os.path.join(SOURCES, "dat")):
+        if d and os.path.isfile(os.path.join(d, "nhlib.lua")):
+            return os.path.join(d, "nhlib.lua")
+    return None
+
+
+def lua_check(text, lua, data):
+    """Exécute le script du niveau avec la bibliothèque des factice
+    (nhcheck_des.lua). Renvoie les messages, préfixés de « Lua »."""
+    with tempfile.TemporaryDirectory() as d:
+        level = os.path.join(d, "niveau.lua")
+        with open(level, "w", encoding="utf-8") as f:
+            f.write(text)
+        datafile = os.path.join(d, "donnees.lua")
+        with open(datafile, "w", encoding="utf-8") as f:
+            f.write("DATA = {\n")
+            for key, items in (("monsters", data.get("monsters", [])),
+                               ("objects", data.get("objects", []))):
+                names = {n.lower() for i in items
+                         for n in [i["name"]] + i.get("aliases", [])}
+                f.write("  %s = { %s },\n" % (key, ", ".join(
+                    nhlevel.lua_value(n) for n in sorted(names))))
+            f.write("  traps = { %s },\n}\n" % ", ".join(
+                nhlevel.lua_value(t) for t in data.get("traps", [])))
+        try:
+            r = subprocess.run([lua, os.path.join(HERE, "nhcheck_des.lua"),
+                                datafile, nhlib() or "-", level],
+                               capture_output=True, text=True, timeout=20)
+        except (OSError, subprocess.SubprocessError) as e:
+            return ["? Lua : impossible de lancer %s (%s)." % (lua, e)]
+    out = []
+    for line in (r.stdout + r.stderr).splitlines():
+        if line[:2] in ("! ", "? "):
+            out.append("%s Lua, %s" % (line[0], line[2:]))
+        elif line.strip():
+            out.append("? Lua : " + line.strip())
+    return out

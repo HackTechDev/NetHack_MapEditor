@@ -46,15 +46,22 @@ def monsters(src):
         symchar[m.group(2)] = ch[1] if ch.startswith("\\") else ch
     text = read(src, "include", "monsters.h")
     starts = [m for m in re.finditer(
-        r'^\s*MON\(\s*NAMS?\(\s*"([^"]+)"[^)]*\)\s*,\s*(S_\w+)', text, re.M)]
+        r'^\s*MON\(\s*NAMS?\(\s*"([^"]+)"([^)]*)\)\s*,\s*(S_\w+)', text,
+        re.M)]
     result = []
     for i, m in enumerate(starts):
         end = starts[i + 1].start() if i + 1 < len(starts) else len(text)
         body = text[m.start():end]
         col = re.findall(r"\b(CLR_\w+|HI_\w+)\b", body)
-        result.append({"name": m.group(1),
-                       "sym": symchar.get(m.group(2), "?"),
-                       "color": col[-1] if col else "CLR_GRAY"})
+        entry = {"name": m.group(1),
+                 "sym": symchar.get(m.group(3), "?"),
+                 "color": col[-1] if col else "CLR_GRAY"}
+        # NAMS("priest", "priestess", "aligned cleric") : formes féminine
+        # et neutre, acceptées aussi par des.monster()
+        aliases = re.findall(r'"([^"]+)"', m.group(2))
+        if aliases:
+            entry["aliases"] = aliases
+        result.append(entry)
     return result
 
 
@@ -75,6 +82,9 @@ def objects(src):
         if sym is None:
             c = re.search(r"\b(\w+)_CLASS\b", body)
             sym = CLASS_CONST.get(c.group(1), "?") if c else "?"
+        bare = name
+        desc = re.match(r'\s*\w+\(\s*(?:OBJ\(\s*)?"[^"]+"\s*,\s*"([^"]+)"',
+                        body)
         if m.group(1) == "SPELL":
             name = "spellbook of " + name
         elif m.group(1) == "WAND":
@@ -86,7 +96,14 @@ def objects(src):
         elif m.group(1) == "SCROLL":
             name = "scroll of " + name
         seen.add(name)
-        result.append({"name": name, "sym": sym})
+        entry = {"name": name, "sym": sym}
+        # des.object() accepte aussi le nom sans préfixe (« wishing ») et
+        # la description (« walking shoes »), sans tenir compte de la casse
+        aliases = [a for a in (bare if bare != name else None,
+                               desc.group(1) if desc else None) if a]
+        if aliases:
+            entry["aliases"] = aliases
+        result.append(entry)
     return result
 
 

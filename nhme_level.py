@@ -146,8 +146,40 @@ class LevelMixin:
             lvl.pos, lvl.halign, lvl.valign = None, h, v
 
     def check(self):
-        self.message_box("Vérification", "\n".join(
-            nhcheck.check(self.lvl, self.mon, self.obj)))
+        out = nhcheck.check(self.lvl, self.mon, self.obj)
+        lua = self.lua_for_check()
+        if lua:
+            name = os.path.splitext(os.path.basename(
+                self.path or "niveau"))[0]
+            found = nhcheck.lua_check(self.lvl.to_lua(name), lua, self.data)
+            out = [m for m in out if m != "Aucun problème détecté."] + (
+                found or ["- Lua : le script s'exécute sans erreur."])
+        else:
+            out.append("- Vérification Lua indisponible : installez lua5.4 "
+                       "ou indiquez l'interpréteur dans NHMAPEDIT_LUA.")
+        self.message_box("Vérification", "\n".join(out))
+
+    def lua_for_check(self):
+        """Interpréteur Lua ; propose (une fois) de compiler celui des
+        sources de NetHack s'il n'y en a pas."""
+        lua = nhcheck.find_lua()
+        if lua or self.lua_refused or not nhcheck.lua_sources() \
+                or not shutil.which("make"):
+            return lua
+        if not self.confirm("Pas d'interpréteur Lua : compiler celui des "
+                            "sources de NetHack (quelques secondes) ?"):
+            self.lua_refused = True
+            return None
+        self.msg = "Compilation de Lua…"
+        self.draw()
+        try:
+            lua = nhcheck.build_lua()
+        except OSError as e:
+            self.lua_refused = True
+            self.message_box("Compilation de Lua", "Échec :\n%s" % e)
+            return None
+        self.msg = "Lua compilé : %s" % lua
+        return lua
 
     def open_file(self, path):
         try:

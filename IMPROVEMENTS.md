@@ -105,7 +105,7 @@ reste invisible dans l'éditeur.
   descendant est accessible depuis l'escalier montant, en tenant compte
   des portes et des couloirs secrets, de l'eau et de la lave. Signaler
   aussi les zones fermées.
-- **Vérification avec le vrai Lua** **[moyen]** : exécuter le fichier
+- ✅ **Fait** — **Vérification avec le vrai Lua** **[moyen]** : exécuter le fichier
   avec l'interpréteur Lua de NetHack (`lib/lua-5.4.8`) et une
   bibliothèque `des` factice qui vérifie les paramètres. On attraperait
   les noms d'objets inconnus, les types de pièges invalides et les

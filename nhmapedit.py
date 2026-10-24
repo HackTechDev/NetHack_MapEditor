@@ -35,8 +35,11 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
     def __init__(self, scr, path=None, size=None):
         self.scr = scr
         self.data = load_data()
-        self.mon = {m["name"]: m for m in self.data["monsters"]}
-        self.obj = {o["name"]: o for o in self.data["objects"]}
+        # noms et alias (formes féminines, noms sans préfixe…)
+        self.mon = {n: m for m in self.data["monsters"]
+                    for n in [m["name"]] + m.get("aliases", [])}
+        self.obj = {n: o for o in self.data["objects"]
+                    for n in [o["name"]] + o.get("aliases", [])}
         self.lvl = Level(*(size or (75, 19)))
         self.path = None
         self.modified = False
@@ -65,6 +68,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                                   if f and os.path.isfile(f)), "")
         self.game_where = ""
         self.launch = None          # réponse à « lancer le jeu ? »
+        self.lua_refused = False    # compilation de Lua refusée
         self.undo_stack, self.redo_stack = [], []
         # trait en cours (crayon baissé ou glisser à la souris) : un seul
         # point d'annulation pour tout le trait

@@ -243,12 +243,20 @@
   {
    "name": "dwarf lord",
    "sym": "h",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "aliases": [
+    "dwarf lady",
+    "dwarf leader"
+   ]
   },
   {
    "name": "dwarf king",
    "sym": "h",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "aliases": [
+    "dwarf queen",
+    "dwarf ruler"
+   ]
   },
   {
    "name": "mind flayer",
@@ -318,7 +326,11 @@
   {
    "name": "kobold lord",
    "sym": "k",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "aliases": [
+    "kobold lady",
+    "kobold leader"
+   ]
   },
   {
    "name": "kobold shaman",
@@ -853,7 +865,11 @@
   {
    "name": "gnome lord",
    "sym": "G",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "aliases": [
+    "gnome lady",
+    "gnome leader"
+   ]
   },
   {
    "name": "gnomish wizard",
@@ -863,7 +879,11 @@
   {
    "name": "gnome king",
    "sym": "G",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "aliases": [
+    "gnome queen",
+    "gnome ruler"
+   ]
   },
   {
    "name": "giant",
@@ -1048,12 +1068,20 @@
   {
    "name": "ogre lord",
    "sym": "O",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "aliases": [
+    "ogre lady",
+    "ogre leader"
+   ]
   },
   {
    "name": "ogre king",
    "sym": "O",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "aliases": [
+    "ogre queen",
+    "ogre tyrant"
+   ]
   },
   {
    "name": "gray ooze",
@@ -1163,7 +1191,11 @@
   {
    "name": "vampire lord",
    "sym": "V",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "aliases": [
+    "vampire lady",
+    "vampire leader"
+   ]
   },
   {
    "name": "vampire mage",
@@ -1373,12 +1405,20 @@
   {
    "name": "elf-lord",
    "sym": "@",
-   "color": "CLR_BRIGHT_BLUE"
+   "color": "CLR_BRIGHT_BLUE",
+   "aliases": [
+    "elf-lady",
+    "elf-noble"
+   ]
   },
   {
    "name": "Elvenking",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "aliases": [
+    "Elvenqueen",
+    "elven monarch"
+   ]
   },
   {
    "name": "doppelganger",
@@ -1408,12 +1448,20 @@
   {
    "name": "priest",
    "sym": "@",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "aliases": [
+    "priestess",
+    "aligned cleric"
+   ]
   },
   {
    "name": "high priest",
    "sym": "@",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "aliases": [
+    "high priestess",
+    "high cleric"
+   ]
   },
   {
    "name": "soldier",
@@ -1488,7 +1536,11 @@
   {
    "name": "incubus",
    "sym": "&",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "aliases": [
+    "succubus",
+    "amorous demon"
+   ]
   },
   {
    "name": "horned devil",
@@ -1703,7 +1755,11 @@
   {
    "name": "caveman",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "aliases": [
+    "cavewoman",
+    "cave dweller"
+   ]
   },
   {
    "name": "healer",
@@ -1723,7 +1779,11 @@
   {
    "name": "priest",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "aliases": [
+    "priestess",
+    "cleric"
+   ]
   },
   {
    "name": "ranger",
@@ -1978,11 +2038,17 @@
   },
   {
    "name": "elven arrow",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "runed arrow"
+   ]
   },
   {
    "name": "orcish arrow",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "crude arrow"
+   ]
   },
   {
    "name": "silver arrow",
@@ -1990,7 +2056,10 @@
   },
   {
    "name": "ya",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "bamboo arrow"
+   ]
   },
   {
    "name": "crossbow bolt",
@@ -2002,7 +2071,10 @@
   },
   {
    "name": "shuriken",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "throwing star"
+   ]
   },
   {
    "name": "boomerang",
@@ -2014,15 +2086,24 @@
   },
   {
    "name": "elven spear",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "runed spear"
+   ]
   },
   {
    "name": "orcish spear",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "crude spear"
+   ]
   },
   {
    "name": "dwarvish spear",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "stout spear"
+   ]
   },
   {
    "name": "silver spear",
@@ -2030,7 +2111,10 @@
   },
   {
    "name": "javelin",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "throwing spear"
+   ]
   },
   {
    "name": "trident",
@@ -2042,11 +2126,17 @@
   },
   {
    "name": "elven dagger",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "runed dagger"
+   ]
   },
   {
    "name": "orcish dagger",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "crude dagger"
+   ]
   },
   {
    "name": "silver dagger",
@@ -2082,7 +2172,10 @@
   },
   {
    "name": "battle-axe",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "double-headed axe"
+   ]
   },
   {
    "name": "short sword",
@@ -2090,19 +2183,31 @@
   },
   {
    "name": "elven short sword",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "runed short sword"
+   ]
   },
   {
    "name": "orcish short sword",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "crude short sword"
+   ]
   },
   {
    "name": "dwarvish short sword",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "broad short sword"
+   ]
   },
   {
    "name": "scimitar",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "curved sword"
+   ]
   },
   {
    "name": "silver saber",
@@ -2114,7 +2219,10 @@
   },
   {
    "name": "elven broadsword",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "runed broadsword"
+   ]
   },
   {
    "name": "long sword",
@@ -2126,67 +2234,115 @@
   },
   {
    "name": "katana",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "samurai sword"
+   ]
   },
   {
    "name": "tsurugi",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "long samurai sword"
+   ]
   },
   {
    "name": "runesword",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "runed broadsword"
+   ]
   },
   {
    "name": "partisan",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "vulgar polearm"
+   ]
   },
   {
    "name": "ranseur",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "hilted polearm"
+   ]
   },
   {
    "name": "spetum",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "forked polearm"
+   ]
   },
   {
    "name": "glaive",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "single-edged polearm"
+   ]
   },
   {
    "name": "halberd",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "angled poleaxe"
+   ]
   },
   {
    "name": "bardiche",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "long poleaxe"
+   ]
   },
   {
    "name": "voulge",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "pole cleaver"
+   ]
   },
   {
    "name": "fauchard",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "pole sickle"
+   ]
   },
   {
    "name": "guisarme",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "pruning hook"
+   ]
   },
   {
    "name": "bill-guisarme",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "hooked polearm"
+   ]
   },
   {
    "name": "lucern hammer",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "pronged polearm"
+   ]
   },
   {
    "name": "bec de corbin",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "beaked polearm"
+   ]
   },
   {
    "name": "dwarvish mattock",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "broad pick"
+   ]
   },
   {
    "name": "lance",
@@ -2218,11 +2374,17 @@
   },
   {
    "name": "quarterstaff",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "staff"
+   ]
   },
   {
    "name": "aklys",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "thonged club"
+   ]
   },
   {
    "name": "flail",
@@ -2238,15 +2400,24 @@
   },
   {
    "name": "elven bow",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "runed bow"
+   ]
   },
   {
    "name": "orcish bow",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "crude bow"
+   ]
   },
   {
    "name": "yumi",
-   "sym": ")"
+   "sym": ")",
+   "aliases": [
+    "long bow"
+   ]
   },
   {
    "name": "sling",
@@ -2258,15 +2429,24 @@
   },
   {
    "name": "elven leather helm",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "leather hat"
+   ]
   },
   {
    "name": "orcish helm",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "iron skull cap"
+   ]
   },
   {
    "name": "dwarvish iron helm",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "hard hat"
+   ]
   },
   {
    "name": "fedora",
@@ -2274,11 +2454,17 @@
   },
   {
    "name": "cornuthaum",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "conical hat"
+   ]
   },
   {
    "name": "dunce cap",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "conical hat"
+   ]
   },
   {
    "name": "dented pot",
@@ -2286,23 +2472,38 @@
   },
   {
    "name": "helm of brilliance",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "crystal helmet"
+   ]
   },
   {
    "name": "helmet",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "plumed helmet"
+   ]
   },
   {
    "name": "helm of caution",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "etched helmet"
+   ]
   },
   {
    "name": "helm of opposite alignment",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "crested helmet"
+   ]
   },
   {
    "name": "helm of telepathy",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "visored helmet"
+   ]
   },
   {
    "name": "plate mail",
@@ -2338,7 +2539,10 @@
   },
   {
    "name": "orcish chain mail",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "crude chain mail"
+   ]
   },
   {
    "name": "scale mail",
@@ -2354,7 +2558,10 @@
   },
   {
    "name": "orcish ring mail",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "crude ring mail"
+   ]
   },
   {
    "name": "leather armor",
@@ -2378,19 +2585,31 @@
   },
   {
    "name": "elven cloak",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "faded pall"
+   ]
   },
   {
    "name": "orcish cloak",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "coarse mantelet"
+   ]
   },
   {
    "name": "dwarvish cloak",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "hooded cloak"
+   ]
   },
   {
    "name": "oilskin cloak",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "slippery cloak"
+   ]
   },
   {
    "name": "robe",
@@ -2398,7 +2617,10 @@
   },
   {
    "name": "alchemy smock",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "apron"
+   ]
   },
   {
    "name": "leather cloak",
@@ -2406,43 +2628,73 @@
   },
   {
    "name": "cloak of protection",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "tattered cape"
+   ]
   },
   {
    "name": "cloak of invisibility",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "opera cloak"
+   ]
   },
   {
    "name": "cloak of magic resistance",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "ornamental cope"
+   ]
   },
   {
    "name": "cloak of displacement",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "piece of cloth"
+   ]
   },
   {
    "name": "small shield",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "wooden shield"
+   ]
   },
   {
    "name": "shield of drain resistance",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "wooden shield"
+   ]
   },
   {
    "name": "shield of shock resistance",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "wooden shield"
+   ]
   },
   {
    "name": "elven shield",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "blue and green shield"
+   ]
   },
   {
    "name": "Uruk-hai shield",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "white-handed shield"
+   ]
   },
   {
    "name": "orcish shield",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "red-eyed shield"
+   ]
   },
   {
    "name": "large shield",
@@ -2450,227 +2702,423 @@
   },
   {
    "name": "dwarvish roundshield",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "large round shield"
+   ]
   },
   {
    "name": "shield of reflection",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "polished silver shield"
+   ]
   },
   {
    "name": "leather gloves",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "old gloves"
+   ]
   },
   {
    "name": "gauntlets of fumbling",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "padded gloves"
+   ]
   },
   {
    "name": "gauntlets of power",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "riding gloves"
+   ]
   },
   {
    "name": "gauntlets of dexterity",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "fencing gloves"
+   ]
   },
   {
    "name": "low boots",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "walking shoes"
+   ]
   },
   {
    "name": "iron shoes",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "hard shoes"
+   ]
   },
   {
    "name": "high boots",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "jackboots"
+   ]
   },
   {
    "name": "speed boots",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "combat boots"
+   ]
   },
   {
    "name": "water walking boots",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "jungle boots"
+   ]
   },
   {
    "name": "jumping boots",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "hiking boots"
+   ]
   },
   {
    "name": "elven boots",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "mud boots"
+   ]
   },
   {
    "name": "kicking boots",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "buckled boots"
+   ]
   },
   {
    "name": "fumble boots",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "riding boots"
+   ]
   },
   {
    "name": "levitation boots",
-   "sym": "["
+   "sym": "[",
+   "aliases": [
+    "snow boots"
+   ]
   },
   {
    "name": "ring of adornment",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "adornment",
+    "wooden"
+   ]
   },
   {
    "name": "ring of gain strength",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "gain strength",
+    "granite"
+   ]
   },
   {
    "name": "ring of gain constitution",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "gain constitution",
+    "opal"
+   ]
   },
   {
    "name": "ring of increase accuracy",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "increase accuracy",
+    "clay"
+   ]
   },
   {
    "name": "ring of increase damage",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "increase damage",
+    "coral"
+   ]
   },
   {
    "name": "ring of protection",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "protection",
+    "black onyx"
+   ]
   },
   {
    "name": "ring of regeneration",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "regeneration",
+    "moonstone"
+   ]
   },
   {
    "name": "ring of searching",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "searching",
+    "tiger eye"
+   ]
   },
   {
    "name": "ring of stealth",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "stealth",
+    "jade"
+   ]
   },
   {
    "name": "ring of sustain ability",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "sustain ability",
+    "bronze"
+   ]
   },
   {
    "name": "ring of levitation",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "levitation",
+    "agate"
+   ]
   },
   {
    "name": "ring of hunger",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "hunger",
+    "topaz"
+   ]
   },
   {
    "name": "ring of aggravate monster",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "aggravate monster",
+    "sapphire"
+   ]
   },
   {
    "name": "ring of conflict",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "conflict",
+    "ruby"
+   ]
   },
   {
    "name": "ring of warning",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "warning",
+    "diamond"
+   ]
   },
   {
    "name": "ring of poison resistance",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "poison resistance",
+    "pearl"
+   ]
   },
   {
    "name": "ring of fire resistance",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "fire resistance",
+    "iron"
+   ]
   },
   {
    "name": "ring of cold resistance",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "cold resistance",
+    "brass"
+   ]
   },
   {
    "name": "ring of shock resistance",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "shock resistance",
+    "copper"
+   ]
   },
   {
    "name": "ring of free action",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "free action",
+    "twisted"
+   ]
   },
   {
    "name": "ring of slow digestion",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "slow digestion",
+    "steel"
+   ]
   },
   {
    "name": "ring of teleportation",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "teleportation",
+    "silver"
+   ]
   },
   {
    "name": "ring of teleport control",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "teleport control",
+    "gold"
+   ]
   },
   {
    "name": "ring of polymorph",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "polymorph",
+    "ivory"
+   ]
   },
   {
    "name": "ring of polymorph control",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "polymorph control",
+    "emerald"
+   ]
   },
   {
    "name": "ring of invisibility",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "invisibility",
+    "wire"
+   ]
   },
   {
    "name": "ring of see invisible",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "see invisible",
+    "engagement"
+   ]
   },
   {
    "name": "ring of protection from shape changers",
-   "sym": "="
+   "sym": "=",
+   "aliases": [
+    "protection from shape changers",
+    "shiny"
+   ]
   },
   {
    "name": "amulet of ESP",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "circular"
+   ]
   },
   {
    "name": "amulet of life saving",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "spherical"
+   ]
   },
   {
    "name": "amulet of strangulation",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "oval"
+   ]
   },
   {
    "name": "amulet of restful sleep",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "triangular"
+   ]
   },
   {
    "name": "amulet versus poison",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "pyramidal"
+   ]
   },
   {
    "name": "amulet of change",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "square"
+   ]
   },
   {
    "name": "amulet of unchanging",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "concave"
+   ]
   },
   {
    "name": "amulet of reflection",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "hexagonal"
+   ]
   },
   {
    "name": "amulet of magical breathing",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "octagonal"
+   ]
   },
   {
    "name": "amulet of guarding",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "perforated"
+   ]
   },
   {
    "name": "amulet of flying",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "cubical"
+   ]
   },
   {
    "name": "cheap plastic imitation of the Amulet of Yendor",
-   "sym": "\""
+   "sym": "\"",
+   "aliases": [
+    "Amulet of Yendor"
+   ]
   },
   {
    "name": "Amulet of Yendor",
@@ -2690,23 +3138,38 @@
   },
   {
    "name": "sack",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "bag"
+   ]
   },
   {
    "name": "oilskin sack",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "bag"
+   ]
   },
   {
    "name": "bag of holding",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "bag"
+   ]
   },
   {
    "name": "bag of tricks",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "bag"
+   ]
   },
   {
    "name": "skeleton key",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "key"
+   ]
   },
   {
    "name": "lock pick",
@@ -2718,11 +3181,17 @@
   },
   {
    "name": "tallow candle",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "candle"
+   ]
   },
   {
    "name": "wax candle",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "candle"
+   ]
   },
   {
    "name": "brass lantern",
@@ -2730,11 +3199,17 @@
   },
   {
    "name": "oil lamp",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "lamp"
+   ]
   },
   {
    "name": "magic lamp",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "lamp"
+   ]
   },
   {
    "name": "expensive camera",
@@ -2742,11 +3217,17 @@
   },
   {
    "name": "mirror",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "looking glass"
+   ]
   },
   {
    "name": "crystal ball",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "glass orb"
+   ]
   },
   {
    "name": "lenses",
@@ -2802,43 +3283,73 @@
   },
   {
    "name": "tin whistle",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "whistle"
+   ]
   },
   {
    "name": "magic whistle",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "whistle"
+   ]
   },
   {
    "name": "wooden flute",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "flute"
+   ]
   },
   {
    "name": "magic flute",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "flute"
+   ]
   },
   {
    "name": "tooled horn",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "horn"
+   ]
   },
   {
    "name": "frost horn",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "horn"
+   ]
   },
   {
    "name": "fire horn",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "horn"
+   ]
   },
   {
    "name": "horn of plenty",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "horn"
+   ]
   },
   {
    "name": "wooden harp",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "harp"
+   ]
   },
   {
    "name": "magic harp",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "harp"
+   ]
   },
   {
    "name": "bell",
@@ -2850,11 +3361,17 @@
   },
   {
    "name": "leather drum",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "drum"
+   ]
   },
   {
    "name": "drum of earthquake",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "drum"
+   ]
   },
   {
    "name": "pick-axe",
@@ -2870,11 +3387,17 @@
   },
   {
    "name": "Candelabrum of Invocation",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "candelabrum"
+   ]
   },
   {
    "name": "Bell of Opening",
-   "sym": "("
+   "sym": "(",
+   "aliases": [
+    "silver bell"
+   ]
   },
   {
    "name": "tripe ration",
@@ -3010,483 +3533,961 @@
   },
   {
    "name": "potion of gain ability",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "gain ability",
+    "ruby"
+   ]
   },
   {
    "name": "potion of restore ability",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "restore ability",
+    "pink"
+   ]
   },
   {
    "name": "potion of confusion",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "confusion",
+    "orange"
+   ]
   },
   {
    "name": "potion of blindness",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "blindness",
+    "yellow"
+   ]
   },
   {
    "name": "potion of paralysis",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "paralysis",
+    "emerald"
+   ]
   },
   {
    "name": "potion of speed",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "speed",
+    "dark green"
+   ]
   },
   {
    "name": "potion of levitation",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "levitation",
+    "cyan"
+   ]
   },
   {
    "name": "potion of hallucination",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "hallucination",
+    "sky blue"
+   ]
   },
   {
    "name": "potion of invisibility",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "invisibility",
+    "brilliant blue"
+   ]
   },
   {
    "name": "potion of see invisible",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "see invisible",
+    "magenta"
+   ]
   },
   {
    "name": "potion of healing",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "healing",
+    "purple-red"
+   ]
   },
   {
    "name": "potion of extra healing",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "extra healing",
+    "puce"
+   ]
   },
   {
    "name": "potion of gain level",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "gain level",
+    "milky"
+   ]
   },
   {
    "name": "potion of enlightenment",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "enlightenment",
+    "swirly"
+   ]
   },
   {
    "name": "potion of monster detection",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "monster detection",
+    "bubbly"
+   ]
   },
   {
    "name": "potion of object detection",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "object detection",
+    "smoky"
+   ]
   },
   {
    "name": "potion of gain energy",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "gain energy",
+    "cloudy"
+   ]
   },
   {
    "name": "potion of sleeping",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "sleeping",
+    "effervescent"
+   ]
   },
   {
    "name": "potion of full healing",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "full healing",
+    "black"
+   ]
   },
   {
    "name": "potion of polymorph",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "polymorph",
+    "golden"
+   ]
   },
   {
    "name": "potion of booze",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "booze",
+    "brown"
+   ]
   },
   {
    "name": "potion of sickness",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "sickness",
+    "fizzy"
+   ]
   },
   {
    "name": "potion of fruit juice",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "fruit juice",
+    "dark"
+   ]
   },
   {
    "name": "potion of acid",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "acid",
+    "white"
+   ]
   },
   {
    "name": "potion of oil",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "oil",
+    "murky"
+   ]
   },
   {
    "name": "potion of water",
-   "sym": "!"
+   "sym": "!",
+   "aliases": [
+    "water",
+    "clear"
+   ]
   },
   {
    "name": "scroll of enchant armor",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "enchant armor",
+    "ZELGO MER"
+   ]
   },
   {
    "name": "scroll of destroy armor",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "destroy armor",
+    "JUYED AWK YACC"
+   ]
   },
   {
    "name": "scroll of confuse monster",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "confuse monster",
+    "NR 9"
+   ]
   },
   {
    "name": "scroll of scare monster",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "scare monster",
+    "XIXAXA XOXAXA XUXAXA"
+   ]
   },
   {
    "name": "scroll of remove curse",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "remove curse",
+    "PRATYAVAYAH"
+   ]
   },
   {
    "name": "scroll of enchant weapon",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "enchant weapon",
+    "DAIYEN FOOELS"
+   ]
   },
   {
    "name": "scroll of create monster",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "create monster",
+    "LEP GEX VEN ZEA"
+   ]
   },
   {
    "name": "scroll of taming",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "taming",
+    "PRIRUTSENIE"
+   ]
   },
   {
    "name": "scroll of genocide",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "genocide",
+    "ELBIB YLOH"
+   ]
   },
   {
    "name": "scroll of light",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "light",
+    "VERR YED HORRE"
+   ]
   },
   {
    "name": "scroll of teleportation",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "teleportation",
+    "VENZAR BORGAVVE"
+   ]
   },
   {
    "name": "scroll of gold detection",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "gold detection",
+    "THARR"
+   ]
   },
   {
    "name": "scroll of food detection",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "food detection",
+    "YUM YUM"
+   ]
   },
   {
    "name": "scroll of identify",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "identify",
+    "KERNOD WEL"
+   ]
   },
   {
    "name": "scroll of magic mapping",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "magic mapping",
+    "ELAM EBOW"
+   ]
   },
   {
    "name": "scroll of amnesia",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "amnesia",
+    "DUAM XNAHT"
+   ]
   },
   {
    "name": "scroll of fire",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "fire",
+    "ANDOVA BEGARIN"
+   ]
   },
   {
    "name": "scroll of earth",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "earth",
+    "KIRJE"
+   ]
   },
   {
    "name": "scroll of punishment",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "punishment",
+    "VE FORBRYDERNE"
+   ]
   },
   {
    "name": "scroll of charging",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "charging",
+    "HACKEM MUCHE"
+   ]
   },
   {
    "name": "scroll of stinking cloud",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "stinking cloud",
+    "VELOX NEB"
+   ]
   },
   {
    "name": "scroll of mail",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "mail",
+    "stamped"
+   ]
   },
   {
    "name": "scroll of blank paper",
-   "sym": "?"
+   "sym": "?",
+   "aliases": [
+    "blank paper",
+    "unlabeled"
+   ]
   },
   {
    "name": "spellbook of dig",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "dig",
+    "parchment"
+   ]
   },
   {
    "name": "spellbook of magic missile",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "magic missile",
+    "vellum"
+   ]
   },
   {
    "name": "spellbook of fireball",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "fireball",
+    "ragged"
+   ]
   },
   {
    "name": "spellbook of cone of cold",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "cone of cold",
+    "dog eared"
+   ]
   },
   {
    "name": "spellbook of sleep",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "sleep",
+    "mottled"
+   ]
   },
   {
    "name": "spellbook of finger of death",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "finger of death",
+    "stained"
+   ]
   },
   {
    "name": "spellbook of light",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "light",
+    "cloth"
+   ]
   },
   {
    "name": "spellbook of detect monsters",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "detect monsters",
+    "leathery"
+   ]
   },
   {
    "name": "spellbook of healing",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "healing",
+    "white"
+   ]
   },
   {
    "name": "spellbook of knock",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "knock",
+    "pink"
+   ]
   },
   {
    "name": "spellbook of force bolt",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "force bolt",
+    "red"
+   ]
   },
   {
    "name": "spellbook of confuse monster",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "confuse monster",
+    "orange"
+   ]
   },
   {
    "name": "spellbook of cure blindness",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "cure blindness",
+    "yellow"
+   ]
   },
   {
    "name": "spellbook of drain life",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "drain life",
+    "velvet"
+   ]
   },
   {
    "name": "spellbook of slow monster",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "slow monster",
+    "light green"
+   ]
   },
   {
    "name": "spellbook of wizard lock",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "wizard lock",
+    "dark green"
+   ]
   },
   {
    "name": "spellbook of create monster",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "create monster",
+    "turquoise"
+   ]
   },
   {
    "name": "spellbook of detect food",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "detect food",
+    "cyan"
+   ]
   },
   {
    "name": "spellbook of cause fear",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "cause fear",
+    "light blue"
+   ]
   },
   {
    "name": "spellbook of clairvoyance",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "clairvoyance",
+    "dark blue"
+   ]
   },
   {
    "name": "spellbook of cure sickness",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "cure sickness",
+    "indigo"
+   ]
   },
   {
    "name": "spellbook of charm monster",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "charm monster",
+    "magenta"
+   ]
   },
   {
    "name": "spellbook of haste self",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "haste self",
+    "purple"
+   ]
   },
   {
    "name": "spellbook of detect unseen",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "detect unseen",
+    "violet"
+   ]
   },
   {
    "name": "spellbook of levitation",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "levitation",
+    "tan"
+   ]
   },
   {
    "name": "spellbook of extra healing",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "extra healing",
+    "plaid"
+   ]
   },
   {
    "name": "spellbook of restore ability",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "restore ability",
+    "light brown"
+   ]
   },
   {
    "name": "spellbook of invisibility",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "invisibility",
+    "dark brown"
+   ]
   },
   {
    "name": "spellbook of detect treasure",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "detect treasure",
+    "gray"
+   ]
   },
   {
    "name": "spellbook of remove curse",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "remove curse",
+    "wrinkled"
+   ]
   },
   {
    "name": "spellbook of magic mapping",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "magic mapping",
+    "dusty"
+   ]
   },
   {
    "name": "spellbook of identify",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "identify",
+    "bronze"
+   ]
   },
   {
    "name": "spellbook of turn undead",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "turn undead",
+    "copper"
+   ]
   },
   {
    "name": "spellbook of polymorph",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "polymorph",
+    "silver"
+   ]
   },
   {
    "name": "spellbook of teleport away",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "teleport away",
+    "gold"
+   ]
   },
   {
    "name": "spellbook of create familiar",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "create familiar",
+    "glittering"
+   ]
   },
   {
    "name": "spellbook of cancellation",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "cancellation",
+    "shining"
+   ]
   },
   {
    "name": "spellbook of protection",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "protection",
+    "dull"
+   ]
   },
   {
    "name": "spellbook of jumping",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "jumping",
+    "thin"
+   ]
   },
   {
    "name": "spellbook of stone to flesh",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "stone to flesh",
+    "thick"
+   ]
   },
   {
    "name": "spellbook of chain lightning",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "chain lightning",
+    "checkered"
+   ]
   },
   {
    "name": "spellbook of flame sphere",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "flame sphere",
+    "canvas"
+   ]
   },
   {
    "name": "spellbook of freeze sphere",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "freeze sphere",
+    "hardcover"
+   ]
   },
   {
    "name": "spellbook of blank paper",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "blank paper",
+    "plain"
+   ]
   },
   {
    "name": "novel",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "paperback"
+   ]
   },
   {
    "name": "Book of the Dead",
-   "sym": "+"
+   "sym": "+",
+   "aliases": [
+    "papyrus"
+   ]
   },
   {
    "name": "wand of light",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "light",
+    "glass"
+   ]
   },
   {
    "name": "wand of secret door detection",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "secret door detection",
+    "balsa"
+   ]
   },
   {
    "name": "wand of enlightenment",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "enlightenment",
+    "crystal"
+   ]
   },
   {
    "name": "wand of create monster",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "create monster",
+    "maple"
+   ]
   },
   {
    "name": "wand of wishing",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "wishing",
+    "pine"
+   ]
   },
   {
    "name": "wand of stasis",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "stasis",
+    "redwood"
+   ]
   },
   {
    "name": "wand of nothing",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "nothing",
+    "oak"
+   ]
   },
   {
    "name": "wand of striking",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "striking",
+    "ebony"
+   ]
   },
   {
    "name": "wand of make invisible",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "make invisible",
+    "marble"
+   ]
   },
   {
    "name": "wand of slow monster",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "slow monster",
+    "tin"
+   ]
   },
   {
    "name": "wand of speed monster",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "speed monster",
+    "brass"
+   ]
   },
   {
    "name": "wand of undead turning",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "undead turning",
+    "copper"
+   ]
   },
   {
    "name": "wand of polymorph",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "polymorph",
+    "silver"
+   ]
   },
   {
    "name": "wand of cancellation",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "cancellation",
+    "platinum"
+   ]
   },
   {
    "name": "wand of teleportation",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "teleportation",
+    "iridium"
+   ]
   },
   {
    "name": "wand of opening",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "opening",
+    "zinc"
+   ]
   },
   {
    "name": "wand of locking",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "locking",
+    "aluminum"
+   ]
   },
   {
    "name": "wand of probing",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "probing",
+    "uranium"
+   ]
   },
   {
    "name": "wand of digging",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "digging",
+    "iron"
+   ]
   },
   {
    "name": "wand of magic missile",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "magic missile",
+    "steel"
+   ]
   },
   {
    "name": "wand of fire",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "fire",
+    "hexagonal"
+   ]
   },
   {
    "name": "wand of cold",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "cold",
+    "short"
+   ]
   },
   {
    "name": "wand of sleep",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "sleep",
+    "runed"
+   ]
   },
   {
    "name": "wand of death",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "death",
+    "long"
+   ]
   },
   {
    "name": "wand of lightning",
-   "sym": "/"
+   "sym": "/",
+   "aliases": [
+    "lightning",
+    "curved"
+   ]
   },
   {
    "name": "gold piece",
@@ -3494,143 +4495,248 @@
   },
   {
    "name": "dilithium crystal",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "white"
+   ]
   },
   {
    "name": "diamond",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "white"
+   ]
   },
   {
    "name": "ruby",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "red"
+   ]
   },
   {
    "name": "jacinth",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "orange"
+   ]
   },
   {
    "name": "sapphire",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "blue"
+   ]
   },
   {
    "name": "black opal",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "black"
+   ]
   },
   {
    "name": "emerald",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "green"
+   ]
   },
   {
    "name": "turquoise",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "green"
+   ]
   },
   {
    "name": "citrine",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "yellow"
+   ]
   },
   {
    "name": "aquamarine",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "green"
+   ]
   },
   {
    "name": "amber",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "yellowish brown"
+   ]
   },
   {
    "name": "topaz",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "yellowish brown"
+   ]
   },
   {
    "name": "jet",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "black"
+   ]
   },
   {
    "name": "opal",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "white"
+   ]
   },
   {
    "name": "chrysoberyl",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "yellow"
+   ]
   },
   {
    "name": "garnet",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "red"
+   ]
   },
   {
    "name": "amethyst",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "violet"
+   ]
   },
   {
    "name": "jasper",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "red"
+   ]
   },
   {
    "name": "fluorite",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "violet"
+   ]
   },
   {
    "name": "obsidian",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "black"
+   ]
   },
   {
    "name": "agate",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "orange"
+   ]
   },
   {
    "name": "jade",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "green"
+   ]
   },
   {
    "name": "worthless piece of white glass",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "white"
+   ]
   },
   {
    "name": "worthless piece of blue glass",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "blue"
+   ]
   },
   {
    "name": "worthless piece of red glass",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "red"
+   ]
   },
   {
    "name": "worthless piece of yellowish brown glass",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "yellowish brown"
+   ]
   },
   {
    "name": "worthless piece of orange glass",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "orange"
+   ]
   },
   {
    "name": "worthless piece of yellow glass",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "yellow"
+   ]
   },
   {
    "name": "worthless piece of black glass",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "black"
+   ]
   },
   {
    "name": "worthless piece of green glass",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "green"
+   ]
   },
   {
    "name": "worthless piece of violet glass",
-   "sym": "*"
+   "sym": "*",
+   "aliases": [
+    "violet"
+   ]
   },
   {
    "name": "luckstone",
-   "sym": "`"
+   "sym": "`",
+   "aliases": [
+    "gray"
+   ]
   },
   {
    "name": "loadstone",
-   "sym": "`"
+   "sym": "`",
+   "aliases": [
+    "gray"
+   ]
   },
   {
    "name": "touchstone",
-   "sym": "`"
+   "sym": "`",
+   "aliases": [
+    "gray"
+   ]
   },
   {
    "name": "flint",
-   "sym": "`"
+   "sym": "`",
+   "aliases": [
+    "gray"
+   ]
   },
   {
    "name": "rock",
@@ -3654,11 +4760,17 @@
   },
   {
    "name": "splash of blinding venom",
-   "sym": "."
+   "sym": ".",
+   "aliases": [
+    "splash of venom"
+   ]
   },
   {
    "name": "splash of acid venom",
-   "sym": "."
+   "sym": ".",
+   "aliases": [
+    "splash of venom"
+   ]
   }
  ],
  "traps": [

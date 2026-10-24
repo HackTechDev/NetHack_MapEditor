@@ -286,7 +286,9 @@ NIVEAU ET FICHIERS
   v  vérifier la carte, dont la connexité : escalier descendant accessible
      depuis le montant (portes sans diagonale, passages secrets, eau et
      lave signalés) et zones fermées ; règles de NetHack (porte dans un
-     coin, escalier dans l'eau, autel hors d'un temple, carte qui déborde…)
+     coin, escalier dans l'eau, autel hors d'un temple, carte qui déborde…) ;
+     avec un interpréteur Lua, exécution du script complet avec une
+     bibliothèque des factice (noms, paramètres, erreurs de syntaxe)
   t  tester : copie la carte dans le répertoire du jeu, à charger avec
      #wizloaddes en mode wizard (nethack -D) ; avec tmux, l'éditeur
      lance le jeu (panneau, fenêtre ou session tmux) et y charge la carte

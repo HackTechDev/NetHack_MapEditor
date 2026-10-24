@@ -136,6 +136,26 @@ précise.
 - deux escaliers montants (ou descendants) ;
 - un monstre ou un objet dont le nom est inconnu.
 
+**Vérification avec le vrai Lua.** Si un interpréteur Lua est disponible,
+`v` exécute aussi le script complet, tel qu'il serait enregistré, avec une
+bibliothèque `des` factice (`nhcheck_des.lua`). Le code que l'éditeur
+conserve sans le montrer (boucles, conditions, fonctions) est donc
+vérifié lui aussi :
+- les erreurs de syntaxe et d'exécution (fonction inconnue…) ;
+- les noms de monstres, d'objets et de pièges inconnus. Les formes que
+  NetHack accepte sont reconnues : formes féminines (« priestess »), noms
+  sans préfixe (« wishing »), descriptions (« walking shoes ») ;
+- les drapeaux de niveau, styles de `level_init`, états de porte,
+  alignements et types d'autel ou de gravure invalides ;
+- les paramètres inconnus de `des.monster()` et `des.object()` ;
+- les fonctions `des.*` inexistantes.
+
+Les messages donnent le numéro de ligne dans le fichier. L'interpréteur
+est cherché dans `$NHMAPEDIT_LUA`, puis `lua5.4` et `lua` dans le `PATH`.
+S'il n'y en a pas, l'éditeur propose de compiler celui livré avec les
+sources de NetHack (`lib/lua-5.4.8`), dans `~/.cache/nhmapedit/lua`. Les 93
+niveaux de `dat/` passent cette vérification sans aucun message.
+
 ## Tester un niveau dans NetHack
 
 Appuyez sur `t` : l'éditeur écrit l'état actuel de la carte (même non
@@ -252,8 +272,12 @@ le jeu ainsi.
 - `nhlevel.py` : le modèle de niveau, la lecture et l'écriture du Lua.
 - `nhdungeon.py` : la lecture et la modification de `dat/dungeon.lua`.
 - `nhtheme.py` : les salles à thème de `dat/themerms.lua`.
-- `gen_data.py` : extrait des sources de NetHack les listes de monstres,
-  d'objets et de pièges dans `nhdata.json`. À relancer si les sources
+- `nhcheck.py` : les vérifications (connexité, règles, Lua) ;
+  `nhcheck_des.lua` est la bibliothèque `des` factice de la vérification
+  Lua.
+- `gen_data.py` : extrait des sources de NetHack les listes de monstres
+  (avec leurs formes féminines et neutres), d'objets (avec leurs noms sans
+  préfixe et leurs descriptions) et de pièges dans `nhdata.json`. À relancer si les sources
   changent : `python3 gen_data.py [chemin/vers/NetHack-5.0.0]`.
 - `nhdata.json` : les données générées (394 monstres, 422 objets, 24 pièges).
 - `docs/capture.py` : régénère la capture d'écran `docs/capture.svg` en

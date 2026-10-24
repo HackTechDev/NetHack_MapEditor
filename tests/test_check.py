@@ -87,5 +87,42 @@ class Rules(unittest.TestCase):
                             for m in self.messages(lvl)))
 
 
+@unittest.skipUnless(nhcheck.find_lua(), "pas d'interpréteur Lua "
+                     "(NHMAPEDIT_LUA)")
+class RealLua(unittest.TestCase):
+    def run_lua(self, text):
+        import json
+        import os
+        from tests.util import ROOT
+        with open(os.path.join(ROOT, "nhdata.json"), encoding="utf-8") as f:
+            data = json.load(f)
+        return nhcheck.lua_check(text, nhcheck.find_lua(), data)
+
+    def test_valid_level(self):
+        text = ('des.level_flags("mazelevel", "noflip")\n'
+                'des.map([[\n...\n]])\n'
+                'des.monster("aligned cleric", 0, 0)\n'
+                'des.object("wishing", 1, 0)\n'
+                'des.object({ id = "walking shoes", x = 2, y = 0 })\n'
+                'if percent(50) then des.trap("hole", 2, 0) end\n')
+        self.assertEqual(self.run_lua(text), [])
+
+    def test_errors(self):
+        text = ('des.level_flags("nofilp")\n'
+                'des.map([[\n...\n]])\n'
+                'des.monster("jackall", 0, 0)\n'
+                'des.object({ id = "dagger", x = 1, y = 0, spee = 2 })\n'
+                'des.dorr("open", 2, 0)\n'
+                'frobnicate()\n')
+        msgs = self.run_lua(text)
+        self.assertEqual([m.split(" : ")[0] for m in msgs], [
+            "! Lua, ligne 1", "! Lua, ligne 5", "? Lua, ligne 6",
+            "! Lua, ligne 7", "! Lua, ligne 8"])
+
+    def test_syntax_error(self):
+        msgs = self.run_lua("des.map([[\n.\n]]\ndes.monster(")
+        self.assertTrue(msgs[0].startswith("! Lua, ligne"))
+
+
 if __name__ == "__main__":
     unittest.main()
