@@ -37,6 +37,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | Suppr, Retour arrière, `z` | supprimer les entités sous le curseur |
 | `i` | liste des entités (Entrée : y aller, `e` : modifier, `d` : supprimer) |
 | Tab | afficher / masquer les entités |
+| `c` | afficher / masquer les règles de coordonnées (colonnes en haut, lignes à gauche) |
 | `p` | propriétés : taille, `level_init`, drapeaux, placement (halign/valign ou x,y), éclairage |
 | `v` | vérifier la carte (largeur > 76, entités dans les murs, escaliers en double…) |
 | `t` | tester : copie la carte dans le répertoire du jeu (voir plus bas) |

@@ -108,6 +108,7 @@ DÉPLACEMENT
   Flèches / h j k l      déplacer le curseur
   Maj+flèches, PgPréc/PgSuiv, Début/Fin   déplacement rapide
   g                      aller à une position (x y)
+  c                      afficher / masquer les règles de coordonnées
   Souris                 clic = déplacer + appliquer l'outil, glisser = peindre
 
 TERRAIN (le caractère tapé devient le pinceau, et peint en mode Pinceau)
@@ -201,6 +202,7 @@ class Editor:
         self.pen_down = False
         self.advance = False
         self.show_ents = True
+        self.rulers = True          # règles de coordonnées autour de la carte
         self.clip = None
         self.template = None        # dernière entité placée
         self.hackdir = next((d for d in HACKDIRS if self.is_hackdir(d)),
@@ -286,11 +288,18 @@ class Editor:
         return min(ents, key=lambda e: prio.index(e.kind))
 
     def layout(self):
+        """Taille de la vue et position du cadre de la carte à l'écran.
+
+        Renvoie (maxy, maxx, vw, vh, side, top, left) : top et left sont
+        la ligne et la colonne du coin du cadre ; la case (ox, oy) de la
+        carte est affichée en (top + 1, left + 1)."""
         maxy, maxx = self.scr.getmaxyx()
-        side = 26 if maxx >= self.lvl.w + 2 + 27 else 0
-        vw = max(1, min(self.lvl.w, maxx - 2 - side))
-        vh = max(1, min(self.lvl.h, maxy - 2 - 5))
-        return maxy, maxx, vw, vh, side
+        # règles : 2 lignes au-dessus (dizaines, unités), 3 colonnes à gauche
+        rt, rl = (2, 3) if self.rulers else (0, 0)
+        side = 26 if maxx >= self.lvl.w + 2 + rl + 27 else 0
+        vw = max(1, min(self.lvl.w, maxx - 2 - rl - side))
+        vh = max(1, min(self.lvl.h, maxy - 2 - 5 - rt))
+        return maxy, maxx, vw, vh, side, 1 + rt, rl
 
     def scroll_into_view(self, vw, vh):
         if self.cx < self.ox:
@@ -347,7 +356,7 @@ class Editor:
     def draw(self):
         scr = self.scr
         scr.erase()
-        maxy, maxx, vw, vh, side = self.layout()
+        maxy, maxx, vw, vh, side, top, left = self.layout()
         if maxy < 12 or maxx < 40:
             self.put(0, 0, "Terminal trop petit (min. 40x12)")
             scr.refresh()
@@ -363,7 +372,8 @@ class Editor:
         self.put(0, 0, head.ljust(maxx), curses.A_REVERSE)
         # cadre
         frame = self.attr("CLR_BLACK")
-        top, left = 1, 0
+        if self.rulers:
+            self.draw_rulers(top, left, vw, vh, frame)
         lch = "<" if self.ox > 0 else "+"
         rch = ">" if self.ox + vw < lvl.w else "+"
         self.put(top, left, lch + "-" * vw + rch, frame)
@@ -402,6 +412,20 @@ class Editor:
         except curses.error:
             pass
         scr.refresh()
+
+    def draw_rulers(self, top, left, vw, vh, a):
+        """Numéros de colonnes (dizaines puis unités) et de lignes."""
+        hi = self.attr("CLR_YELLOW") | curses.A_REVERSE
+        for sx in range(vw):
+            x = self.ox + sx
+            ca = hi if x == self.cx else a
+            tens = str(x // 10 % 10) if x % 10 == 0 or x == self.cx else " "
+            self.put(top - 2, left + 1 + sx, tens, ca)
+            self.put(top - 1, left + 1 + sx, str(x % 10), ca)
+        for sy in range(vh):
+            y = self.oy + sy
+            self.put(top + 1 + sy, 0, "%2d" % y,
+                     hi if y == self.cy else a)
 
     def draw_side(self, y, x, maxy):
         self.put(y, x, "Outils", curses.A_BOLD)
@@ -1291,7 +1315,8 @@ class Editor:
 
     def handle(self, k):
         lvl = self.lvl
-        maxy, maxx, vw, vh, side = self.layout()
+        lay = self.layout()
+        vh = lay[3]
         moves = {curses.KEY_LEFT: (-1, 0), curses.KEY_RIGHT: (1, 0),
                  curses.KEY_UP: (0, -1), curses.KEY_DOWN: (0, 1),
                  "h": (-1, 0), "l": (1, 0), "k": (0, -1), "j": (0, 1),
@@ -1305,7 +1330,7 @@ class Editor:
         elif k == curses.KEY_END:
             self.move(lvl.w - 1 - self.cx, 0)
         elif k == curses.KEY_MOUSE:
-            self.mouse(vw, vh)
+            self.mouse(lay)
         elif k == curses.KEY_RESIZE:
             pass
         elif k in (" ", "\n", "\r", curses.KEY_ENTER):
@@ -1353,6 +1378,10 @@ class Editor:
             self.entity_list()
         elif k == "\t":
             self.show_ents = not self.show_ents
+        elif k == "c":
+            self.rulers = not self.rulers
+            self.msg = "Règles de coordonnées %s." % (
+                "affichées" if self.rulers else "masquées")
         elif k == "p":
             self.properties()
         elif k == "v":
@@ -1392,13 +1421,15 @@ class Editor:
                 return False
         return True
 
-    def mouse(self, vw, vh):
+    def mouse(self, lay):
+        _, _, vw, vh, _, top, left = lay
         try:
             _, mx, my, _, bstate = curses.getmouse()
         except curses.error:
             return
-        x, y = mx - 1 + self.ox, my - 2 + self.oy
-        inside = 0 <= mx - 1 < vw and 0 <= my - 2 < vh
+        sx, sy = mx - left - 1, my - top - 1
+        x, y = sx + self.ox, sy + self.oy
+        inside = 0 <= sx < vw and 0 <= sy < vh
         if bstate & curses.BUTTON1_PRESSED and inside:
             self.mouse_down = True
             self.cx, self.cy = x, y

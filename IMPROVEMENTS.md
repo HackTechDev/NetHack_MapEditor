@@ -36,7 +36,7 @@ reste invisible dans l'éditeur.
 
 ## 2. Affichage
 
-- **Règles de coordonnées** **[facile]** : numéros de colonnes en haut
+- ✅ **Fait** — **Règles de coordonnées** **[facile]** : numéros de colonnes en haut
   et de lignes à gauche (les dizaines et les unités sur deux lignes).
   Indispensable pour relire ou écrire des coordonnées à la main.
 - **Coordonnées absolues** **[facile]** : quand la carte est centrée
