@@ -65,7 +65,7 @@ reste invisible dans l'éditeur.
   effacer à la main.
 - ✅ **Fait** — **Retourner et faire pivoter le presse-papiers** **[facile]** : miroir
   horizontal ou vertical, rotation de 90° (en échangeant `-` et `|`).
-- **Mode symétrie** **[moyen]** : chaque coup de pinceau est reproduit en
+- ✅ **Fait** — **Mode symétrie** **[moyen]** : chaque coup de pinceau est reproduit en
   miroir (axe vertical, horizontal ou les deux). Très pratique pour les
   niveaux symétriques comme le château ou les grandes salles.
 - ✅ **Fait** — **Formes supplémentaires** **[facile]** : cercle et ellipse (pleins ou

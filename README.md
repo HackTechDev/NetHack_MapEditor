@@ -33,6 +33,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | `9`, `0` | outil Ellipse, Ellipse pleine (un cercle est une ellipse tracée dans un carré) |
 | `G` | outil Semis aléatoire : peint au hasard une partie des cases d'une zone, selon une densité en % |
 | `R` | remplacer un terrain par un autre, sur toute la carte ou dans une zone, avec une proportion en % (comme `des.replace_terrain()`) |
+| `M` | symétrie : aucune → gauche/droite → haut/bas → les deux ; pinceau, formes, remplissage, semis et remplacement sont reproduits en miroir autour du centre de la carte (axes marqués `*` sur le cadre ; le collage et les entités ne sont pas reflétés) |
 | `E` | insérer une ligne ou une colonne au curseur, ou la supprimer ; la carte et les entités sont décalées |
 | `D` | outil Couper : pour déplacer une zone, terrain et entités compris ; la zone est vidée puis l'outil Coller la repose |
 | `X`, `Y`, `O` | presse-papiers : miroir gauche/droite, miroir haut/bas, rotation d'un quart de tour (entités comprises) |

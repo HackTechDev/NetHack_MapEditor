@@ -56,6 +56,7 @@ SELECT = {"copy", "cut", "scatter", "replace"}
 FLIP_NAME = {0: "aucun", 1: "vertical", 2: "horizontal",
              3: "horizontal et vertical"}
 FLIP_CYCLE = {0: 2, 2: 1, 1: 3, 3: 0}
+SYM_NAME = {1: "haut/bas", 2: "gauche/droite", 3: "les deux axes"}
 
 # Couleurs NetHack (CLR_*) -> (couleur curses, gras)
 NH_COLORS = {
@@ -217,6 +218,9 @@ OUTILS (Espace ou Entrée pour appliquer)
     selon une densité en % demandée au choix de l'outil
   R Remplacer un terrain par un autre, sur toute la carte ou dans une zone,
     avec une proportion en % (comme des.replace_terrain)
+  M  symétrie : aucune, gauche/droite, haut/bas, les deux ; tout ce qui
+     peint (pinceau, formes, remplissage, semis, remplacement) est reproduit
+     en miroir autour du centre de la carte (axes marqués « * » sur le cadre)
   E  insérer ou supprimer une ligne ou une colonne au curseur (la carte et
      les entités sont décalées)
   Presse-papiers : X miroir gauche/droite   Y miroir haut/bas
@@ -324,6 +328,7 @@ class Editor:
         self.rulers = True          # règles de coordonnées autour de la carte
         self.game = False           # rendu « comme dans le jeu »
         self.flip = 0               # aperçu retourné (bits de FLIP_NAME)
+        self.sym = 0                # symétrie de dessin (mêmes bits)
         enc = locale.getpreferredencoding(False).lower().replace("-", "")
         self.unicode = enc == "utf8"
         self.clip = None
@@ -463,7 +468,9 @@ class Editor:
         if self.anchor is None:
             return {}
         cells = self.shape_cells(self.anchor, (self.cx, self.cy))
-        return cells
+        if self.tool in ("copy", "cut"):
+            return cells
+        return self.mirrored(cells)
 
     def shape_cells(self, a, b):
         (x0, y0), (x1, y1) = a, b
@@ -534,6 +541,19 @@ class Editor:
                      "v" if self.oy + vh < lvl.h and y == vh - 1 else "|",
                      frame)
             self.put(top + 1 + y, left + vw + 1, "|", frame)
+        # axes de symétrie (au centre de la carte, donc au même endroit
+        # dans l'aperçu retourné)
+        axis = self.attr("CLR_YELLOW")
+        if self.sym & 2:
+            for x in {(lvl.w - 1) // 2, lvl.w // 2}:
+                if 0 <= x - self.ox < vw:
+                    for yy in (top, top + vh + 1):
+                        self.put(yy, left + 1 + x - self.ox, "*", axis)
+        if self.sym & 1:
+            for y in {(lvl.h - 1) // 2, lvl.h // 2}:
+                if 0 <= y - self.oy < vh:
+                    for xx in (left, left + vw + 1):
+                        self.put(top + 1 + y - self.oy, xx, "*", axis)
         # carte
         prev = self.preview_cells()
         index = lvl.entity_index()
@@ -662,6 +682,8 @@ class Editor:
             st += "   [rendu jeu]"
         if self.flip:
             st += "   [aperçu retourné : %s]" % FLIP_NAME[self.flip]
+        if self.sym:
+            st += "   [symétrie : %s]" % SYM_NAME[self.sym]
         self.put(maxy - 3, 0, st[:maxx - 1], curses.A_BOLD)
         self.put(maxy - 2, 0, self.msg[:maxx - 1], self.attr("CLR_YELLOW"))
         hint = (" ?:aide  1-8:outils  m:entité  i:liste  p:propriétés  "
@@ -891,7 +913,28 @@ class Editor:
     def end_stroke(self):
         self.stroke = False
 
-    def paint(self, cells):
+    def mirror_points(self, x, y):
+        """La case et ses reflets selon le mode symétrie."""
+        pts = {(x, y)}
+        if self.sym & 2:
+            pts |= {(self.lvl.w - 1 - px, py) for px, py in pts}
+        if self.sym & 1:
+            pts |= {(px, self.lvl.h - 1 - py) for px, py in pts}
+        return pts
+
+    def mirrored(self, cells):
+        """Ajoute aux cases à peindre leurs reflets (mode symétrie)."""
+        if not self.sym:
+            return cells
+        out = {}
+        for (x, y), c in cells.items():
+            for p in self.mirror_points(x, y):
+                out[p] = c
+        return out
+
+    def paint(self, cells, sym=True):
+        if sym:
+            cells = self.mirrored(cells)
         if any(self.lvl.grid[y][x] != c for (x, y), c in cells.items()
                if 0 <= x < self.lvl.w and 0 <= y < self.lvl.h):
             if not (self.stroke and self.stroke_saved):
@@ -934,7 +977,10 @@ class Editor:
         if old == c:
             return
         self.checkpoint()
-        stack, n = [(x, y)], 0
+        # en symétrie, on remplit aussi depuis les reflets du point de départ
+        stack = [p for p in self.mirror_points(x, y)
+                 if self.lvl.grid[p[1]][p[0]] == old]
+        n = 0
         while stack:
             x, y = stack.pop()
             if (0 <= x < self.lvl.w and 0 <= y < self.lvl.h
@@ -972,11 +1018,16 @@ class Editor:
         old, new, pct = self.replace
         lx, hx = sorted((a[0], b[0]))
         ly, hy = sorted((a[1], b[1]))
-        cells = {(x, y): new for y in range(ly, hy + 1)
-                 for x in range(lx, hx + 1)
+        zone = set()
+        for y in range(ly, hy + 1):
+            for x in range(lx, hx + 1):
+                zone |= self.mirror_points(x, y)
+        # les reflets ne sont modifiés que s'ils contiennent l'ancien
+        # terrain : pas de symétrie automatique dans paint()
+        cells = {(x, y): new for x, y in zone
                  if self.lvl.grid[y][x] == old
                  and random.random() * 100 < pct}
-        self.paint(cells)
+        self.paint(cells, sym=False)
         self.msg = "%d case(s) « %s » remplacée(s) par « %s »." % (
             len(cells), nhlevel.TERRAIN_DESC[old], nhlevel.TERRAIN_DESC[new])
 
@@ -1745,6 +1796,10 @@ class Editor:
             self.msg = "Crayon %s." % ("baissé" if self.pen_down else "levé")
         elif k == "y":
             self.eyedropper()
+        elif k == "M":
+            self.sym = FLIP_CYCLE[self.sym]
+            self.msg = ("Symétrie : %s." % SYM_NAME[self.sym] if self.sym
+                        else "Symétrie désactivée.")
         elif k == "E":
             self.edit_rows_cols()
         elif k in ("X", "Y", "O"):
