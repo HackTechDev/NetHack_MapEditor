@@ -75,7 +75,7 @@ reste invisible dans l'éditeur.
   sur toute la carte, comme `des.replace_terrain()`.
 - **Insérer ou supprimer une ligne ou une colonne** **[facile]** : en
   décalant la carte et les entités.
-- **Annulation par trait** **[facile]** : avec le crayon baissé, chaque
+- ✅ **Fait** — **Annulation par trait** **[facile]** : avec le crayon baissé, chaque
   déplacement crée aujourd'hui son propre point d'annulation. Il vaudrait
   mieux regrouper tout un trait en une seule étape.
 - **Générateurs** **[gros]** : labyrinthe (comme `des.mazewalk()`),

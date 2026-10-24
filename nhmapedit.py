@@ -201,6 +201,7 @@ OUTILS (Espace ou Entrée pour appliquer)
   6 Remplissage   7 Copier une zone   8 Coller
   Les outils à deux points : 1er appui = ancre, 2e appui = tracé. Échap annule.
   d  crayon baissé (peint en se déplaçant)    a  avance automatique
+  Un trait (crayon baissé ou glisser à la souris) s'annule en une fois.
 
 ENTITÉS (coordonnées relatives à la carte)
   m  placer une entité (escalier, échelle, autel, monstre, objet, piège,
@@ -292,6 +293,9 @@ class Editor:
         self.hackdir = next((d for d in HACKDIRS if self.is_hackdir(d)),
                             None)
         self.undo_stack, self.redo_stack = [], []
+        # trait en cours (crayon baissé ou glisser à la souris) : un seul
+        # point d'annulation pour tout le trait
+        self.stroke = self.stroke_saved = False
         self.msg = "Bienvenue ! « ? » pour l'aide."
         self.mouse_down = False
         self.init_colors()
@@ -823,10 +827,18 @@ class Editor:
         self.cx = max(0, min(self.cx, self.lvl.w - 1))
         self.cy = max(0, min(self.cy, self.lvl.h - 1))
 
+    def begin_stroke(self):
+        self.stroke, self.stroke_saved = True, False
+
+    def end_stroke(self):
+        self.stroke = False
+
     def paint(self, cells):
         if any(self.lvl.grid[y][x] != c for (x, y), c in cells.items()
                if 0 <= x < self.lvl.w and 0 <= y < self.lvl.h):
-            self.checkpoint()
+            if not (self.stroke and self.stroke_saved):
+                self.checkpoint()
+                self.stroke_saved = self.stroke
             for (x, y), c in cells.items():
                 self.lvl.set(x, y, c)
 
@@ -914,6 +926,8 @@ class Editor:
         nx = max(0, min(self.lvl.w - 1, self.cx + dx))
         ny = max(0, min(self.lvl.h - 1, self.cy + dy))
         if self.pen_down and self.tool == "pen":
+            if not self.stroke:
+                self.begin_stroke()
             cells = {p: self.brush for p in bresenham(self.cx, self.cy,
                                                       nx, ny)}
             self.paint(cells)
@@ -1471,6 +1485,10 @@ class Editor:
                  curses.KEY_SLEFT: (-8, 0), curses.KEY_SRIGHT: (8, 0),
                  curses.KEY_SR: (0, -4), curses.KEY_SF: (0, 4),
                  curses.KEY_PPAGE: (0, -vh), curses.KEY_NPAGE: (0, vh)}
+        if k not in moves and k not in (curses.KEY_HOME, curses.KEY_END,
+                                         curses.KEY_MOUSE,
+                                         curses.KEY_RESIZE):
+            self.end_stroke()       # toute autre touche termine le trait
         if k in moves:
             self.move(*moves[k])
         elif k == curses.KEY_HOME:
@@ -1507,6 +1525,7 @@ class Editor:
         elif k == "d":
             self.pen_down = not self.pen_down
             if self.pen_down and self.tool == "pen":
+                self.begin_stroke()
                 self.paint({(self.cx, self.cy): self.brush})
             self.msg = "Crayon %s." % ("baissé" if self.pen_down else "levé")
         elif k == "y":
@@ -1601,6 +1620,8 @@ class Editor:
         elif bstate & curses.BUTTON1_PRESSED and inside:
             self.mouse_down = True
             self.cx, self.cy = x, y
+            if self.tool == "pen":
+                self.begin_stroke()
             self.apply()
         elif bstate & curses.BUTTON1_CLICKED and inside:
             self.cx, self.cy = x, y
@@ -1612,6 +1633,7 @@ class Editor:
                 self.cx, self.cy = x, y
                 self.apply()
             self.mouse_down = False
+            self.end_stroke()
         elif bstate & curses.REPORT_MOUSE_POSITION and inside:
             if self.mouse_down and self.tool == "pen":
                 self.paint({p: self.brush
