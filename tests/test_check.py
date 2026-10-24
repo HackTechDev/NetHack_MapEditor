@@ -5,6 +5,7 @@ import unittest
 from tests.util import level
 
 import nhcheck
+import nhlevel
 from nhlevel import Entity
 
 
@@ -50,6 +51,40 @@ class Connectivity(unittest.TestCase):
         msgs = nhcheck.connectivity(lvl)
         self.assertEqual(len(msgs), 1)
         self.assertIn("Zone fermée de 3 case(s)", msgs[0])
+
+
+class Rules(unittest.TestCase):
+    def messages(self, lvl):
+        return [m for m in nhcheck.rules(lvl) if m[0] in "!?"]
+
+    def test_door_in_corner(self):
+        lvl = level(["+---", "|...", "|..."])
+        self.assertIn("! Porte en (0,0) dans un coin de mur.",
+                      self.messages(lvl))
+
+    def test_framed_door_is_fine(self):
+        lvl = level(["--+--", "|...|"])
+        self.assertEqual(self.messages(lvl), [])
+
+    def test_stair_in_water(self):
+        lvl = level(["...", ".W."])
+        lvl.entities = [Entity("stair", 1, 1, "down")]
+        self.assertTrue(any("dans 'W'" in m for m in self.messages(lvl)))
+
+    def test_altar_needs_temple_region(self):
+        src = ('des.map([[\n-----\n|...|\n-----\n]]);\n'
+               'des.altar({ x = 2, y = 1, align = "law" });\n')
+        lvl = nhlevel.parse_level(src)[0]
+        self.assertTrue(any("temple" in m for m in self.messages(lvl)))
+        src += 'des.region({ region = {1,1,3,1}, type = "temple" });\n'
+        lvl = nhlevel.parse_level(src)[0]
+        self.assertFalse(any("temple" in m for m in self.messages(lvl)))
+
+    def test_entity_outside_map(self):
+        lvl = level(["..."])
+        lvl.entities = [Entity("stair", 5, 0, "up")]
+        self.assertTrue(any("hors de la carte" in m
+                            for m in self.messages(lvl)))
 
 
 if __name__ == "__main__":

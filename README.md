@@ -124,6 +124,18 @@ hasard par le script. Une zone qui touche le bord d'une carte plus petite
 que le niveau peut être reliée au reste par le jeu : l'éditeur le
 précise.
 
+**Règles de NetHack.** L'éditeur signale aussi :
+- une carte trop large, ou qui déborde du niveau de 80x21 une fois placée
+  (`halign`/`valign` ou position fixe) ;
+- une porte dans un coin de mur, ou qui n'est encadrée par aucun mur ;
+- un escalier, une échelle ou un autel dans l'eau ou la lave, ou sur un
+  terrain que le jeu remplacera ;
+- un autel hors d'une salle `temple` (lue dans les `des.region()` du
+  script) : il n'aura pas de prêtre ;
+- une entité sur du terrain solide, ou hors de la carte ;
+- deux escaliers montants (ou descendants) ;
+- un monstre ou un objet dont le nom est inconnu.
+
 ## Tester un niveau dans NetHack
 
 Appuyez sur `t` : l'éditeur écrit l'état actuel de la carte (même non

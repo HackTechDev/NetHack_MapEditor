@@ -128,3 +128,146 @@ def connectivity(lvl):
             out.append("? … et %d autre(s) zone(s) séparée(s)."
                        % (len(closed) - 8))
     return out
+
+
+FLIPS = {1: "haut/bas", 2: "gauche/droite", 3: "dans les deux sens"}
+WALLS = set("-|")
+
+
+def temple_regions(lvl):
+    """Cases des salles « temple » déclarées par des.region() à
+    coordonnées littérales ; None si une région temple n'est pas lisible
+    (on ne peut alors rien affirmer)."""
+    if not lvl.source:
+        return set()
+    cells = set()
+    for c in nhlevel.scan_des_calls(lvl.source[0]):
+        if c["name"] != "region":
+            continue
+        try:
+            vals = nhlevel._parse_args(c["args"], 0, len(c["args"]))[0]
+            t = nhlevel._to_py(vals[0]) if len(vals) == 1 else None
+        except nhlevel.NotLiteral:
+            t = None
+        if not isinstance(t, dict):
+            if "temple" in lvl.source[0][c["start"]:c["end"]]:
+                return None
+            continue
+        if t.get("type") != "temple":
+            continue
+        r = t.get("region")
+        if not (isinstance(r, list) and len(r) == 4
+                and all(isinstance(v, int) for v in r)):
+            return None
+        x1, y1, x2, y2 = r
+        if t.get("irregular"):
+            # salle de forme libre : remplissage depuis le premier point
+            stack, room = [(x1, y1)], set()
+            while stack:
+                x, y = stack.pop()
+                if ((x, y) in room or not (0 <= x < lvl.w and 0 <= y < lvl.h)
+                        or lvl.grid[y][x] in WALLS | set("+S ")):
+                    continue
+                room.add((x, y))
+                stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+            cells |= room
+        else:
+            cells |= {(x, y) for x in range(x1, x2 + 1)
+                      for y in range(y1, y2 + 1)}
+    return cells
+
+
+def _door_problems(lvl, x, y):
+    g = lvl.grid
+
+    def wall(px, py):
+        return 0 <= px < lvl.w and 0 <= py < lvl.h and g[py][px] in WALLS
+
+    h = wall(x - 1, y) and wall(x + 1, y)
+    v = wall(x, y - 1) and wall(x, y + 1)
+    if h and v or (wall(x - 1, y) or wall(x + 1, y)) and (
+            wall(x, y - 1) or wall(x, y + 1)) and not (h or v):
+        return "! Porte en (%d,%d) dans un coin de mur." % (x, y)
+    if not (h or v):
+        return "? Porte en (%d,%d) qui n'est pas encadrée par des murs." % (
+            x, y)
+    return None
+
+
+def rules(lvl, monsters=None, objects=None):
+    """Règles de NetHack : placement de la carte, entités, portes."""
+    out = []
+    if lvl.w > nhlevel.MAP_X_LIM:
+        out.append("! Largeur %d > %d (MAP_X_LIM) : risque de refus "
+                   "par NetHack." % (lvl.w, nhlevel.MAP_X_LIM))
+    o = lvl.origin()
+    if o:
+        x, y = o
+        if x < 1 or x + lvl.w > nhlevel.COLNO or y < 0 \
+                or y + lvl.h > nhlevel.ROWNO:
+            out.append("! La carte placée en (%d,%d) déborde du niveau "
+                       "(80x21)." % (x, y))
+    if lvl.allowed_flips():
+        out.append("- NetHack peut retourner ce niveau au chargement (%s) "
+                   ": f pour un aperçu, drapeau noflip pour l'empêcher."
+                   % FLIPS[lvl.allowed_flips()])
+    kinds = [(e.kind, e.value) for e in lvl.entities]
+    for d, lab in (("up", "montant"), ("down", "descendant")):
+        if ("stair", d) not in kinds and ("ladder", d) not in kinds:
+            out.append("- Pas d'escalier/échelle %s à position fixe "
+                       "(peut être placé ailleurs dans le script)." % lab)
+    temples = temple_regions(lvl)
+    for e in lvl.entities:
+        if not (0 <= e.x < lvl.w and 0 <= e.y < lvl.h):
+            # permis par NetHack (coordonnées relatives à la carte)
+            out.append("? %s en (%d,%d) hors de la carte (invisible dans "
+                       "l'éditeur)." % (e.describe(), e.x, e.y))
+            continue
+        t = lvl.grid[e.y][e.x]
+        if e.kind == "door":
+            # sur un mur, des.door() le remplace par la porte
+            if t not in "+S-|":
+                out.append("? Porte en (%d,%d) sur '%s'." % (e.x, e.y, t))
+        elif t in " -|STZFB":
+            out.append("! %s en (%d,%d) sur du terrain solide '%s'." % (
+                e.describe(), e.x, e.y, t))
+        elif e.kind in ("stair", "ladder", "altar") and t in LIQUID:
+            out.append("! %s en (%d,%d) dans '%s' (%s)." % (
+                e.describe(), e.x, e.y, t, nhlevel.TERRAIN_DESC.get(t, t)))
+        elif e.kind in ("stair", "ladder", "altar") and t not in ".#x":
+            out.append("? %s en (%d,%d) sur '%s' : le terrain sera "
+                       "remplacé." % (e.describe(), e.x, e.y, t))
+        if e.kind == "altar" and temples is not None \
+                and (e.x, e.y) not in temples:
+            out.append("? Autel en (%d,%d) hors d'une salle temple "
+                       "(des.region type « temple ») : pas de prêtre."
+                       % (e.x, e.y))
+        if e.kind == "monster" and e.value and len(e.value) > 1 \
+                and monsters and e.value not in monsters:
+            out.append("? Monstre inconnu : %s" % e.value)
+        if e.kind == "object" and e.value and len(e.value) > 1 \
+                and objects and e.value not in objects:
+            out.append("? Objet inconnu (vérifiez le nom) : %s" % e.value)
+    seen = {}
+    for e in lvl.entities:
+        if e.kind in ("stair", "ladder"):
+            seen.setdefault((e.kind, e.value), []).append(e)
+    for (k, v), lst in seen.items():
+        if len(lst) > 1:
+            out.append("! %d %ss %s : un seul est permis par niveau."
+                       % (len(lst), nhlevel.ENTITY_LABEL[k], v))
+    doors = {(x, y) for y in range(lvl.h) for x in range(lvl.w)
+             if lvl.grid[y][x] == "+"}
+    doors |= {(e.x, e.y) for e in lvl.entities if e.kind == "door"
+              and 0 <= e.x < lvl.w and 0 <= e.y < lvl.h}
+    for x, y in sorted(doors, key=lambda p: (p[1], p[0])):
+        m = _door_problems(lvl, x, y)
+        if m:
+            out.append(m)
+    return out
+
+
+def check(lvl, monsters=None, objects=None):
+    """Toutes les vérifications ; ["Aucun problème détecté."] sinon."""
+    out = rules(lvl, monsters, objects) + connectivity(lvl)
+    return out or ["Aucun problème détecté."]

@@ -110,7 +110,7 @@ reste invisible dans l'éditeur.
   bibliothèque `des` factice qui vérifie les paramètres. On attraperait
   les noms d'objets inconnus, les types de pièges invalides et les
   erreurs de syntaxe dans le code conservé, avant même de lancer le jeu.
-- **Règles de NetHack** **[facile]** : porte sur un coin de mur, escalier
+- ✅ **Fait** — **Règles de NetHack** **[facile]** : porte sur un coin de mur, escalier
   dans l'eau, autel hors d'une salle `temple`, carte placée hors des
   limites une fois centrée…
 

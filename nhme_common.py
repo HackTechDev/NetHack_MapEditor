@@ -285,7 +285,8 @@ NIVEAU ET FICHIERS
      probabilité…), ou modifie et retire les niveaux spéciaux du donjon
   v  vérifier la carte, dont la connexité : escalier descendant accessible
      depuis le montant (portes sans diagonale, passages secrets, eau et
-     lave signalés) et zones fermées
+     lave signalés) et zones fermées ; règles de NetHack (porte dans un
+     coin, escalier dans l'eau, autel hors d'un temple, carte qui déborde…)
   t  tester : copie la carte dans le répertoire du jeu, à charger avec
      #wizloaddes en mode wizard (nethack -D) ; avec tmux, l'éditeur
      lance le jeu (panneau, fenêtre ou session tmux) et y charge la carte

@@ -7,7 +7,7 @@ import nhcheck
 import nhlevel
 import nhtheme
 from nhlevel import Level
-from nhme_common import Cancel, FLIP_NAME, SOLID
+from nhme_common import Cancel
 
 
 class LevelMixin:
@@ -146,63 +146,8 @@ class LevelMixin:
             lvl.pos, lvl.halign, lvl.valign = None, h, v
 
     def check(self):
-        lvl, out = self.lvl, []
-        if lvl.w > nhlevel.MAP_X_LIM:
-            out.append("! Largeur %d > %d (MAP_X_LIM) : risque de refus "
-                       "par NetHack." % (lvl.w, nhlevel.MAP_X_LIM))
-        o = lvl.origin()
-        if o:
-            x, y = o
-            if x < 1 or x + lvl.w > nhlevel.COLNO or y < 0 \
-                    or y + lvl.h > nhlevel.ROWNO:
-                out.append("! La carte placée en (%d,%d) déborde du niveau "
-                           "(80x21)." % (x, y))
-        if lvl.allowed_flips():
-            out.append("- NetHack peut retourner ce niveau au chargement (%s) "
-                       ": f pour un aperçu, drapeau noflip pour l'empêcher."
-                       % FLIP_NAME[lvl.allowed_flips()])
-        kinds = [(e.kind, e.value) for e in lvl.entities]
-        for d, lab in (("up", "montant"), ("down", "descendant")):
-            if ("stair", d) not in kinds and ("ladder", d) not in kinds:
-                out.append("- Pas d'escalier/échelle %s à position fixe "
-                           "(peut être placé ailleurs dans le script)." % lab)
-        for e in lvl.entities:
-            t = lvl.grid[e.y][e.x]
-            if e.kind == "door":
-                if t not in "+S":
-                    out.append("! Porte en (%d,%d) sur '%s'." % (e.x, e.y, t))
-            elif t in SOLID:
-                out.append("! %s en (%d,%d) sur du terrain solide '%s'." % (
-                    e.describe(), e.x, e.y, t))
-            if e.kind == "monster" and e.value and len(e.value) > 1 \
-                    and self.mon and e.value not in self.mon:
-                out.append("? Monstre inconnu : %s" % e.value)
-            if e.kind == "object" and e.value and len(e.value) > 1 \
-                    and self.obj and e.value not in self.obj:
-                out.append("? Objet inconnu (vérifiez le nom) : %s"
-                           % e.value)
-        seen = {}
-        for e in lvl.entities:
-            if e.kind in ("stair", "ladder"):
-                seen.setdefault((e.kind, e.value), []).append(e)
-        for (k, v), lst in seen.items():
-            if len(lst) > 1:
-                out.append("! %d %ss %s : un seul est permis par niveau."
-                           % (len(lst), nhlevel.ENTITY_LABEL[k], v))
-        for y in range(lvl.h):
-            for x in range(lvl.w):
-                if lvl.grid[y][x] == "+":
-                    h = (x > 0 and lvl.grid[y][x - 1] in "-|"
-                         and x < lvl.w - 1 and lvl.grid[y][x + 1] in "-|")
-                    v = (y > 0 and lvl.grid[y - 1][x] in "-|"
-                         and y < lvl.h - 1 and lvl.grid[y + 1][x] in "-|")
-                    if not (h or v):
-                        out.append("? Porte en (%d,%d) qui n'est pas "
-                                   "encadrée par des murs." % (x, y))
-        out += nhcheck.connectivity(lvl)
-        if not out:
-            out = ["Aucun problème détecté."]
-        self.message_box("Vérification", "\n".join(out))
+        self.message_box("Vérification", "\n".join(
+            nhcheck.check(self.lvl, self.mon, self.obj)))
 
     def open_file(self, path):
         try:
