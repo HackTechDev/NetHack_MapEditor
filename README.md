@@ -98,3 +98,12 @@ sources et recompilez/réinstallez (`make install`), ou référencez-le dans
   d'objets et de pièges dans `nhdata.json`. À relancer si les sources
   changent : `python3 gen_data.py [chemin/vers/NetHack-5.0.0]`.
 - `nhdata.json` : les données générées (394 monstres, 422 objets, 24 pièges).
+
+## Licence
+
+Le code de nhmapedit est distribué sous licence MIT (voir `LICENSE`).
+
+`nhdata.json` est extrait des sources de NetHack (noms des monstres, objets
+et pièges) et relève de la NetHack General Public License. NetHack est
+Copyright (c) Stichting Mathematisch Centrum, Amsterdam, 1985 et ses
+contributeurs.
