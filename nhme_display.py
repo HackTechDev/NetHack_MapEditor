@@ -2,7 +2,9 @@
 
 import curses
 import os
+import tempfile
 
+import nhexport
 import nhlevel
 from nhme_common import (
     ASCII_GLYPH, FLIP_NAME, HI_COLORS, NH_COLORS, OBJ_CLASS_COLOR, RANDOM,
@@ -308,3 +310,43 @@ class DisplayMixin:
             self.scr.addstr(y, x, s, a)
         except curses.error:
             pass
+
+    def export_image(self, path):
+        """Exporte la carte seule en SVG (ou PNG), telle qu'elle est
+        affichée : rendu d'édition ou « comme dans le jeu », entités
+        visibles ou non."""
+        lvl = self.lvl
+        view = game_view(lvl.grid, lvl.init.get("fg", " ")) \
+            if self.game else None
+        index = lvl.entity_index()
+        cells = []
+        for y in range(lvl.h):
+            row = []
+            for x in range(lvl.w):
+                if view:
+                    ch, clr = view[y][x]
+                else:
+                    ch = lvl.grid[y][x]
+                    clr = TERRAIN_COLOR.get(ch, "CLR_GRAY")
+                    if ch == "x":
+                        ch = " "
+                bg = None
+                e = self.top_entity(x, y, index) if self.show_ents else None
+                if e:
+                    ch, clr = self.entity_glyph(e)
+                    if clr == RANDOM:
+                        clr, bg = "CLR_WHITE", "#7a3e8a"
+                row.append((ch, clr, bg))
+            cells.append(row)
+        title = os.path.basename(self.path or "nhmapedit")
+        text = nhexport.svg(cells, title)
+        if path.lower().endswith(".png"):
+            with tempfile.TemporaryDirectory() as d:
+                tmp = os.path.join(d, "carte.svg")
+                with open(tmp, "w", encoding="utf-8") as f:
+                    f.write(text)
+                nhexport.svg_to_png(tmp, path)
+        else:
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(text)
+

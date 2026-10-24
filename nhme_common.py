@@ -18,7 +18,7 @@ DUNGEON_FILES = [
     os.path.join(HERE, "..", "NetHack-5.0.0", "dat", "dungeon.lua"),
 ]
 # Extensions de « enregistrer sous » qui exportent la carte seule
-EXPORTS = (".txt",)
+EXPORTS = (".txt", ".svg", ".png")
 # Préfixe des copies de test, pour ne jamais masquer un niveau de nhdat
 TEST_PREFIX = "nhme-"
 # Session tmux du jeu lancé par l'éditeur (hors de tmux)
@@ -298,7 +298,8 @@ NIVEAU ET FICHIERS
   u  annuler      U / Ctrl-R  rétablir
   n  nouveau      o  ouvrir      s  enregistrer      w  enregistrer sous
      o sur un .txt : importe une carte en texte brut ;
-     w vers un .txt : exporte la carte seule
+     w vers un .txt : exporte la carte seule ; vers un .svg ou un .png :
+     l'exporte en image, telle qu'elle est affichée (J, Tab)
   q  quitter      ?  cette aide
 
 Salles à thème : ouvrir themerms.lua (o) propose ses salles dessinées par

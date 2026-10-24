@@ -130,7 +130,7 @@ reste invisible dans l'éditeur.
 
 - ✅ **Fait** — **Import et export en texte brut** **[facile]** : coller ou exporter
   une carte ASCII seule, sans le Lua autour.
-- **Export en image** **[facile]** : réutiliser `docs/capture.py` pour
+- ✅ **Fait** — **Export en image** **[facile]** : réutiliser `docs/capture.py` pour
   exporter la carte seule (en SVG ou en PNG) depuis l'éditeur, par
   exemple pour la partager.
 - **Bibliothèque de modèles** **[moyen]** : des morceaux de carte prêts à

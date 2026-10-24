@@ -52,7 +52,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | `v` | vérifier la carte : largeur > 76, entités dans les murs, escaliers en double, connexité… (voir « Vérification ») |
 | `t` | tester : copie la carte dans le répertoire du jeu ; avec tmux, lance NetHack et y charge la carte (voir plus bas) |
 | `u` / `U` (ou Ctrl-R) | annuler / rétablir |
-| `n`, `o`, `s`, `w` | nouveau, ouvrir, enregistrer, enregistrer sous (Tab complète les chemins) ; `o` sur un `.txt` importe une carte en texte brut, `w` vers un `.txt` l'exporte (voir « Import et export ») |
+| `n`, `o`, `s`, `w` | nouveau, ouvrir, enregistrer, enregistrer sous (Tab complète les chemins) ; `o` sur un `.txt` importe une carte en texte brut, `w` vers un `.txt`, `.svg` ou `.png` l'exporte en texte ou en image (voir « Import et export ») |
 | `q` | quitter |
 
 La souris est gérée : clic = déplacer le curseur et appliquer l'outil,
@@ -117,6 +117,11 @@ elle vaut `(?)` quand la carte est placée au hasard.
   caractère inconnu est signalé. À l'inverse, `w` (enregistrer sous)
   vers un nom en `.txt` exporte la carte seule, sans changer le fichier
   en cours.
+- **Image** : `w` vers un nom en `.svg` ou en `.png` exporte la carte en
+  image, telle qu'elle est affichée : symboles d'édition ou rendu « comme
+  dans le jeu » (`J`), avec ou sans les entités (Tab). Le SVG est écrit
+  directement. Le PNG est converti avec `rsvg-convert` ou ImageMagick
+  (`magick`/`convert`), s'ils sont installés.
 
 ## Vérification
 

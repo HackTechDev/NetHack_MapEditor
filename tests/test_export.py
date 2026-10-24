@@ -43,5 +43,25 @@ class Text(unittest.TestCase):
             self.assertEqual(ed.path, os.path.join(d, "carte.lua"))
 
 
+class Image(unittest.TestCase):
+    def test_svg(self):
+        text = nhexport.svg([[("-", "CLR_GRAY"), ("<", "CLR_YELLOW", None)],
+                             [("&", "CLR_RED", "#7a3e8a"), (" ", "CLR_GRAY")]],
+                            "essai")
+        self.assertTrue(text.startswith("<svg"))
+        self.assertIn("&amp;", text)
+        self.assertIn('fill="#7a3e8a"', text)
+        self.assertEqual(text.count("<text"), 3)
+
+    def test_editor_export_svg(self):
+        with tempfile.TemporaryDirectory() as d:
+            ed = nhmapedit.Editor(None)
+            ed.lvl = level(["-----", "|.<.|", "-----"])
+            out = os.path.join(d, "carte.svg")
+            self.assertTrue(ed.export(out))
+            with open(out) as f:
+                self.assertIn("&lt;", f.read())
+
+
 if __name__ == "__main__":
     unittest.main()
