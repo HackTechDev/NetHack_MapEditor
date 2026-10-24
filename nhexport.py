@@ -1,5 +1,7 @@
 """Import et export : carte en texte brut, image SVG ou PNG."""
 
+import glob
+import os
 import shutil
 import subprocess
 
@@ -112,3 +114,58 @@ def svg_to_png(svg_path, png_path):
     r = subprocess.run(cmd, capture_output=True, text=True)
     if r.returncode:
         raise OSError("conversion en PNG : %s" % r.stderr.strip()[:200])
+
+
+# ----------------------------------------------------------------------
+# Bibliothèque de modèles
+# ----------------------------------------------------------------------
+TEMPLATE_TAG = "-- Modèle nhmapedit :"
+
+
+def template_info(text, path):
+    """(titre, description) d'un modèle, lus dans ses commentaires de
+    tête ; le nom du fichier sinon."""
+    title = os.path.splitext(os.path.basename(path))[0]
+    desc = []
+    for line in text.split("\n"):
+        if line.startswith(TEMPLATE_TAG):
+            title = line[len(TEMPLATE_TAG):].strip()
+        elif line.startswith("--") and title and desc is not None:
+            desc.append(line[2:].strip())
+        else:
+            break
+    return title, " ".join(d for d in desc if d)
+
+
+def list_templates(dirs):
+    """[(titre, description, chemin)] des modèles .lua des dossiers."""
+    out = []
+    for d in dirs:
+        for path in sorted(glob.glob(os.path.join(d, "*.lua"))):
+            try:
+                with open(path, encoding="utf-8") as f:
+                    title, desc = template_info(f.read(), path)
+            except (OSError, UnicodeDecodeError):
+                continue
+            out.append((title, desc, path))
+    return out
+
+
+def load_template(path):
+    """(grille, entités) d'un modèle, prêts pour le presse-papiers."""
+    with open(path, encoding="utf-8") as f:
+        lvl = nhlevel.parse_level(f.read())[0]
+    ents = []
+    for e in lvl.entities:
+        c = e.copy()
+        c.origin = None
+        ents.append(c)
+    return [row[:] for row in lvl.grid], ents
+
+
+def template_lua(title, grid, ents):
+    """Texte d'un modèle enregistré depuis le presse-papiers."""
+    lvl = nhlevel.Level(len(grid[0]), len(grid))
+    lvl.grid = [row[:] for row in grid]
+    lvl.entities = [e.copy() for e in ents]
+    return "%s %s\n%s" % (TEMPLATE_TAG, title, lvl.to_lua(title))

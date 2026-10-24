@@ -36,6 +36,7 @@ Appuyez sur `?` dans l'éditeur pour l'aide complète.
 | `M` | symétrie : aucune → gauche/droite → haut/bas → les deux ; pinceau, formes, remplissage, semis et remplacement sont reproduits en miroir autour du centre de la carte (axes marqués `*` sur le cadre ; le collage et les entités ne sont pas reflétés) |
 | `E` | insérer une ligne ou une colonne au curseur, ou la supprimer ; la carte et les entités sont décalées |
 | `D` | outil Couper : pour déplacer une zone, terrain et entités compris ; la zone est vidée puis l'outil Coller la repose |
+| `b` | bibliothèque de modèles : temple, boutique, fontaine, salle du trône… ; le modèle choisi va dans le presse-papiers (voir « Import et export ») |
 | `X`, `Y`, `O` | presse-papiers : miroir gauche/droite, miroir haut/bas, rotation d'un quart de tour (entités comprises) |
 | Espace / Entrée | appliquer l'outil (outils à deux points : ancre puis tracé ; Échap annule) |
 | `d` | crayon baissé : peint en se déplaçant (tout le trait s'annule en une fois) |
@@ -122,6 +123,17 @@ elle vaut `(?)` quand la carte est placée au hasard.
   dans le jeu » (`J`), avec ou sans les entités (Tab). Le SVG est écrit
   directement. Le PNG est converti avec `rsvg-convert` ou ImageMagick
   (`magick`/`convert`), s'ils sont installés.
+- **Modèles** : `b` ouvre la bibliothèque de modèles. Ce sont des morceaux
+  de carte prêts à coller : temple, boutique, fontaine décorée, salle du
+  trône, coffre-fort, île entourée de douves, escaliers. Le modèle choisi
+  va dans le presse-papiers, entités comprises, et l'outil Coller est
+  activé ; `X`, `Y` et `O` le retournent ou le font pivoter. La dernière
+  ligne de la liste enregistre le presse-papiers comme nouveau modèle.
+  Les modèles livrés sont dans `modeles/`, les vôtres dans
+  `~/.config/nhmapedit/modeles/`. Un modèle est un petit niveau `.lua`
+  ordinaire, qu'on peut aussi ouvrir et modifier ; sa première ligne
+  `-- Modèle nhmapedit : Titre` donne son titre, les commentaires
+  suivants sa description.
 
 ## Vérification
 
@@ -287,6 +299,8 @@ le jeu ainsi.
 - `nhlevel.py` : le modèle de niveau, la lecture et l'écriture du Lua.
 - `nhdungeon.py` : la lecture et la modification de `dat/dungeon.lua`.
 - `nhtheme.py` : les salles à thème de `dat/themerms.lua`.
+- `nhexport.py` : import et export (texte brut, SVG, PNG), modèles ;
+  `modeles/` : les modèles livrés.
 - `nhcheck.py` : les vérifications (connexité, règles, Lua) ;
   `nhcheck_des.lua` est la bibliothèque `des` factice de la vérification
   Lua.

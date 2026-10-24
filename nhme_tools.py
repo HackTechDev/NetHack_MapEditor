@@ -1,9 +1,13 @@
 """Outils d'édition du terrain : dessin, presse-papiers, annulation."""
 
+import os
 import random
+import re
 
+import nhexport
 import nhlevel
-from nhme_common import Cancel, SELECT, TOOL_NAME, bresenham, ellipse_cells
+from nhme_common import (
+    Cancel, SELECT, TEMPLATE_DIRS, TOOL_NAME, bresenham, ellipse_cells)
 
 
 class ToolsMixin:
@@ -371,3 +375,49 @@ class ToolsMixin:
                                                       nx, ny)}
             self.paint(cells)
         self.cx, self.cy = nx, ny
+
+    def templates(self):
+        """Bibliothèque de modèles : le modèle choisi va dans le
+        presse-papiers, et l'outil Coller le pose où l'on veut."""
+        items = [("%-22s %s" % (t, d), p)
+                 for t, d, p in nhexport.list_templates(TEMPLATE_DIRS)]
+        items.append(("+ enregistrer le presse-papiers comme modèle",
+                      "_save"))
+        path = self.pick("Modèles (tapez pour filtrer)", items)
+        if path == "_save":
+            return self.save_template()
+        try:
+            self.clip = nhexport.load_template(path)
+        except (OSError, ValueError) as e:
+            self.msg = "Modèle illisible : %s" % e
+            return
+        g, ents = self.clip
+        self.tool = "paste"
+        self.msg = ("Modèle %s (%dx%d, %d entités) : outil Coller actif, "
+                    "X/Y/O pour le retourner." % (
+                        os.path.basename(path), len(g[0]), len(g),
+                        len(ents)))
+
+    def save_template(self):
+        if not self.clip:
+            self.msg = ("Presse-papiers vide : copiez d'abord une zone "
+                        "(outil 7).")
+            return
+        title = self.prompt("Nom du modèle : ").strip()
+        if not title:
+            raise Cancel()
+        d = TEMPLATE_DIRS[-1]
+        path = os.path.join(d, re.sub(r"[^\w-]+", "-", title).strip("-")
+                            .lower() + ".lua")
+        if os.path.exists(path) and not self.confirm(
+                "%s existe. Écraser ?" % path):
+            raise Cancel()
+        try:
+            os.makedirs(d, exist_ok=True)
+            with open(path, "w", encoding="utf-8") as f:
+                f.write(nhexport.template_lua(title, *self.clip))
+        except OSError as e:
+            self.msg = "Erreur d'écriture : %s" % e
+            return
+        self.msg = "Modèle enregistré : %s" % path
+

@@ -133,7 +133,7 @@ reste invisible dans l'éditeur.
 - ✅ **Fait** — **Export en image** **[facile]** : réutiliser `docs/capture.py` pour
   exporter la carte seule (en SVG ou en PNG) depuis l'éditeur, par
   exemple pour la partager.
-- **Bibliothèque de modèles** **[moyen]** : des morceaux de carte prêts à
+- ✅ **Fait** — **Bibliothèque de modèles** **[moyen]** : des morceaux de carte prêts à
   coller (temple, boutique, puits, pont-levis, fontaine décorée…), rangés
   dans un dossier `modeles/`.
 - **Enregistrement automatique** **[facile]** : une sauvegarde de secours

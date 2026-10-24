@@ -7,6 +7,7 @@ import unittest
 from tests.util import grid, level
 
 import nhexport
+import nhlevel
 import nhmapedit
 
 
@@ -61,6 +62,45 @@ class Image(unittest.TestCase):
             self.assertTrue(ed.export(out))
             with open(out) as f:
                 self.assertIn("&lt;", f.read())
+
+
+class Templates(unittest.TestCase):
+    def test_shipped_templates_load(self):
+        import nhme_common
+        found = nhexport.list_templates(nhme_common.TEMPLATE_DIRS[:1])
+        self.assertGreaterEqual(len(found), 5)
+        for title, desc, path in found:
+            g, ents = nhexport.load_template(path)
+            self.assertTrue(g and desc, path)
+            self.assertTrue(all(e.origin is None for e in ents))
+
+    def test_save_and_paste(self):
+        import nhme_tools
+        with tempfile.TemporaryDirectory() as d:
+            ed = nhmapedit.Editor(None)
+            ed.lvl = level(["---", "|.|", "---"])
+            ed.lvl.entities = [nhlevel.Entity("stair", 1, 1, "up")]
+            ed.copy((0, 0), (2, 2))
+            ed.prompt = lambda *a, **k: "Ma salle"
+            old = nhme_tools.TEMPLATE_DIRS
+            nhme_tools.TEMPLATE_DIRS = [d]
+            try:
+                ed.save_template()
+                path = os.path.join(d, "ma-salle.lua")
+                self.assertTrue(os.path.exists(path))
+                found = nhexport.list_templates([d])
+                self.assertEqual(found[0][0], "Ma salle")
+                ed.pick = lambda *a, **k: path
+                ed.lvl = level(["     "] * 4)
+                ed.templates()
+                ed.cx, ed.cy = 1, 1
+                ed.apply()
+            finally:
+                nhme_tools.TEMPLATE_DIRS = old
+            self.assertEqual(grid(ed.lvl), ["     ", " --- ", " |.| ",
+                                            " --- "])
+            self.assertEqual((ed.lvl.entities[0].x, ed.lvl.entities[0].y),
+                             (2, 2))
 
 
 if __name__ == "__main__":

@@ -19,6 +19,12 @@ DUNGEON_FILES = [
 ]
 # Extensions de « enregistrer sous » qui exportent la carte seule
 EXPORTS = (".txt", ".svg", ".png")
+# Dossiers de la bibliothèque de modèles (touche b) : ceux livrés avec
+# l'éditeur, puis ceux de l'utilisateur, où l'on enregistre les siens
+CONFIG_DIR = os.path.join(os.environ.get("XDG_CONFIG_HOME")
+                          or os.path.expanduser("~/.config"), "nhmapedit")
+TEMPLATE_DIRS = [os.path.join(HERE, "modeles"),
+                 os.path.join(CONFIG_DIR, "modeles")]
 # Préfixe des copies de test, pour ne jamais masquer un niveau de nhdat
 TEST_PREFIX = "nhme-"
 # Session tmux du jeu lancé par l'éditeur (hors de tmux)
@@ -258,6 +264,9 @@ OUTILS (Espace ou Entrée pour appliquer)
      en miroir autour du centre de la carte (axes marqués « * » sur le cadre)
   E  insérer ou supprimer une ligne ou une colonne au curseur (la carte et
      les entités sont décalées)
+  b  bibliothèque de modèles (temple, boutique, fontaine…) : le modèle
+     choisi va dans le presse-papiers ; la dernière ligne enregistre le
+     presse-papiers comme modèle (~/.config/nhmapedit/modeles)
   Presse-papiers : X miroir gauche/droite   Y miroir haut/bas
                    O rotation d'un quart de tour (sens horaire)
   Les outils à deux points : 1er appui = ancre, 2e appui = tracé. Échap annule.

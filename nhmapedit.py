@@ -237,6 +237,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.redo()
         elif k == "n":
             self.new_level()
+        elif k == "b":
+            self.templates()
         elif k == "o":
             self.check_unsaved()
             path = self.prompt("Ouvrir : ", os.getcwd() + "/",
