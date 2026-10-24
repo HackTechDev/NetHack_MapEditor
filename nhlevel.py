@@ -7,6 +7,7 @@ contenu de l'éditeur à l'enregistrement ; tout le reste du script est
 conservé tel quel.
 """
 
+import copy
 import re
 
 MAX_W, MAX_H = 79, 21
@@ -83,8 +84,9 @@ class Entity:
         self.extra = dict(extra or {})   # autres clés de la table Lua
 
     def copy(self):
+        # copie profonde : les extras peuvent contenir des Contents
         return Entity(self.kind, self.x, self.y, self.value,
-                      dict(self.extra), self.origin)
+                      copy.deepcopy(self.extra), self.origin)
 
     def describe(self):
         s = ENTITY_LABEL[self.kind]
@@ -95,13 +97,26 @@ class Entity:
         elif self.kind in ("monster", "object"):
             s += " aléatoire"
         if self.extra:
-            s += " {" + ", ".join("%s=%s" % (k, lua_value(v))
-                                  for k, v in self.extra.items()) + "}"
+            s += " {" + ", ".join(
+                "%s=%s" % (k, v.summary() if isinstance(v, Contents)
+                           else lua_value(v))
+                for k, v in self.extra.items()) + "}"
         return s
 
     def to_lua(self):
         x, y, v, e = self.x, self.y, self.value, self.extra
         k = self.kind
+        if x is None:
+            # objet sans position : élément d'un contenu ou d'un inventaire
+            if not e and v and len(v) > 1:
+                return "des.%s(%s);" % (k, lua_value(v))
+            if not e and not v:
+                return "des.%s();" % k
+            t = {}
+            if v is not None:
+                t["class" if len(v) == 1 else MAIN_KEY[k]] = v
+            t.update(e)
+            return "des.%s(%s);" % (k, lua_value(t))
         if k in ("stair", "ladder") and not e:
             return 'des.%s("%s", %d, %d);' % (k, v, x, y)
         if k in ("monster", "object") and not e and v:
@@ -403,11 +418,36 @@ def lua_value(v):
                                "[%s]" % lua_value(k), lua_value(x))
                   for k, x in v.hash.items()]
         return "{ " + ", ".join(items) + " }" if items else "{}"
+    if isinstance(v, Contents):
+        return v.lua()
     if isinstance(v, dict):
         return lua_value(LuaTable([], v))
     if isinstance(v, (list, tuple)):
         return lua_value(LuaTable(list(v), {}))
     raise ValueError("valeur non convertible : %r" % (v,))
+
+
+class Contents:
+    """Fonction Lua `function() des.object(...); ... end` des options
+    `contents` (conteneurs, statues) et `inventory` (monstres) : une
+    liste d'Entity sans position."""
+
+    def __init__(self, items=None, param=None):
+        self.items = items or []
+        self.param = param          # nom du paramètre, ex. function(obj)
+
+    def summary(self):
+        n = len(self.items)
+        return "(%d objet%s)" % (n, "s" if n > 1 else "")
+
+    def lua(self):
+        head = "function(%s)" % (self.param or "")
+        if not self.items:
+            return head + " end"
+        # chaque ligne d'un élément est décalée, contenus imbriqués compris
+        body = ["   " + line for it in self.items
+                for line in it.to_lua().split("\n")]
+        return "\n".join([head] + body + ["end"])
 
 
 class LuaTable:
@@ -608,6 +648,64 @@ def _parse_value(toks, i, n):
         if i >= n:
             raise NotLiteral()
         return t, i + 1
+    if kind == "name" and val == "function":
+        return _parse_function(toks, i + 1, n)
+    raise NotLiteral()
+
+
+def _parse_function(toks, i, n):
+    """Lit `(param) des.object(...); ... end` : uniquement des appels
+    des.object littéraux, sans position (contenu, inventaire)."""
+    if i >= n or toks[i][1] != "(":
+        raise NotLiteral()
+    param = None
+    if i + 1 < n and toks[i + 1][0] == "name":
+        param = toks[i + 1][1]
+        i += 1
+    if i + 1 >= n or toks[i + 1][1] != ")":
+        raise NotLiteral()
+    i += 2
+    items = []
+    while i < n and not (toks[i][0] == "name" and toks[i][1] == "end"):
+        if not (i + 3 < n and toks[i][1] == "des" and toks[i + 1][1] == "."
+                and toks[i + 2][1] == "object" and toks[i + 3][1] == "("):
+            raise NotLiteral()
+        depth, j = 0, i + 3
+        while j < n:
+            v = toks[j][1] if toks[j][0] == "op" else None
+            if v in ("(", "{", "["):
+                depth += 1
+            elif v in (")", "}", "]"):
+                depth -= 1
+                if depth == 0:
+                    break
+            j += 1
+        if j >= n:
+            raise NotLiteral()
+        vals = [_to_py(a) for a in _parse_args(toks, i + 4, j)[0]]
+        items.append(_item_from_args(vals))
+        i = j + 1
+        if i < n and toks[i][1] == ";":
+            i += 1
+    if i >= n:
+        raise NotLiteral()
+    return Contents(items, param), i + 1
+
+
+def _item_from_args(vals):
+    """Objet sans position, à partir des arguments de des.object()."""
+    if not vals:
+        return Entity("object", None, None)
+    if len(vals) == 1 and isinstance(vals[0], str):
+        return Entity("object", None, None, vals[0])
+    if len(vals) == 1 and isinstance(vals[0], dict):
+        t = dict(vals[0])
+        if any(k in t for k in ("x", "y", "coord")):
+            raise NotLiteral()
+        value = t.pop("id", None)
+        if value is None and "class" in t:
+            value = t.pop("class")
+        return Entity("object", None, None, value, t)
     raise NotLiteral()
 
 

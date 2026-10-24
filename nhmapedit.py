@@ -6,6 +6,7 @@ Usage : python3 nhmapedit.py [fichier.lua] [--new LARGEURxHAUTEUR]
 Appuyez sur « ? » dans l'éditeur pour l'aide.
 """
 
+import copy
 import curses
 import glob
 import json
@@ -186,7 +187,7 @@ def game_view(grid, fill=" "):
 
 # Formulaires d'options des monstres et des objets : (clé Lua, type,
 # libellé). Types : bool (1/0), str, int, intr (entier ou "random"),
-# buc (liste), mon (nom de monstre ou classe).
+# buc (liste), mon (nom de monstre ou classe), contents (liste d'objets).
 MON_FORM = [
     ("peaceful", "bool", "pacifique"),
     ("asleep", "bool", "endormi"),
@@ -197,6 +198,7 @@ MON_FORM = [
     ("name", "str", "nom"),
     ("appear_as", "str", "apparence (obj:…, mon:…, ter:…)"),
     ("m_lev_adj", "int", "ajustement du niveau"),
+    ("inventory", "contents", "inventaire"),
     ("keep_default_invent", "bool", "garde l'inventaire par défaut"),
 ]
 OBJ_FORM = [
@@ -206,6 +208,7 @@ OBJ_FORM = [
     ("name", "str", "nom"),
     ("achievement", "bool", "succès (achievement)"),
     ("montype", "mon", "monstre (statue, cadavre…)"),
+    ("contents", "contents", "contenu (conteneur, statue)"),
     ("buried", "bool", "enterré"),
     ("locked", "bool", "verrouillé"),
     ("trapped", "bool", "piégé"),
@@ -268,7 +271,9 @@ ENTITÉS (coordonnées relatives à la carte)
   m  placer une entité (escalier, échelle, autel, monstre, objet, piège,
      porte, gravure)        r  répéter la dernière entité au curseur
      Monstres et objets : un formulaire présente leurs options courantes
-     (Entrée modifie : défaut -> oui -> non -> défaut ; Échap termine)
+     (Entrée modifie : défaut -> oui -> non -> défaut ; Échap termine) ;
+     « inventaire » (monstre) et « contenu » (coffre, statue…) ouvrent la
+     liste de leurs objets (Entrée/e : modifier, d : supprimer)
   Suppr / Retour arrière / z   supprimer les entités sous le curseur
   i  liste des entités (Entrée: aller, e: modifier, d: supprimer)
   Tab  afficher / masquer les entités
@@ -289,8 +294,9 @@ NIVEAU ET FICHIERS
   q  quitter      ?  cette aide
 
 Pour un fichier existant, seuls la première carte des.map et les éléments
-à position fixe qui la suivent sont édités ; le reste du script Lua est
-conservé tel quel à l'enregistrement.
+à position fixe qui la suivent (avec leur inventaire ou contenu, s'il ne
+contient que des des.object simples) sont édités ; le reste du script Lua
+est conservé tel quel à l'enregistrement.
 """
 
 
@@ -1273,6 +1279,10 @@ class Editor:
                     shown = "(défaut)"
                 elif typ == "bool":
                     shown = "oui" if extra[key] else "non"
+                elif typ == "contents":
+                    c = extra[key]
+                    shown = c.summary() + " " + ", ".join(
+                        it.value or "aléatoire" for it in c.items)
                 else:
                     shown = nhlevel.lua_value(extra[key])
                 items.append(("%-34s %s" % ("%s (%s)" % (label, key), shown),
@@ -1310,6 +1320,11 @@ class Editor:
                                   [("(défaut)", None)] +
                                   [(b, b) for b in BUC], extra.get(sel))
                     self.set_option(extra, sel, v)
+                elif typ == "contents":
+                    v = self.edit_contents(extra.get(sel), "%s (%s)" % (
+                        dict((k, l) for k, _, l in form)[sel].capitalize(),
+                        sel))
+                    self.set_option(extra, sel, v)
                 elif typ == "mon":
                     items = [("(défaut)", None)] + [
                         ("%s  %s" % (m["sym"], m["name"]), m["name"])
@@ -1320,6 +1335,43 @@ class Editor:
                     self.set_option(extra, sel, v)
                 else:
                     self.ask_option(extra, sel, typ)
+            except Cancel:
+                pass
+
+    def edit_contents(self, cont, title):
+        """Liste des objets d'un contenu ou d'un inventaire.
+
+        Renvoie un nouveau Contents, ou None pour retirer l'option."""
+        existed = cont is not None
+        cont = copy.deepcopy(cont) if existed else nhlevel.Contents()
+        sel = 0
+        while True:
+            items = [("%s %s" % (self.entity_glyph(it)[0], it.describe()), i)
+                     for i, it in enumerate(cont.items)]
+            items.append(("+ ajouter un objet", "add"))
+            if existed:
+                items.append(("- retirer l'option", "remove"))
+            hint = "Entrée/e: modifier  d: supprimer  Échap: terminer"
+            try:
+                i, action = self.pick_action(title, items, sel, hint)
+            except Cancel:
+                return cont if cont.items or existed else None
+            if i == "remove":
+                return None
+            try:
+                if i == "add":
+                    value, extra = self.edit_entity_fields("object")
+                    cont.items.append(Entity("object", None, None, value,
+                                             extra))
+                    sel = len(cont.items) - 1
+                elif action == "delete":
+                    del cont.items[i]
+                    sel = max(0, i - 1)
+                else:
+                    it = cont.items[i]
+                    it.value, it.extra = self.edit_entity_fields(
+                        "object", it.value, it.extra)
+                    sel = i
             except Cancel:
                 pass
 

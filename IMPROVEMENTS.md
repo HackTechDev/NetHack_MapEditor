@@ -89,7 +89,7 @@ reste invisible dans l'éditeur.
   options courantes. Pour les monstres : peaceful, asleep, female,
   invisible, name… Pour les objets : buc, spe, quantity, name,
   `achievement`…
-- **Contenu des conteneurs et inventaire des monstres** **[gros]** :
+- ✅ **Fait** — **Contenu des conteneurs et inventaire des monstres** **[gros]** :
   éditer les fonctions `contents` des coffres et l'`inventory` des
   monstres.
 - ✅ **Fait** — **Plusieurs entités par case** **[facile]** : l'affichage ne montre

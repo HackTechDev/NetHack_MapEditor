@@ -78,6 +78,12 @@ Les cases à cocher passent de « défaut » (option absente) à oui (`1`), non
 (`0`), puis à nouveau défaut. Les autres options se saisissent sur la
 dernière ligne, sous la forme `fleeing=5, stunned=1`.
 
+La ligne « inventaire » d'un monstre, et « contenu » d'un objet (coffre,
+sac, statue…), ouvrent la liste de ses objets : Entrée ou `e` modifie un
+objet (avec son propre formulaire, y compris son contenu : un sac dans un
+coffre), `d` le supprime, « + ajouter un objet » en crée un. Ils sont
+écrits sous la forme `inventory = function() des.object(...); end`.
+
 ## Fichiers existants
 
 L'éditeur ouvre n'importe quel niveau de `dat/` qui contient un `des.map()`.
@@ -86,7 +92,10 @@ Il édite :
 - `des.level_init()` et `des.level_flags()` ;
 - la **première** carte `des.map()` du fichier ;
 - les entités à **coordonnées fixes** écrites après cette carte (escaliers,
-  échelles, autels, monstres, objets, pièges, portes, gravures).
+  échelles, autels, monstres, objets, pièges, portes, gravures), y compris
+  l'inventaire des monstres (`inventory = function() ... end`) et le
+  contenu des conteneurs et des statues (`contents = function() ... end`)
+  quand ces fonctions ne contiennent que des `des.object()` littéraux.
 
 Tout le reste du script (régions, boucles, éléments aléatoires, autres
 cartes…) est conservé tel quel à l'enregistrement. Un fichier ouvert puis
