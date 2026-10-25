@@ -94,6 +94,15 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   typées, vert téléportation ; jaune éclairage seul et rouge non
   creusable, masqués par défaut) et listées dans la barre
   d'état ; régions écrites avec du code affichées en lecture seule.
+- Placements aléatoires du script, non modifiables mais montrés :
+  `des.monster()`, `des.object()`, `des.trap()`, `des.gold()` sans
+  position (n'importe où dans la carte, ou dans la région dont ils
+  remplissent la fonction `contents`), case tirée dans une liste
+  (`local place = { {x,y}, … }`, `selection.new()` + `:set()`,
+  `:rndcoord()`), case fixe au contenu calculé ; « ? » magenta sur les
+  cases possibles, fond magenta d'une région, nombre de placements dans
+  toute la carte dans la barre d'état, détail sous le curseur et dans la
+  liste `i`.
 - Les salles `temple` créées dans l'éditeur comptent pour la règle
   « autel hors d'une salle temple ».
 - Placement (`m`), répétition de la dernière entité (`r`), suppression
@@ -199,7 +208,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 81 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 82 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

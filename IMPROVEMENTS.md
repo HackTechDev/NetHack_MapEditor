@@ -13,7 +13,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 
 | Thème | Fait | Reste |
 |---|---|---|
-| 1. Couverture du format Lua | 4 / 5 | éléments aléatoires |
+| 1. Couverture du format Lua | 5 / 5 | — |
 | 2. Affichage | 5 / 5 | — |
 | 3. Outils d'édition | 8 / 9 | générateurs |
 | 4. Entités | 4 / 4 | — |
@@ -24,9 +24,8 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 1 / 7 | calques, langues, souris, raccourcis, couverture, comparaison |
 
-Prochaines étapes conseillées : les **régions** (thème 1), présentes dans
-presque tous les niveaux de `dat/`, puis l'**intégration continue**, peu
-coûteuse maintenant que les tests existent.
+Prochaine étape conseillée : l'**intégration continue**, peu coûteuse
+maintenant que les tests existent.
 
 ## 1. Couverture du format Lua des niveaux
 
@@ -57,7 +56,7 @@ mais invisible dans l'éditeur.
   niveaux qui l'emploient (oracle, villes des Mines, niveaux de
   remplissage des quêtes) n'ont pas de `des.map()` et la position des
   salles est tirée au sort par NetHack, il n'y a donc rien à dessiner.
-- **Éléments aléatoires** **[moyen]** : signaler visuellement dans la
+- ✅ **Fait** — **Éléments aléatoires** **[moyen]** : signaler visuellement dans la
   carte les zones où des `des.monster()` ou `des.object()` sans
   coordonnées tomberont, quand une région ou une sélection est indiquée.
 

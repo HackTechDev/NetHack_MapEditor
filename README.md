@@ -37,6 +37,8 @@ Résumé ci-dessous ; la liste complète est dans [FEATURES.md](FEATURES.md).
 - régions : salles typées (temple, boutique…), zones éclairées, non
   creusables, sans passe-muraille, de téléportation et d'arrivée,
   affichées en couleur de fond ;
+- placements aléatoires du script (`des.monster()` sans position, case
+  tirée dans une liste, contenu calculé) montrés sur la carte ;
 - ouverture des niveaux de `dat/` sans rien perdre du script Lua, et des
   salles à thème de `themerms.lua` ;
 - rendu « comme dans le jeu », aperçu des retournements aléatoires ;

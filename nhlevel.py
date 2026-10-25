@@ -178,6 +178,160 @@ LEVREGION_TYPES = ["stair-down", "stair-up", "portal", "branch", "teleport",
                    "teleport-up", "teleport-down"]
 
 
+class RandomPlacement:
+    """Appel des.monster/object/trap/gold que l'éditeur ne peut pas
+    modifier, mais dont on sait où il tombera : zone ("map",) toute la
+    carte, ("rect", (x1, y1, x2, y2)) une région, ("points", [...]) une
+    case tirée dans une liste, ("point", (x, y)) une case fixe dont le
+    contenu est calculé par le script."""
+
+    def __init__(self, kind, zone, text):
+        self.kind, self.zone, self.text = kind, zone, text
+
+    def cells(self, lvl):
+        z = self.zone
+        if z[0] == "map":
+            return {(x, y) for y in range(lvl.h) for x in range(lvl.w)}
+        if z[0] == "rect":
+            x1, y1, x2, y2 = z[1]
+            return {(x, y) for y in range(max(0, y1), min(lvl.h, y2 + 1))
+                    for x in range(max(0, x1), min(lvl.w, x2 + 1))}
+        pts = z[1] if z[0] == "points" else [z[1]]
+        return {tuple(p) for p in pts
+                if 0 <= p[0] < lvl.w and 0 <= p[1] < lvl.h}
+
+    def where(self):
+        z = self.zone
+        if z[0] == "map":
+            return _("n'importe où dans la carte")
+        if z[0] == "rect":
+            return _("au hasard dans (%d,%d)-(%d,%d)") % z[1]
+        if z[0] == "points":
+            return _("une case parmi %d") % len(z[1])
+        return _("en (%d,%d), contenu calculé") % tuple(z[1])
+
+    def describe(self):
+        return "%s : %s" % (self.text, self.where())
+
+
+RANDOM_KINDS = ("monster", "object", "trap", "gold")
+
+
+def _split_args(args):
+    """Arguments d'un appel séparés aux virgules de premier niveau."""
+    out, cur, depth = [], [], 0
+    for t in args:
+        if t[0] == "op" and t[1] in "({[":
+            depth += 1
+        elif t[0] == "op" and t[1] in ")}]":
+            depth -= 1
+        if depth == 0 and t[:2] == ("op", ","):
+            out.append(cur)
+            cur = []
+        else:
+            cur.append(t)
+    if cur:
+        out.append(cur)
+    return out
+
+
+def _point_sets(text):
+    """Listes de cases nommées du script : « local p = { {x,y}, ... } »,
+    « local p = selection.new() » suivi de « p:set(x,y) », et
+    « local c = p:rndcoord(...) ». Renvoie {nom: (cases, aléatoire)} ;
+    aléatoire : la case est tirée au sort dans la liste."""
+    sets = {}
+    for m in re.finditer(r"local\s+(\w+)\s*=\s*(\{\s*\{[-\d\s,{}]*\})",
+                         text):
+        pts = [(int(a), int(b)) for a, b in re.findall(
+            r"\{\s*(-?\d+)\s*,\s*(-?\d+)\s*\}", m.group(2))]
+        shuffled = re.search(r"shuffle\(\s*%s\s*\)" % m.group(1), text)
+        sets[m.group(1)] = (pts, bool(shuffled))
+    for m in re.finditer(r"local\s+(\w+)\s*=\s*selection\.new\(\)", text):
+        name = m.group(1)
+        pts = [(int(a), int(b)) for a, b in re.findall(
+            r"\b%s:set\(\s*(\d+)\s*,\s*(\d+)\s*\)" % name, text)]
+        if pts:
+            sets[name] = (pts, True)
+    for m in re.finditer(r"local\s+(\w+)\s*=\s*(\w+):rndcoord\(", text):
+        if m.group(2) in sets:
+            sets[m.group(1)] = (sets[m.group(2)][0], True)
+    return sets
+
+
+def _coord_zone(toks, sets):
+    """Zone désignée par les jetons d'une coordonnée ; None si inconnue."""
+    if (len(toks) >= 1 and toks[0][0] == "name" and toks[0][1] in sets):
+        pts, rnd = sets[toks[0][1]]
+        if (len(toks) == 4 and toks[1][1] == "[" and toks[2][0] == "num"
+                and toks[3][1] == "]" and not rnd):
+            k = int(toks[2][1]) - 1         # indice Lua à partir de 1
+            return ("point", pts[k]) if 0 <= k < len(pts) else None
+        return ("points", pts)
+    try:
+        v = _to_py(_parse_args(toks, 0, len(toks))[0][0])
+    except (NotLiteral, IndexError):
+        return None
+    if (isinstance(v, list) and len(v) == 2
+            and all(isinstance(n, int) for n in v)):
+        return ("point", tuple(v))
+    return None
+
+
+def _random_from_call(name, args, sets, text, where=("map",)):
+    """RandomPlacement d'un appel non modifiable ; None si l'on ne sait
+    pas où il tombera. where : zone d'un appel sans coordonnées."""
+    if name not in RANDOM_KINDS:
+        return None
+    label = re.sub(r"\s+", " ", text)
+    if len(label) > 60:
+        label = label[:57] + "..."
+    parts = _split_args(args)
+    if len(parts) == 1 and parts[0][0][:2] == ("op", "{"):
+        t = parts[0]
+        fields, depth = {}, 0
+        for k, tok in enumerate(t):
+            if tok[0] == "op" and tok[1] in "({[":
+                depth += 1
+            elif tok[0] == "op" and tok[1] in ")}]":
+                depth -= 1
+            elif (depth == 1 and tok[0] == "name" and k + 1 < len(t)
+                  and t[k + 1][:2] == ("op", "=")):
+                end, d = k + 2, 0
+                while end < len(t):
+                    if t[end][0] == "op" and t[end][1] in "({[":
+                        d += 1
+                    elif t[end][0] == "op" and t[end][1] in ")}]":
+                        if d == 0:
+                            break
+                        d -= 1
+                    elif d == 0 and t[end][:2] == ("op", ","):
+                        break
+                    end += 1
+                fields[tok[1]] = t[k + 2:end]
+        if "coord" in fields:
+            zone = _coord_zone(fields["coord"], sets)
+        elif "x" in fields or "y" in fields:
+            try:
+                zone = ("point", (int(_to_py(_parse_value(
+                    fields["x"], 0, len(fields["x"]))[0])), int(_to_py(
+                        _parse_value(fields["y"], 0, len(fields["y"]))[0]))))
+            except (NotLiteral, KeyError, TypeError, ValueError):
+                zone = None
+        else:
+            zone = where
+    elif len(parts) <= 1:
+        zone = where
+    elif len(parts) == 3:
+        zone = _coord_zone([("op", "{", 0, 0)] + parts[1] + [("op", ",", 0, 0)]
+                           + parts[2] + [("op", "}", 0, 0)], sets)
+    elif len(parts) == 2:
+        zone = _coord_zone(parts[1], sets)
+    else:
+        zone = None
+    return RandomPlacement(name, zone, label) if zone else None
+
+
 class SelArea(tuple):
     """selection.area(x1, y1, x2, y2) lu dans un appel."""
 
@@ -269,6 +423,8 @@ class Level:
         # n'est pas lisible)
         self.map_index = 0
         self.maps = []
+        # placements aléatoires lus dans le script (RandomPlacement)
+        self.randoms = []
         # salle à thème de themerms.lua : {"path", "name", "k", "new"}
         self.theme = None
 
@@ -1060,6 +1216,23 @@ def parse_level(text, index=0):
     kept, warnings = [], []
     map_seen = map_done = False
     serial = iter(range(10 ** 9))       # n° d'origine des éléments lus
+    sets = _point_sets(text)
+
+    def note_random(c, name, args, where=("map",)):
+        rp = _random_from_call(name, args, sets, text[c["start"]:c["end"]],
+                               where)
+        if rp and (where[0] == "map" or rp.zone == where):
+            lvl.randoms.append(rp)
+
+    def region_contents(r, args):
+        """Appels sans coordonnées de la fonction contents d'une région :
+        ils tombent dans la région."""
+        body = _function_body(args, "contents")
+        if body and r.rect and r.kind == "region" and not r.islev():
+            for ic in scan_des_calls(text[body[0]:body[1]]):
+                ic["start"] += body[0]
+                ic["end"] += body[0]
+                note_random(ic, ic["name"], ic["args"], ("rect", r.rect))
 
     def take(c, name, args):
         """Entité ou région à coordonnées fixes ; False si l'appel n'est
@@ -1073,6 +1246,7 @@ def parse_level(text, index=0):
                     r = _readonly_region(name, args)
                     if r:
                         lvl.regions.append(r)
+                        region_contents(r, args)
                     raise
                 r.origin = c["origin"] = next(serial)
                 lvl.regions.append(r)
@@ -1135,8 +1309,13 @@ def parse_level(text, index=0):
                                       for k, v, s, e in ic["args"]]
                         if take(ic, ic["name"], ic["args"]):
                             c["inner"].append(ic)
+                        else:
+                            note_random(ic, ic["name"], ic["args"])
             elif map_seen and not map_done and take(c, name, args):
                 pass
+            elif map_seen and not map_done:
+                note_random(c, name, args)
+                raise NotLiteral()
             else:
                 raise NotLiteral()
             kept.append(c)

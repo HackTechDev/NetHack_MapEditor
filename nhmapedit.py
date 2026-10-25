@@ -58,7 +58,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.advance = False
         self.show_ents = self.config.get("entities", True)
         # calques des régions affichés (familles de region_family())
-        self.show_regions = {"room", "tele"}
+        self.show_regions = {"room", "tele", "rand"}
         self.pending_region = None  # région en cours de tracé
         # règles de coordonnées autour de la carte
         self.rulers = self.config.get("rulers", True)

@@ -203,6 +203,32 @@ class Generation(unittest.TestCase):
                       '"left"', out)
         self.assertIn("[[\n-|\n||\n]]", out)
 
+    def test_random_placements(self):
+        src = (INIT + 'local place = { {0,0}, {3,1} }\n'
+               'local sel = selection.new()\nsel:set(1,1)\nsel:set(2,1)\n'
+               'local loc = sel:rndcoord(1)\n'
+               'des.map([[\n....\n....\n]]);\n'
+               'des.monster("D")\n'
+               'des.object()\n'
+               'des.trap("pit", place[2])\n'
+               'des.object({ id = "chest", coord = loc, contents = function()'
+               ' des.object() end })\n'
+               'des.object(objs[1], 2, 0)\n'
+               'des.monster({ id = "orc", x = 1, y = 0, name = nm })\n'
+               'des.region({ region = { 0, 0, 1, 1 }, type = "zoo", '
+               'contents = function() des.monster() end })\n'
+               'des.monster("orc", 1, 1)\n')
+        lvl = nhlevel.parse_level(src)[0]
+        self.assertEqual(lvl.to_lua(), src)
+        self.assertEqual([(r.kind, r.zone) for r in lvl.randoms], [
+            ("monster", ("map",)), ("object", ("map",)),
+            ("trap", ("point", (3, 1))),
+            ("object", ("points", [(1, 1), (2, 1)])),
+            ("object", ("point", (2, 0))), ("monster", ("point", (1, 0))),
+            ("monster", ("rect", (0, 0, 1, 1)))])
+        self.assertEqual(len(lvl.randoms[0].cells(lvl)), 8)
+        self.assertEqual([e.kind for e in lvl.entities], ["monster"])
+
     def test_new_region_written(self):
         lvl = level(["...."] * 3)
         lvl.regions.append(nhlevel.Region("region", (0, 0, 3, 2),

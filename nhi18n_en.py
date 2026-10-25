@@ -704,7 +704,6 @@ EN = {
     'redessiner la zone (à partir du curseur)':
         'redraw the area (from the cursor)',
     'Éclairage de la zone': 'Area lighting',
-    'Entités (%d) et régions (%d)': 'Entities (%d) and regions (%d)',
     'Étendue': 'Extent',
     'éclairée (lit)': 'lit',
     'sombre (unlit)': 'dark (unlit)',
@@ -744,6 +743,16 @@ EN = {
     'carte 1 : %dx%d': 'map 1: %dx%d',
     # ouverture
     ' %d cartes : [ ] ou N pour changer.': ' %d maps: [ ] or N to switch.',
+    # placements aléatoires
+    "n'importe où dans la carte": 'anywhere in the map',
+    'en (%d,%d), contenu calculé': 'at (%d,%d), computed contents',
+    'au hasard dans (%d,%d)-(%d,%d)': 'at random in (%d,%d)-(%d,%d)',
+    'une case parmi %d': 'one cell out of %d',
+    '   [%d au hasard dans la carte]': '   [%d at random in the map]',
+    'Placement aléatoire écrit dans le script : modifiez-le dans le fichier.':
+        'Random placement written in the script: edit it in the file.',
+    'Entités (%d), régions (%d), au hasard (%d)':
+        'Entities (%d), regions (%d), random (%d)',
 }
 
 HELP = """\
@@ -804,8 +813,12 @@ ENTITIES (coordinates relative to the map)
      "inventory" (monster) and "contents" (box, statue…) open the
      list of their objects (Enter/e: edit, d: delete)
   Del / Backspace / z   delete the entities under the cursor
-  i  entity and region list (Enter: go, e: edit, d: delete;
-     e on a region: options or area to redraw)
+  i  list of entities, regions and random placements of the script
+     (Enter: go, e: edit, d: delete; e on a region: options or area
+     to redraw)
+  Random placements of the script (des.monster() without position…):
+  magenta "?" on the possible cells when they are few, magenta
+  background for a region, count "at random in the map" at the bottom
   Regions as background colours: blue for typed rooms (temple…), green
   for teleport and arrival regions; hidden by default: yellow for areas
   that are only lit or dark, red for non-diggable or non-passwall zones

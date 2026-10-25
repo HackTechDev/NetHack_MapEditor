@@ -67,7 +67,21 @@ class DisplayMixin:
             if fam in self.show_regions:
                 for p in r.cells(self.lvl):
                     out[p] = fam
+        if "rand" in self.show_regions:
+            # zones des placements aléatoires limités à une région
+            for rp in self.lvl.randoms:
+                if rp.zone[0] == "rect":
+                    for p in rp.cells(self.lvl):
+                        out[p] = "rand"
         return out
+
+    def random_points(self):
+        """Cases où tombera un placement aléatoire limité à quelques
+        cases (calque « rand ») : marquées « ? » quand elles sont vides."""
+        if "rand" not in self.show_regions:
+            return set()
+        return {p for rp in self.lvl.randoms if rp.zone[0] in (
+            "point", "points") for p in rp.cells(self.lvl)}
 
     def entity_glyph(self, e):
         k, v = e.kind, e.value
@@ -213,6 +227,7 @@ class DisplayMixin:
         prev = self.preview_cells()
         index = lvl.entity_index()
         overlay = self.region_overlay()
+        rnd_pts = self.random_points() if self.show_ents else set()
         # entités du presse-papiers montrées dans l'aperçu de Coller
         prev_ents = {}
         if self.tool == "paste" and self.clip:
@@ -259,6 +274,8 @@ class DisplayMixin:
                         # plusieurs entités sur la case : symbole souligné
                         if len(index[(x, y)]) > 1:
                             a |= curses.A_UNDERLINE
+                    elif (x, y) in rnd_pts:
+                        ch, a = "?", self.attr(RANDOM)
                 self.put(top + 1 + sy, left + 1 + sx, ch, a)
         if side:
             self.draw_side(top, left + vw + 3, maxy)
@@ -326,6 +343,10 @@ class DisplayMixin:
         regs = lvl.regions_at(x, y)
         if regs:
             info += "  | " + " ; ".join(r.describe() for r in regs)
+        rnds = [rp for rp in lvl.randoms if rp.zone[0] != "map"
+                and (x, y) in rp.cells(lvl)]
+        if rnds:
+            info += "  | " + " ; ".join(rp.describe() for rp in rnds)
         self.put(maxy - 4, 0, info[:maxx - 1])
         bname = _("roche") if self.brush == " " else self.brush
         st = _("Outil: %s   Pinceau: %s (%s)") % (
@@ -341,6 +362,9 @@ class DisplayMixin:
                                abs(self.cy - self.anchor[1]) + 1))
         if not self.show_ents:
             st += _("   [entités masquées]")
+        n = sum(rp.zone[0] == "map" for rp in lvl.randoms)
+        if n and "rand" in self.show_regions:
+            st += _("   [%d au hasard dans la carte]") % n
         if self.game:
             st += _("   [rendu jeu]")
         if self.flip:

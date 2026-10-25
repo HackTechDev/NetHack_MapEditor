@@ -245,7 +245,8 @@ REGION_FAMILY = {"region": "room", "non_diggable": "dig",
                  "non_passwall": "dig", "teleport_region": "tele",
                  "levregion": "tele"}
 REGION_BG = {"room": curses.COLOR_BLUE, "lit": curses.COLOR_YELLOW,
-             "dig": curses.COLOR_RED, "tele": curses.COLOR_GREEN}
+             "dig": curses.COLOR_RED, "tele": curses.COLOR_GREEN,
+             "rand": curses.COLOR_MAGENTA}
 
 
 def region_family(r):
@@ -344,8 +345,12 @@ ENTITÉS (coordonnées relatives à la carte)
      « inventaire » (monstre) et « contenu » (coffre, statue…) ouvrent la
      liste de leurs objets (Entrée/e : modifier, d : supprimer)
   Suppr / Retour arrière / z   supprimer les entités sous le curseur
-  i  liste des entités et des régions (Entrée: aller, e: modifier,
-     d: supprimer ; e sur une région : options ou zone à redessiner)
+  i  liste des entités, des régions et des placements aléatoires du
+     script (Entrée: aller, e: modifier, d: supprimer ; e sur une
+     région : options ou zone à redessiner)
+  Placements aléatoires du script (des.monster() sans position…) : « ? »
+  magenta sur les cases possibles quand elles sont peu nombreuses, fond
+  magenta pour une région, nombre « au hasard dans la carte » en bas
   Régions en couleur de fond : bleu les salles typées (temple…), vert la
   téléportation et les arrivées ; masquées par défaut : jaune les zones
   seulement éclairées ou sombres, rouge les zones non creusables ou sans

@@ -197,11 +197,13 @@ class EntitiesMixin:
         self.msg = _("%d entité(s) supprimée(s).") % len(ents)
 
     def entity_list(self):
-        """Liste des entités puis des régions du niveau."""
+        """Liste des entités, des régions puis des placements aléatoires
+        du niveau."""
         sel = None
         while True:
             ents, regs = self.lvl.entities, self.lvl.regions
-            if not ents and not regs:
+            rnds = self.lvl.randoms
+            if not ents and not regs and not rnds:
                 self.msg = _("Aucune entité.")
                 return
             ents.sort(key=lambda e: (e.y, e.x))
@@ -210,6 +212,8 @@ class EntitiesMixin:
                      for i, e in enumerate(ents)]
             items += [("[%s] %s" % (REGION_MARK[r.kind], r.describe()),
                        ("r", i)) for i, r in enumerate(regs)]
+            items += [("[?] %s" % rp.describe(), ("a", i))
+                      for i, rp in enumerate(rnds)]
             if sel is None:
                 here = [i for i, e in enumerate(ents)
                         if (e.x, e.y) == (self.cx, self.cy)]
@@ -217,12 +221,20 @@ class EntitiesMixin:
             hint = _("Entrée: aller  e: modifier  d: supprimer  Échap: fermer")
             try:
                 (what, i), action = self.pick_action(
-                    _("Entités (%d) et régions (%d)") % (len(ents),
-                                                         len(regs)),
+                    _("Entités (%d), régions (%d), au hasard (%d)") % (
+                        len(ents), len(regs), len(rnds)),
                     items, sel, hint)
             except Cancel:
                 return
             sel = [v for _l, v in items].index((what, i))
+            if what == "a":
+                cells = rnds[i].cells(self.lvl)
+                if action == "goto" and cells:
+                    self.cx, self.cy = min(cells, key=lambda p: (p[1], p[0]))
+                    return
+                self.msg = _("Placement aléatoire écrit dans le script : "
+                             "modifiez-le dans le fichier.")
+                continue
             if what == "r":
                 if self.region_action(regs[i], action):
                     return
