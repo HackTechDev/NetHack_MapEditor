@@ -254,7 +254,8 @@ REGION_FAMILY = {"region": "room", "non_diggable": "dig",
                  "levregion": "tele"}
 REGION_BG = {"room": curses.COLOR_BLUE, "lit": curses.COLOR_YELLOW,
              "dig": curses.COLOR_RED, "tele": curses.COLOR_GREEN,
-             "rand": curses.COLOR_MAGENTA, "note": curses.COLOR_CYAN}
+             "rand": curses.COLOR_MAGENTA, "note": curses.COLOR_CYAN,
+             "draft": curses.COLOR_WHITE}
 
 
 def region_family(r):
@@ -338,6 +339,11 @@ OUTILS (Espace ou Entrée pour appliquer)
      ses voisins) prend la forme qui convient (| dans un mur vertical,
      - ailleurs, coins compris) ; corrige aussi les murs de toute la carte
      ou d'une zone
+  &  brouillon : calque de travail jamais enregistré dans le fichier
+     (notes, repères, cases réservées), affiché en noir sur blanc
+     par-dessus la carte ; en mode brouillon, les outils de dessin y
+     écrivent (e efface, u annule) ; on peut aussi le reporter sur la
+     carte ou l'effacer
   M  symétrie : aucune, gauche/droite, haut/bas, les deux ; tout ce qui
      peint (pinceau, formes, remplissage, semis, remplacement) est reproduit
      en miroir autour du centre de la carte (axes marqués « * » sur le cadre)

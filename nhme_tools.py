@@ -191,6 +191,8 @@ class ToolsMixin:
     def paint(self, cells, sym=True, label=None):
         if sym:
             cells = self.mirrored(cells)
+        if self.draft_mode:
+            return self.paint_draft(cells, label)
         if any(self.lvl.grid[y][x] != c for (x, y), c in cells.items()
                if 0 <= x < self.lvl.w and 0 <= y < self.lvl.h):
             if not (self.stroke and self.stroke_saved):
@@ -203,6 +205,59 @@ class ToolsMixin:
                         for dx in (-1, 0, 1) for dy in (-1, 0, 1)}
                 for (x, y), c in wall_fixes(self.lvl.grid, near).items():
                     self.lvl.set(x, y, c)
+
+    def paint_draft(self, cells, label=None):
+        """Mode brouillon : les outils de dessin écrivent sur le calque de
+        travail (la roche l'efface) ; annulable comme le reste."""
+        draft = self.lvl.draft
+        cells = {p: c for p, c in cells.items()
+                 if 0 <= p[0] < self.lvl.w and 0 <= p[1] < self.lvl.h
+                 and draft.get(p, " ") != c}
+        if not cells:
+            return
+        if not (self.stroke and self.stroke_saved):
+            self.checkpoint(_("Brouillon : %s") % (label
+                                                  or self.paint_label()))
+            self.stroke_saved = self.stroke
+        for p, c in cells.items():
+            if c == " ":
+                draft.pop(p, None)
+            else:
+                draft[p] = c
+
+    def draft_menu(self):
+        """Touche & : calque de travail (brouillon) jamais enregistré."""
+        lvl = self.lvl
+        shown = "draft" in self.show_regions
+        what = self.pick(_("Brouillon (%d case(s), jamais enregistré)")
+                         % len(lvl.draft), [
+            (_("dessiner sur la carte") if self.draft_mode
+             else _("dessiner sur le brouillon"), "mode"),
+            (_("masquer le brouillon") if shown
+             else _("afficher le brouillon"), "show"),
+            (_("reporter le brouillon sur la carte"), "apply"),
+            (_("effacer le brouillon"), "clear")])
+        if what == "mode":
+            self.draft_mode = not self.draft_mode
+            self.show_regions.add("draft")
+            self.msg = (_("Les outils de dessin écrivent sur le brouillon "
+                          "(e efface).") if self.draft_mode
+                        else _("Les outils de dessin écrivent sur la carte."))
+        elif what == "show":
+            self.show_regions ^= {"draft"}
+        elif not lvl.draft:
+            self.msg = _("Brouillon vide.")
+        elif what == "apply":
+            self.checkpoint(_("Brouillon reporté sur la carte"))
+            for (x, y), c in lvl.draft.items():
+                if c in nhlevel.TERRAIN_DESC:
+                    lvl.set(x, y, c)
+            lvl.draft = {}
+            self.msg = _("Brouillon reporté sur la carte.")
+        else:
+            self.checkpoint(_("Brouillon effacé"))
+            lvl.draft = {}
+            self.msg = _("Brouillon effacé.")
 
     def apply(self):
         t = self.tool
@@ -257,6 +312,20 @@ class ToolsMixin:
 
     def flood_fill(self, x, y, c):
         old = self.lvl.grid[y][x]
+        if self.draft_mode:
+            # brouillon : la zone de même terrain de la carte
+            zone, stack = set(), list(self.mirror_points(x, y))
+            while stack:
+                p = stack.pop()
+                if (p not in zone and 0 <= p[0] < self.lvl.w
+                        and 0 <= p[1] < self.lvl.h
+                        and self.lvl.grid[p[1]][p[0]] == old):
+                    zone.add(p)
+                    stack += [(p[0] + 1, p[1]), (p[0] - 1, p[1]),
+                              (p[0], p[1] + 1), (p[0], p[1] - 1)]
+            self.paint({p: c for p in zone}, sym=False,
+                       label=_("Remplissage"))
+            return
         if old == c:
             return
         self.checkpoint(_("Remplissage : %s")

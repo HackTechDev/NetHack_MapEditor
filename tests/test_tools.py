@@ -307,6 +307,35 @@ class Annotate(unittest.TestCase):
         self.assertEqual(ed.lvl.notes, {})
 
 
+class Draft(unittest.TestCase):
+    def test_draft(self):
+        ed = editor(["....", "...."])
+        answers = iter(["mode"])
+        ed.pick = lambda *a, **k: next(answers)
+        ed.draft_menu()
+        self.assertTrue(ed.draft_mode)
+        two_points(ed, "rect", (0, 0), (1, 1), brush="T")
+        self.assertEqual(ed.lvl.map_text(), "....\n....")   # carte intacte
+        self.assertEqual(set(ed.lvl.draft), {(0, 0), (1, 0), (0, 1), (1, 1)})
+        ed.brush, ed.tool, ed.cx, ed.cy = " ", "pen", 0, 0
+        ed.apply()                          # la roche efface
+        self.assertNotIn((0, 0), ed.lvl.draft)
+        ed.undo()
+        self.assertIn((0, 0), ed.lvl.draft)
+        ed.tool, ed.brush = "fill", "+"     # zone de même terrain
+        ed.cx = 3
+        ed.apply()
+        self.assertEqual(len(ed.lvl.draft), 8)
+        self.assertNotIn("+", ed.lvl.to_lua())
+        ed.lvl.insert_col(0)
+        self.assertIn((4, 1), ed.lvl.draft)
+        ed.lvl.delete_col(0)
+        ed.pick = lambda *a, **k: "apply"
+        ed.draft_menu()
+        self.assertEqual(ed.lvl.map_text(), "++++\n++++")
+        self.assertEqual(ed.lvl.draft, {})
+
+
 class Maze(unittest.TestCase):
     def test_perfect_maze(self):
         import random

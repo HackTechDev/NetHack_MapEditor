@@ -135,12 +135,14 @@ class DisplayMixin:
                 ("dig", _("régions : non creusables, sans passe-muraille")),
                 ("tele", _("régions : téléportation et arrivées")),
                 ("rand", _("placements aléatoires du script")),
-                ("note", _("annotations (touche \")"))]
+                ("note", _("annotations (touche \")")),
+                ("draft", _("brouillon (touche &)"))]
         presets = {"all": (True, True, {f for f, _l in fams}),
                    "terrain": (True, False, set()),
                    "ents": (False, True, set()),
                    "regions": (False, False, {"room", "lit", "dig", "tele"}),
-                   "default": (True, True, {"room", "tele", "rand", "note"})}
+                   "default": (True, True, {"room", "tele", "rand", "note",
+                                            "draft"})}
         sel = "terrain_l"
         def box(on):
             return "[x]" if on else "[ ]"
@@ -352,6 +354,8 @@ class DisplayMixin:
         index = lvl.entity_index()
         overlay = self.region_overlay()
         rnd_pts = self.random_points() if self.show_ents else set()
+        # calque de travail, par-dessus le terrain et les entités
+        draft = lvl.draft if "draft" in self.show_regions else {}
         # entités du presse-papiers montrées dans l'aperçu de Coller
         prev_ents = {}
         if self.tool == "paste" and self.clip:
@@ -405,6 +409,8 @@ class DisplayMixin:
                             a |= curses.A_UNDERLINE
                     elif (x, y) in rnd_pts:
                         ch, a = "?", self.attr(RANDOM)
+                if (x, y) in draft and (x, y) not in prev:
+                    ch, a = draft[(x, y)], self.attr("CLR_BLACK", "draft")
                 self.put(top + 1 + sy, left + 1 + sx, ch, a)
         self.draw_minimap(top, left, vw, vh)
         if side:
@@ -498,6 +504,8 @@ class DisplayMixin:
             st += _("   [terrain masqué]")
         if self.auto_walls:
             st += _("   [murs auto]")
+        if self.draft_mode:
+            st += _("   [brouillon]")
         n = sum(rp.zone[0] == "map" for rp in lvl.randoms)
         if n and "rand" in self.show_regions:
             st += _("   [%d au hasard dans la carte]") % n

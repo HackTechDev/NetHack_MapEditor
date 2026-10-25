@@ -96,6 +96,12 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   (`8`), entités comprises ; miroirs (`X`, `Y`) et rotation d'un quart de
   tour (`O`), avec échange des murs `-` et `|`.
 - Redimensionnement de la carte (propriétés).
+- Brouillon (`&`) : calque de travail jamais écrit dans le fichier,
+  affiché en noir sur blanc par-dessus la carte (calque « brouillon ») ;
+  en mode brouillon, pinceau, formes, remplissage (zone de même terrain
+  de la carte), semis et labyrinthe y écrivent, la roche efface ;
+  annulable, propre à chaque carte, décalé avec les lignes et colonnes ;
+  report sur la carte ou effacement en une commande.
 
 ## Entités
 
@@ -273,7 +279,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 110 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 111 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

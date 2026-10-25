@@ -24,7 +24,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
 | 11. Idées supplémentaires | 6 / 12 | tirage, $EDITOR, `.des`, sélections, Sokoban, donjon |
-| 12. Encore d'autres idées | 4 / 14 | voir la liste |
+| 12. Encore d'autres idées | 5 / 14 | voir la liste |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -301,7 +301,7 @@ plus utiles aux plus accessoires.
 - ✅ **Fait** — **Annotations** **[facile]** : attacher un commentaire Lua à une case
   ou à une entité (`-- trésor caché ici`), conservé dans le fichier et
   visible au survol.
-- **Calques de travail** **[moyen]** : dessiner sur une couche brouillon
+- ✅ **Fait** — **Calques de travail** **[moyen]** : dessiner sur une couche brouillon
   non enregistrée (notes, repères, cases réservées), affichée en
   surimpression.
 - **Tampons de terrain** **[facile]** : petits motifs prêts à poser, plus

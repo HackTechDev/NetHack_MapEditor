@@ -456,6 +456,8 @@ class Level:
         self.theme = None
         # annotations des cases : (x, y) -> texte
         self.notes = {}
+        # calque de travail (brouillon), jamais enregistré : (x, y) -> car.
+        self.draft = {}
 
     # --- grille ---------------------------------------------------------
     def get(self, x, y):
@@ -476,6 +478,8 @@ class Level:
         self.entities = [e for e in self.entities if e.x < w and e.y < h]
         self.notes = {p: t for p, t in self.notes.items()
                       if p[0] < w and p[1] < h}
+        self.draft = {p: t for p, t in self.draft.items()
+                      if p[0] < w and p[1] < h}
 
     def insert_row(self, y, fill=" "):
         """Insère une ligne avant la ligne y ; les entités suivent."""
@@ -487,7 +491,7 @@ class Level:
             if e.y >= y:
                 e.y += 1
         self._shift_regions(1, y, 1)
-        self._shift_notes(1, y, 1)
+        self._shift_points(1, y, 1)
         return True
 
     def delete_row(self, y):
@@ -501,7 +505,7 @@ class Level:
             if e.y > y:
                 e.y -= 1
         self._shift_regions(1, y, -1)
-        self._shift_notes(1, y, -1)
+        self._shift_points(1, y, -1)
         return True
 
     def insert_col(self, x, fill=" "):
@@ -515,7 +519,7 @@ class Level:
             if e.x >= x:
                 e.x += 1
         self._shift_regions(0, x, 1)
-        self._shift_notes(0, x, 1)
+        self._shift_points(0, x, 1)
         return True
 
     def delete_col(self, x):
@@ -530,19 +534,21 @@ class Level:
             if e.x > x:
                 e.x -= 1
         self._shift_regions(0, x, -1)
-        self._shift_notes(0, x, -1)
+        self._shift_points(0, x, -1)
         return True
 
-    def _shift_notes(self, axis, at, delta):
-        notes = {}
-        for p, t in self.notes.items():
-            if p[axis] == at and delta < 0:
-                continue            # ligne ou colonne supprimée
-            if p[axis] >= at:
-                p = tuple(v + delta if i == axis else v
-                          for i, v in enumerate(p))
-            notes[p] = t
-        self.notes = notes
+    def _shift_points(self, axis, at, delta):
+        """Décale les annotations et le brouillon (voir _shift_regions)."""
+        for name in ("notes", "draft"):
+            out = {}
+            for p, t in getattr(self, name).items():
+                if p[axis] == at and delta < 0:
+                    continue        # ligne ou colonne supprimée
+                if p[axis] >= at:
+                    p = tuple(v + delta if i == axis else v
+                              for i, v in enumerate(p))
+                out[p] = t
+            setattr(self, name, out)
 
     def _shift_regions(self, axis, at, delta):
         """Décale les régions après une insertion (delta 1) ou une
@@ -583,12 +589,13 @@ class Level:
                 [e.copy() for e in self.entities], self.w, self.h,
                 copy.deepcopy(self.init), list(self.flags), self.lit,
                 self.pos, self.halign, self.valign,
-                [r.copy() for r in self.regions], dict(self.notes))
+                [r.copy() for r in self.regions], dict(self.notes),
+                dict(self.draft))
 
     def restore(self, snap):
         (g, ents, self.w, self.h, init, flags, self.lit, self.pos,
-         self.halign, self.valign, regions, notes) = snap
-        self.notes = dict(notes)
+         self.halign, self.valign, regions, notes, draft) = snap
+        self.notes, self.draft = dict(notes), dict(draft)
         self.grid = [row[:] for row in g]
         self.entities = [e.copy() for e in ents]
         self.regions = [r.copy() for r in regions]

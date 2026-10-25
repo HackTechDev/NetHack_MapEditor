@@ -934,6 +934,27 @@ EN = {
     'Annotation (vide : la retirer) : ': 'Annotation (empty: remove it): ',
     'Annotation : %s': 'Annotation: %s',
     'la case (%d,%d)': 'the cell (%d,%d)',
+    # brouillon
+    '   [brouillon]': '   [draft]',
+    'brouillon (touche &)': 'draft (key &)',
+    'Brouillon (%d case(s), jamais enregistré)':
+        'Draft (%d cell(s), never saved)',
+    'Les outils de dessin écrivent sur le brouillon (e efface).':
+        'Drawing tools write on the draft (e erases).',
+    'Les outils de dessin écrivent sur la carte.':
+        'Drawing tools write on the map.',
+    'Brouillon : %s': 'Draft: %s',
+    'reporter le brouillon sur la carte': 'copy the draft onto the map',
+    'effacer le brouillon': 'clear the draft',
+    'Brouillon vide.': 'Draft is empty.',
+    'dessiner sur la carte': 'draw on the map',
+    'dessiner sur le brouillon': 'draw on the draft',
+    'masquer le brouillon': 'hide the draft',
+    'afficher le brouillon': 'show the draft',
+    'Brouillon reporté sur la carte.': 'Draft copied onto the map.',
+    'Brouillon effacé.': 'Draft cleared.',
+    'Brouillon reporté sur la carte': 'Draft copied onto the map',
+    'Brouillon effacé': 'Draft cleared',
 }
 
 HELP = """\
@@ -979,6 +1000,10 @@ TOOLS (Space or Enter to apply)
      neighbours) takes the right shape (| in a vertical wall, - elsewhere,
      corners included); also fixes the walls of the whole map or of an
      area
+  &  draft: working layer never saved in the file (notes, markers,
+     reserved cells), shown black on white over the map; in draft mode
+     the drawing tools write on it (e erases, u undoes); it can also be
+     copied onto the map or cleared
   M  symmetry: none, left/right, top/bottom, both; everything that
      paints (pen, shapes, fill, scatter, replace) is mirrored around
      the center of the map (axes marked "*" on the frame)
