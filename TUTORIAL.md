@@ -131,6 +131,13 @@ désactivée » pour en sortir.
 proportion des cases d'une zone : pratique pour des arbres (`T`), des
 rochers, de l'eau éparse. L'éditeur demande la densité en %.
 
+**Variante : le labyrinthe.** L'outil `[Q]` (Labyrinthe) creuse un
+labyrinthe dans la zone tracée, comme `des.mazewalk()`. Il demande le
+style des murs (`-` et `|`, roche, ou le pinceau), le terrain des passages
+et un pourcentage de boucles (0 : un seul chemin entre deux points). Le
+tirage ne vous plaît pas ? `u` l'annule, Espace en refait un sur la même
+zone.
+
 ## 7. Les escaliers
 
 Les escaliers, monstres, objets, pièges… sont des **entités** : elles ne

@@ -63,15 +63,16 @@ TOOLS = [
     ("cut", _("Couper (déplacer) zone"), _("Couper"), "D"),
     ("scatter", _("Semis aléatoire"), _("Semis"), "G"),
     ("replace", _("Remplacer du terrain"), _("Remplacer"), "R"),
+    ("maze", _("Labyrinthe"), _("Labyrinthe"), "Q"),
 ]
 TOOL_NAME = {t: name for t, name, _short, _key in TOOLS}
 # outil temporaire du tracé d'une région (m, puis une région)
 TOOL_NAME["region"] = _("Zone d'une région")
 TOOL_KEY = {key: t for t, _name, _short, key in TOOLS}
 TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut", "ellipse",
-             "fillellipse", "scatter", "replace", "region"}
+             "fillellipse", "scatter", "replace", "region", "maze"}
 # outils dont l'aperçu montre la zone sans y dessiner le pinceau
-SELECT = {"copy", "cut", "scatter", "replace", "region"}
+SELECT = {"copy", "cut", "scatter", "replace", "region", "maze"}
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
 FLIP_NAME = {0: _("aucun"), 1: _("vertical"), 2: _("horizontal"),
@@ -320,6 +321,9 @@ OUTILS (Espace ou Entrée pour appliquer)
     selon une densité en % demandée au choix de l'outil
   R Remplacer un terrain par un autre, sur toute la carte ou dans une zone,
     avec une proportion en % (comme des.replace_terrain)
+  Q Labyrinthe dans une zone (comme des.mazewalk, mais tiré une fois pour
+    toutes) : murs - et |, roche ou pinceau ; passages en sol ou couloir ;
+    boucles en % ; u puis Espace en tire un autre
   M  symétrie : aucune, gauche/droite, haut/bas, les deux ; tout ce qui
      peint (pinceau, formes, remplissage, semis, remplacement) est reproduit
      en miroir autour du centre de la carte (axes marqués « * » sur le cadre)
@@ -471,6 +475,60 @@ def ellipse_cells(lx, ly, hx, hy, filled):
     return {(x, y) for x, y in inside
             if any((x + dx, y + dy) not in inside
                    for dx in (-1, 0, 1) for dy in (-1, 0, 1))}
+
+
+def maze_cells(lx, ly, hx, hy, rng, wall="-", floor=".", loops=0):
+    """Labyrinthe parfait dans le rectangle (lx, ly)-(hx, hy), creusé
+    comme des.mazewalk() : cases de passage aux coordonnées impaires
+    (relatives au coin), parcours en profondeur avec retour en arrière.
+    wall : "-" pour des murs - et | posés selon leurs voisins, sinon le
+    caractère des murs ; loops : % de murs intérieurs abattus en plus
+    (boucles, moins de culs-de-sac). Renvoie {(x, y): caractère}."""
+    w, h = hx - lx + 1, hy - ly + 1
+    nx, ny = (w - 1) // 2, (h - 1) // 2
+    open_ = set()
+    if nx >= 1 and ny >= 1:
+        start = (rng.randrange(nx), rng.randrange(ny))
+        seen, stack = {start}, [start]
+        open_.add((2 * start[0] + 1, 2 * start[1] + 1))
+        while stack:
+            cx, cy = stack[-1]
+            nexts = [(cx + dx, cy + dy) for dx, dy in
+                     ((1, 0), (-1, 0), (0, 1), (0, -1))
+                     if 0 <= cx + dx < nx and 0 <= cy + dy < ny
+                     and (cx + dx, cy + dy) not in seen]
+            if not nexts:
+                stack.pop()
+                continue
+            n = rng.choice(nexts)
+            seen.add(n)
+            stack.append(n)
+            open_.add((2 * n[0] + 1, 2 * n[1] + 1))
+            open_.add((cx + n[0] + 1, cy + n[1] + 1))   # mur entre les deux
+        if loops:
+            for x in range(1, 2 * nx):
+                for y in range(1, 2 * ny):
+                    if ((x + y) % 2 and (x, y) not in open_
+                            and rng.random() * 100 < loops):
+                        open_.add((x, y))
+    cells = {}
+    for y in range(h):
+        for x in range(w):
+            if (x, y) in open_:
+                c = floor
+            elif wall != "-":
+                c = wall
+            else:
+                def solid(px, py):
+                    return (0 <= px < w and 0 <= py < h
+                            and (px, py) not in open_)
+                # | au milieu d'un mur vertical (jonctions comprises),
+                # - pour les murs horizontaux et les coins
+                vert = solid(x, y - 1), solid(x, y + 1)
+                c = ("|" if all(vert) or (any(vert) and not (
+                    solid(x - 1, y) or solid(x + 1, y))) else "-")
+            cells[(lx + x, ly + y)] = c
+    return cells
 
 
 class Cancel(Exception):

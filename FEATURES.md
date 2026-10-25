@@ -70,7 +70,12 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   - Ellipse (`9`) et Ellipse pleine (`0`), sans trou en diagonale ;
   - Semis aléatoire (`G`) avec une densité en % ;
   - Remplacer un terrain par un autre (`R`), partout ou dans une zone,
-    avec une proportion, comme `des.replace_terrain()`.
+    avec une proportion, comme `des.replace_terrain()` ;
+  - Labyrinthe (`Q`) dans une zone, creusé comme `des.mazewalk()` mais
+    tiré une fois pour toutes : murs `-` et `|` posés selon leurs
+    voisins, roche ou pinceau courant ; passages en sol ou en couloir ;
+    boucles en % pour moins de culs-de-sac ; `u` puis Espace pour un
+    autre tirage.
 - Outils à deux points : ancre puis tracé, aperçu en direct ; Échap
   annule.
 - Mode symétrie (`M`) : gauche/droite, haut/bas ou les deux, autour du
@@ -214,7 +219,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 84 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 86 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

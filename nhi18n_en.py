@@ -772,6 +772,21 @@ EN = {
         'Layers (Enter: check/uncheck, Esc: done)',
     'terrain': 'terrain',
     'entités (Tab)': 'entities (Tab)',
+    # labyrinthe
+    'Labyrinthe': 'Maze',
+    'Murs du labyrinthe': 'Maze walls',
+    'Passages': 'Passages',
+    'Boucles : %% de murs intérieurs abattus en plus (0 = labyrinthe parfait) : ':
+        'Loops: %% of extra inner walls knocked down (0 = perfect maze): ',
+    'murs - et | (comme une carte des.map)':
+        '- and | walls (like a des.map map)',
+    'roche (comme les labyrinthes de Géhenne)':
+        'rock (like the Gehennom mazes)',
+    'couloir (#)': 'corridor (#)',
+    'le pinceau courant : %s': 'the current brush: %s',
+    'Labyrinthe tracé (u puis Espace : un autre tirage).':
+        'Maze drawn (u then Space: another draw).',
+    'Zone trop petite : 3x3 au moins.': 'Area too small: 3x3 at least.',
 }
 
 HELP = """\
@@ -807,6 +822,9 @@ TOOLS (Space or Enter to apply)
     with a density in % asked when choosing the tool
   R Replace one terrain with another, on the whole map or in an area,
     with a share in % (like des.replace_terrain)
+  Q Maze in an area (like des.mazewalk, but drawn once and for all):
+    - and | walls, rock or brush; passages of floor or corridor;
+    loops in %; u then Space draws another one
   M  symmetry: none, left/right, top/bottom, both; everything that
      paints (pen, shapes, fill, scatter, replace) is mirrored around
      the center of the map (axes marked "*" on the frame)

@@ -60,6 +60,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         # calques des régions affichés (familles de region_family())
         self.show_regions = {"room", "tele", "rand"}
         self.show_terrain = True    # calque du terrain (touche ;)
+        self.maze_opts = ("-", ".", 0)  # murs, passages, % de boucles
         self.pending_region = None  # région en cours de tracé
         # règles de coordonnées autour de la carte
         self.rulers = self.config.get("rulers", True)
@@ -179,6 +180,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                 except ValueError:
                     self.msg = _("Densité invalide.")
                     return True
+            elif TOOL_KEY[k] == "maze":
+                self.ask_maze()
             elif TOOL_KEY[k] == "replace" and not self.ask_replace():
                 return True         # déjà fait sur toute la carte
             self.tool = TOOL_KEY[k]

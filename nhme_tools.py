@@ -9,7 +9,7 @@ import nhlevel
 from nhi18n import _
 from nhme_common import (
     HISTORY_MAX, Cancel, HistoryEntry, SELECT, TEMPLATE_DIRS, TOOL_NAME,
-    bresenham, ellipse_cells)
+    bresenham, ellipse_cells, maze_cells)
 
 
 class ToolsMixin:
@@ -37,7 +37,7 @@ class ToolsMixin:
         if t == "line":
             for x, y in bresenham(x0, y0, x1, y1):
                 cells[(x, y)] = br
-        elif t in ("rect", "copy", "cut"):
+        elif t in ("rect", "copy", "cut", "maze"):
             for x in range(lx, hx + 1):
                 cells[(x, ly)] = cells[(x, hy)] = br
             for y in range(ly, hy + 1):
@@ -222,6 +222,17 @@ class ToolsMixin:
                 self.replace_terrain(a, b)
             elif t == "region":
                 self.finish_region(a, b)
+            elif t == "maze":
+                wall, floor, loops = self.maze_opts
+                cells = maze_cells(min(a[0], b[0]), min(a[1], b[1]),
+                                   max(a[0], b[0]), max(a[1], b[1]),
+                                   random.Random(), wall, floor, loops)
+                if not any(c == floor for c in cells.values()):
+                    self.msg = _("Zone trop petite : 3x3 au moins.")
+                    return
+                self.paint(cells, label=_("Labyrinthe"))
+                self.msg = _("Labyrinthe tracé (u puis Espace : un autre "
+                             "tirage).")
             elif t in SELECT:
                 self.copy(a, b, cut=t == "cut")
             else:
@@ -246,6 +257,25 @@ class ToolsMixin:
                 n += 1
                 stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
         self.msg = _("%d cases remplies.") % n
+
+    def ask_maze(self):
+        """Options du labyrinthe : murs, passages, boucles."""
+        wall = self.pick(_("Murs du labyrinthe"), [
+            (_("murs - et | (comme une carte des.map)"), "-"),
+            (_("roche (comme les labyrinthes de Géhenne)"), " "),
+            (_("le pinceau courant : %s") % nhlevel.TERRAIN_DESC[
+                self.brush], self.brush)], self.maze_opts[0])
+        floor = self.pick(_("Passages"), [
+            (_("sol de salle (.)"), "."), (_("couloir (#)"), "#")],
+            self.maze_opts[1])
+        s = self.prompt(_("Boucles : %% de murs intérieurs abattus en plus "
+                          "(0 = labyrinthe parfait) : "),
+                        str(self.maze_opts[2]))
+        try:
+            loops = max(0, min(100, int(s)))
+        except ValueError:
+            raise Cancel()
+        self.maze_opts = (wall, floor, loops)
 
     def ask_replace(self):
         """Demande les paramètres du remplacement. Renvoie True s'il faut

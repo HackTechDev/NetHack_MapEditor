@@ -15,7 +15,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 |---|---|---|
 | 1. Couverture du format Lua | 5 / 5 | — |
 | 2. Affichage | 5 / 5 | — |
-| 3. Outils d'édition | 8 / 9 | générateurs |
+| 3. Outils d'édition | 9 / 11 | grottes, salles et couloirs |
 | 4. Entités | 4 / 4 | — |
 | 5. Vérification | 3 / 3 | — |
 | 6. Intégration avec le jeu | 3 / 3 | — |
@@ -107,9 +107,13 @@ mais invisible dans l'éditeur.
 - ✅ **Fait** — **Annulation par trait** **[facile]** : avec le crayon baissé, chaque
   déplacement crée aujourd'hui son propre point d'annulation. Il vaudrait
   mieux regrouper tout un trait en une seule étape.
-- **Générateurs** **[gros]** : labyrinthe (comme `des.mazewalk()`),
-  grottes de type « mines », placement automatique de salles reliées par
-  des couloirs.
+- ✅ **Fait** — **Générateurs : labyrinthe** **[moyen]** : comme
+  `des.mazewalk()`, dans une zone tracée (outil `Q`) : murs `-` et `|`,
+  roche ou pinceau, passages en sol ou en couloir, boucles en %.
+- **Générateurs : grottes** **[moyen]** : grottes de type « mines »
+  (automate cellulaire), dans une zone.
+- **Générateurs : salles et couloirs** **[moyen]** : placement
+  automatique de salles reliées par des couloirs.
 
 ## 4. Entités
 

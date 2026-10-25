@@ -283,3 +283,39 @@ class Layers(unittest.TestCase):
         ed.layers()
         self.assertEqual((ed.show_terrain, ed.show_ents, ed.show_regions),
                          (True, False, {"room", "lit", "dig"}))
+
+
+class Maze(unittest.TestCase):
+    def test_perfect_maze(self):
+        import random
+        for seed in range(5):
+            cells = nhmapedit.maze_cells(2, 1, 22, 11, random.Random(seed))
+            floor = {p for p, c in cells.items() if c == "."}
+            # 10x5 cases reliées par 49 passages : un arbre, donc tout est
+            # relié sans boucle
+            self.assertEqual(len(floor), 50 + 49)
+            seen, stack = set(), [min(floor)]
+            while stack:
+                x, y = stack.pop()
+                if (x, y) in floor and (x, y) not in seen:
+                    seen.add((x, y))
+                    stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
+            self.assertEqual(seen, floor)
+            # bordure fermée, murs en - et |
+            self.assertTrue(all(cells[(x, 1)] == "-" for x in range(2, 23)))
+            self.assertEqual({cells[(2, y)] for y in range(2, 11)}, {"|"})
+            self.assertLessEqual(set(cells.values()), set(".-|"))
+
+    def test_loops_and_tool(self):
+        import random
+        cells = nhmapedit.maze_cells(0, 0, 20, 10, random.Random(1), " ", "#",
+                                     100)
+        self.assertEqual(sum(c == "#" for c in cells.values()),
+                         10 * 5 + 9 * 5 + 10 * 4)
+        ed = editor(["     "] * 3 + ["    "  + " "])
+        ed.maze_opts = ("-", ".", 0)
+        two_points(ed, "maze", (0, 0), (4, 2))
+        self.assertEqual(grid(ed.lvl)[:3], ["-----", "|...|", "-----"])
+        self.assertEqual(ed.undo_stack[-1].label, "Labyrinthe")
+        two_points(ed, "maze", (0, 0), (1, 1))
+        self.assertIn("3x3", ed.msg)

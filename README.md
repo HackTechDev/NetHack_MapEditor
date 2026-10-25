@@ -29,7 +29,8 @@ du dépôt
 Résumé ci-dessous ; la liste complète est dans [FEATURES.md](FEATURES.md).
 
 - dessin au clavier ou à la souris : pinceau, ligne, rectangle, salle,
-  ellipse, remplissage, semis aléatoire, remplacement, symétrie,
+  ellipse, remplissage, semis aléatoire, remplacement, labyrinthe,
+  symétrie,
   copier/couper/coller avec miroirs et rotation, annulation illimitée ;
 - entités : escaliers, échelles, autels, monstres et objets (avec leurs
   options, inventaires et contenus), pièges, portes, gravures, or,
@@ -91,6 +92,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `1`…`8` | outil : Pinceau, Ligne, Rectangle, Rectangle plein, Salle, Remplissage, Copier, Coller |
 | `9`, `0` | outil Ellipse, Ellipse pleine (un cercle est une ellipse tracée dans un carré) |
 | `G` | outil Semis aléatoire : peint au hasard une partie des cases d'une zone, selon une densité en % |
+| `Q` | labyrinthe dans une zone, comme `des.mazewalk()` mais tiré une fois pour toutes : murs `-` et `\|`, roche ou pinceau, passages en sol ou couloir, boucles en % ; `u` puis Espace en tire un autre |
 | `R` | remplacer un terrain par un autre, sur toute la carte ou dans une zone, avec une proportion en % (comme `des.replace_terrain()`) |
 | `M` | symétrie : aucune → gauche/droite → haut/bas → les deux ; pinceau, formes, remplissage, semis et remplacement sont reproduits en miroir autour du centre de la carte (axes marqués `*` sur le cadre ; le collage et les entités ne sont pas reflétés) |
 | `E` | insérer une ligne ou une colonne au curseur, ou la supprimer ; la carte et les entités sont décalées |
