@@ -803,6 +803,23 @@ EN = {
     'désactiver le pinceau mur automatique':
         'turn the automatic wall brush off',
     'activer le pinceau mur automatique': 'turn the automatic wall brush on',
+    # rechercher et remplacer
+    "Rechercher : genre d'entité": 'Search: entity kind',
+    'Rechercher : valeur': 'Search: value',
+    '%d entité(s) modifiée(s) : %s.': '%d entity(ies) changed: %s.',
+    '%d × %s : que faire ?': '%d × %s: what to do?',
+    'remplacer la valeur par…': 'replace the value with…',
+    'poser ou modifier des options (ex. asleep=1)…':
+        'set or change options (e.g. asleep=1)…',
+    'retirer une option…': 'remove an option…',
+    'supprimer ces entités': 'delete these entities',
+    'Remplacer : %s → %s (%d)': 'Replace: %s → %s (%d)',
+    'Options : %s (%d)': 'Options: %s (%d)',
+    "Ces entités n'ont aucune option.": 'These entities have no option.',
+    'Option à retirer': 'Option to remove',
+    '(toutes les valeurs) (%d)': '(all values) (%d)',
+    'Retrait de %s : %s (%d)': 'Removal of %s: %s (%d)',
+    'Suppression : %s (%d)': 'Deletion: %s (%d)',
 }
 
 HELP = """\
@@ -867,6 +884,9 @@ ENTITIES (coordinates relative to the map)
      des.non_passwall, des.teleport_region, des.levregion): the region
      starts at the cursor, Space on the opposite corner
   r  repeat the last entity at the cursor
+  /  find and replace: choose an entity kind and a value (e.g.
+     monster orc), then replace the value, set or remove an option
+     (asleep=1…) or delete all these entities at once
      Monsters and objects: a form shows their common options
      (Enter changes: default -> yes -> no -> default; Esc ends);
      "inventory" (monster) and "contents" (box, statue…) open the

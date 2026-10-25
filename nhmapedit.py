@@ -284,6 +284,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.layers()
         elif k == "=":
             self.walls_menu()
+        elif k == "/":
+            self.find_replace()
         elif k == "V":
             self.history()
         elif k == "n":

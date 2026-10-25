@@ -129,6 +129,10 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   lettre ou un symbole seul donne un monstre ou un objet aléatoire de
   cette classe ; formes féminines, noms sans préfixe et descriptions
   reconnus.
+- Rechercher et remplacer (`/`) : choix d'un genre d'entité et d'une
+  valeur parmi celles du niveau, avec leur nombre, puis remplacement de
+  la valeur, pose ou retrait d'une option, ou suppression, en une seule
+  commande annulable.
 - Formulaires d'options : pour les monstres `peaceful`, `asleep`,
   `female`, `invisible`, `cancelled`, `waiting`, `name`, `appear_as`,
   `m_lev_adj`, `keep_default_invent` ; pour les objets `buc`, `spe`,
@@ -224,7 +228,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 88 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 90 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

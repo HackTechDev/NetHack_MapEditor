@@ -1,5 +1,6 @@
 """Entités : placement, formulaires d'options, contenus, liste."""
 
+import collections
 import copy
 
 import nhlevel
@@ -76,75 +77,146 @@ class EntitiesMixin:
             except Cancel:
                 pass
 
-    def edit_entity_fields(self, kind, value=None, extra=None):
-        """Demande les paramètres d'une entité. Renvoie (value, extra)."""
-        extra = dict(extra or {})
+    def pick_value(self, kind, value=None):
+        """Valeur principale d'une entité (monstre, type de piège,
+        direction…), demandée selon son genre."""
         if kind in ("stair", "ladder"):
-            value = self.pick(_("Direction"), [(_("montant (up)"), "up"),
-                                               (_("descendant (down)"),
-                                                "down")],
-                              value)
-        elif kind == "altar":
-            value = self.pick(_("Alignement de l'autel"),
-                              [(a, a) for a in nhlevel.ALTAR_ALIGNS], value)
-            extra["type"] = self.pick(
-                _("Type d'autel"), [(t, t) for t in nhlevel.ALTAR_TYPES],
-                extra.get("type", "altar"))
-        elif kind == "monster":
+            return self.pick(_("Direction"), [(_("montant (up)"), "up"),
+                                              (_("descendant (down)"),
+                                               "down")], value)
+        if kind == "altar":
+            return self.pick(_("Alignement de l'autel"),
+                             [(a, a) for a in nhlevel.ALTAR_ALIGNS], value)
+        if kind == "monster":
             items = [(_("(aléatoire)"), None)] + [
                 ("%s  %s" % (m["sym"], m["name"]), m["name"])
                 for m in self.data["monsters"]]
-            value = self.pick(_("Monstre (tapez pour filtrer ; une lettre "
-                                "seule = classe)"), items, value, custom=True)
-            extra = self.edit_options(kind, extra)
-        elif kind == "object":
+            return self.pick(_("Monstre (tapez pour filtrer ; une lettre "
+                               "seule = classe)"), items, value, custom=True)
+        if kind == "object":
             items = [(_("(aléatoire)"), None)] + [
                 ("%s  %s" % (o["sym"], o["name"]), o["name"])
                 for o in self.data["objects"]]
-            value = self.pick(_("Objet (tapez pour filtrer ; un symbole "
-                                "seul = classe)"), items, value, custom=True)
-            extra = self.edit_options(kind, extra)
-        elif kind == "trap":
-            value = self.pick(_("Type de piège"),
-                              [(t, t) for t in self.data["traps"]], value)
-        elif kind == "door":
-            value = self.pick(_("État de la porte"),
-                              [(s, s) for s in nhlevel.DOOR_STATES], value)
-        elif kind == "engraving":
-            etype = self.pick(_("Type de gravure"),
-                              [(t, t) for t in nhlevel.ENGRAVING_TYPES],
-                              extra.get("type", "engrave"))
-            value = self.prompt(_("Texte gravé : "), value or "Elbereth")
-            extra.pop("type", None)
-            extra = dict(type=etype, **extra)
-        elif kind == "gold":
+            return self.pick(_("Objet (tapez pour filtrer ; un symbole "
+                               "seul = classe)"), items, value, custom=True)
+        if kind == "trap":
+            return self.pick(_("Type de piège"),
+                             [(t, t) for t in self.data["traps"]], value)
+        if kind == "door":
+            return self.pick(_("État de la porte"),
+                             [(s, s) for s in nhlevel.DOOR_STATES], value)
+        if kind == "engraving":
+            return self.prompt(_("Texte gravé : "), value or "Elbereth")
+        if kind == "gold":
             s = self.prompt(_("Montant (vide : aléatoire) : "),
                             "" if value is None else str(value)).strip()
             try:
-                value = int(s) if s else None
+                return int(s) if s else None
             except ValueError:
-                value = None
-        elif kind == "grave":
-            value = self.prompt(_("Épitaphe (vide : aléatoire) : "),
-                                value or "").strip() or None
+                return None
+        if kind == "grave":
+            return self.prompt(_("Épitaphe (vide : aléatoire) : "),
+                               value or "").strip() or None
+        if kind == "drawbridge":
+            return self.pick(_("Côté du mur où le pont s'abaisse"),
+                             [(d, d) for d in nhlevel.DRAWBRIDGE_DIRS],
+                             value or "random")
+        if kind == "feature":
+            return self.pick(_("Élément de décor"),
+                             [("%s  %s" % (c, f), f)
+                              for f, c in nhlevel.FEATURES.items()], value)
+        if kind == "terrain":
+            return self.pick(_("Terrain de la case"),
+                             [("%s  %s" % ("e" if c == " " else c, d), c)
+                              for c, d in nhlevel.TERRAIN if c != "x"],
+                             value)
+        return value
+
+    def edit_entity_fields(self, kind, value=None, extra=None):
+        """Demande les paramètres d'une entité. Renvoie (value, extra)."""
+        extra = dict(extra or {})
+        if kind == "engraving":
+            etype = self.pick(_("Type de gravure"),
+                              [(t, t) for t in nhlevel.ENGRAVING_TYPES],
+                              extra.get("type", "engrave"))
+        value = self.pick_value(kind, value)
+        if kind == "altar":
+            extra["type"] = self.pick(
+                _("Type d'autel"), [(t, t) for t in nhlevel.ALTAR_TYPES],
+                extra.get("type", "altar"))
+        elif kind in ("monster", "object"):
+            extra = self.edit_options(kind, extra)
+        elif kind == "engraving":
+            extra.pop("type", None)
+            extra = dict(type=etype, **extra)
         elif kind == "drawbridge":
-            value = self.pick(_("Côté du mur où le pont s'abaisse"),
-                              [(d, d) for d in nhlevel.DRAWBRIDGE_DIRS],
-                              value or "random")
             extra["state"] = self.pick(
                 _("État du pont-levis"),
                 [(s, s) for s in nhlevel.DRAWBRIDGE_STATES],
                 extra.get("state", "random"))
-        elif kind == "feature":
-            value = self.pick(_("Élément de décor"),
-                              [("%s  %s" % (c, f), f)
-                               for f, c in nhlevel.FEATURES.items()], value)
-        elif kind == "terrain":
-            value = self.pick(_("Terrain de la case"),
-                              [("%s  %s" % ("e" if c == " " else c, d), c)
-                               for c, d in nhlevel.TERRAIN if c != "x"],
-                              value)
         return value, extra
+
+    def find_replace(self, ents=None):
+        """Rechercher et remplacer (touche /) : choisit un genre et une
+        valeur parmi les entités (toutes, ou ents : une sélection), puis
+        remplace la valeur, pose ou retire une option, ou supprime."""
+        pool = self.lvl.entities if ents is None else ents
+        if not pool:
+            self.msg = _("Aucune entité.")
+            return
+        count = collections.Counter(e.kind for e in pool)
+        kind = self.pick(_("Rechercher : genre d'entité"), [
+            ("%s (%d)" % (nhlevel.ENTITY_LABEL[k], count[k]), k)
+            for k in nhlevel.ENTITY_KINDS if count[k]])
+        same = [e for e in pool if e.kind == kind]
+        vals = collections.Counter(repr(e.value) for e in same)
+        shown = {repr(e.value): e.value for e in same}
+        any_ = "\0"
+        key = self.pick(_("Rechercher : valeur"), [
+            (_("(toutes les valeurs) (%d)") % len(same), any_)] + [
+            ("%s (%d)" % (_("(aléatoire)") if shown[k] is None
+                          else shown[k], n), k)
+            for k, n in sorted(vals.items(), key=lambda kv: -kv[1])])
+        found = [e for e in same if key == any_ or repr(e.value) == key]
+        what = (nhlevel.ENTITY_LABEL[kind] if key == any_ else
+                "%s %s" % (nhlevel.ENTITY_LABEL[kind],
+                           _("aléatoire") if shown[key] is None
+                           else shown[key]))
+        action = self.pick(_("%d × %s : que faire ?") % (len(found), what), [
+            (_("remplacer la valeur par…"), "value"),
+            (_("poser ou modifier des options (ex. asleep=1)…"), "set"),
+            (_("retirer une option…"), "unset"),
+            (_("supprimer ces entités"), "delete")])
+        if action == "value":
+            new = self.pick_value(kind, None if key == any_ else shown[key])
+            self.checkpoint(_("Remplacer : %s → %s (%d)") % (
+                what, new, len(found)))
+            for e in found:
+                e.value = new
+        elif action == "set":
+            opts = self.ask_extra()
+            if not opts:
+                return
+            self.checkpoint(_("Options : %s (%d)") % (what, len(found)))
+            for e in found:
+                e.extra.update(copy.deepcopy(opts))
+        elif action == "unset":
+            keys = sorted({k for e in found for k in e.extra})
+            if not keys:
+                self.msg = _("Ces entités n'ont aucune option.")
+                return
+            opt = self.pick(_("Option à retirer"), [(k, k) for k in keys])
+            self.checkpoint(_("Retrait de %s : %s (%d)") % (opt, what,
+                                                            len(found)))
+            for e in found:
+                e.extra.pop(opt, None)
+        else:
+            self.checkpoint(_("Suppression : %s (%d)") % (what, len(found)))
+            for e in found:
+                self.lvl.entities.remove(e)
+                if ents is not None:
+                    ents.remove(e)
+        self.msg = _("%d entité(s) modifiée(s) : %s.") % (len(found), what)
 
     def place_entity(self):
         if self.no_entities():

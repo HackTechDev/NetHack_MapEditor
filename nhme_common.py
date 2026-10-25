@@ -352,6 +352,9 @@ ENTITÉS (coordonnées relatives à la carte)
      des.non_passwall, des.teleport_region, des.levregion) : la région
      part du curseur, Espace sur le coin opposé
   r  répéter la dernière entité au curseur
+  /  rechercher et remplacer : choisir un genre d'entité et une valeur
+     (ex. monstre orc), puis remplacer la valeur, poser ou retirer une
+     option (asleep=1…) ou supprimer toutes ces entités d'un coup
      Monstres et objets : un formulaire présente leurs options courantes
      (Entrée modifie : défaut -> oui -> non -> défaut ; Échap termine) ;
      « inventaire » (monstre) et « contenu » (coffre, statue…) ouvrent la

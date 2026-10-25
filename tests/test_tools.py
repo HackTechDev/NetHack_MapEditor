@@ -354,3 +354,40 @@ class Walls(unittest.TestCase):
         ed.apply()
         self.assertEqual(grid(ed.lvl), ["--|", "|||"])
         self.assertEqual(ed.tool, "pen")
+
+
+class FindReplace(unittest.TestCase):
+    def setUp(self):
+        self.ed = editor(["....."] * 2)
+        self.ed.lvl.entities = [
+            Entity("monster", 0, 0, "orc"), Entity("monster", 1, 0, "orc"),
+            Entity("monster", 2, 0, "kobold"), Entity("object", 3, 0, None)]
+
+    def answer(self, *answers):
+        it = iter(answers)
+        self.ed.pick = lambda *a, **k: next(it)
+
+    def test_replace_value_and_undo(self):
+        ed = self.ed
+        self.answer("monster", "'orc'", "value", "hill orc")
+        ed.find_replace()
+        self.assertEqual([e.value for e in ed.lvl.entities],
+                         ["hill orc", "hill orc", "kobold", None])
+        self.assertEqual(ed.undo_stack[-1].label,
+                         "Remplacer : monstre orc → hill orc (2)")
+        ed.undo()
+        self.assertEqual(ed.lvl.entities[0].value, "orc")
+
+    def test_options_and_delete(self):
+        ed = self.ed
+        ed.ask_extra = lambda *a: {"asleep": 1}
+        self.answer("monster", "\0", "set")
+        ed.find_replace()
+        self.assertEqual([e.extra for e in ed.lvl.entities[:3]],
+                         [{"asleep": 1}] * 3)
+        self.answer("monster", "'kobold'", "unset", "asleep")
+        ed.find_replace()
+        self.assertEqual(ed.lvl.entities[2].extra, {})
+        self.answer("object", "None", "delete")
+        ed.find_replace()
+        self.assertEqual(len(ed.lvl.entities), 3)
