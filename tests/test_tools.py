@@ -504,6 +504,30 @@ class Maze(unittest.TestCase):
         ed.generate((0, 0), (3, 2), random.Random(0))
         self.assertIn("5x4", ed.msg)
 
+    def test_rooms(self):
+        import random
+        ed = editor(["T" * 50] * 20)
+        answers = iter(["rooms"])
+        ed.pick = lambda *a, **k: next(answers)
+        ed.prompt = lambda *a, **k: "5"
+        ed.ask_generator()
+        self.assertEqual((ed.gen_kind, ed.rooms_count), ("rooms", 5))
+        for seed in range(5):
+            ed.generate((2, 1), (45, 17), random.Random(seed))
+            g = grid(ed.lvl)
+            self.assertEqual(g[0], "T" * 50)
+            self.assertTrue(all(r[:2] == "TT" and r[46:] == "TTTT"
+                                for r in g))
+            zone = [r[2:46] for r in g[1:18]]
+            self.assertLessEqual(set("".join(zone)), set(" .-|#+"))
+            self.assertGreaterEqual(int(ed.msg.split()[0]), 2)
+            # toutes les salles et tous les couloirs se rejoignent
+            self.assertEqual(len(nhgen.zones(zone)), 1)
+            ed.undo()
+        self.assertEqual(ed.undo_stack, [])
+        ed.generate((0, 0), (10, 5), random.Random(0))
+        self.assertIn("12x6", ed.msg)
+
 
 class Walls(unittest.TestCase):
     def test_auto_walls_brush(self):

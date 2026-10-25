@@ -143,8 +143,10 @@ def pattern_second(kind, x, y, w):
 GENERATORS = [
     ("maze", _("labyrinthe (comme des.mazewalk)")),
     ("cave", _("grotte (comme les mines)")),
+    ("rooms", _("salles reliées par des couloirs")),
 ]
-GENERATOR_NAME = {"maze": _("Labyrinthe"), "cave": _("Grotte")}
+GENERATOR_NAME = {"maze": _("Labyrinthe"), "cave": _("Grotte"),
+                  "rooms": _("Salles et couloirs")}
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
 FLIP_NAME = {0: _("aucun"), 1: _("vertical"), 2: _("horizontal"),
@@ -402,7 +404,9 @@ OUTILS (Espace ou Entrée pour appliquer)
     murs - et |, roche ou pinceau ; passages en sol ou couloir ;
     boucles en % ;
     grotte (comme les mines) : automate cellulaire, % de roche au
-    départ, bord en murs - et | ou en roche ; d'un seul tenant
+    départ, bord en murs - et | ou en roche ; d'un seul tenant ;
+    salles et couloirs : salles murées (nombre voulu) reliées par des
+    couloirs qui entrent par des portes (zone de 12x6 au moins)
   : Remplissage par motif : damier, rayures horizontales ou verticales,
     diagonales ou points espacés, avec deux terrains (ex. sol et douves)
     et une largeur ; dans un rectangle tracé, ou, avec deux appuis sur

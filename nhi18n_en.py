@@ -1015,6 +1015,12 @@ EN = {
     'Zone trop petite : %s au moins.': 'Area too small: at least %s.',
     'murs - et | (comme les cartes des mines)':
         '- and | walls (like the mines maps)',
+    # salles et couloirs dans une zone
+    'Salles et couloirs': 'Rooms and corridors',
+    '%d salle(s) reliée(s) par des couloirs (u puis Espace : un autre tirage).':
+        '%d room(s) joined by corridors (u then Space: another draw).',
+    'Nombre de salles voulu (moins si la zone est petite)':
+        'Wanted number of rooms (fewer if the area is small)',
 }
 
 HELP = """\
@@ -1058,7 +1064,9 @@ TOOLS (Space or Enter to apply)
     - and | walls, rock or brush; passages of floor or corridor;
     loops in %;
     cave (like the mines): cellular automaton, initial rock in %,
-    border of - and | walls or of rock; all in one piece
+    border of - and | walls or of rock; all in one piece;
+    rooms and corridors: walled rooms (wanted number) joined by
+    corridors that enter through doors (area of 12x6 at least)
   : Pattern fill: checkerboard, horizontal or vertical stripes,
     diagonals or spaced dots, with two terrains (e.g. floor and moat)
     and a width; in a traced rectangle or, pressing twice on the same

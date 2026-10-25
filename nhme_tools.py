@@ -449,17 +449,26 @@ class ToolsMixin:
             cells = maze_cells(lx, ly, hx, hy, rng, wall, floor, loops)
             ok, small = any(c == floor for c in cells.values()), "3x3"
         else:
-            fill, walls = self.cave_opts
-            g = nhgen.cave_zone(w, h, rng, fill, walls)
+            if kind == "cave":
+                fill, walls = self.cave_opts
+                g = nhgen.cave_zone(w, h, rng, fill, walls)
+                ok, small = True, "5x4"
+            else:
+                ok, small = w >= 12 and h >= 6, "12x6"
+                g, rooms = (nhgen.rooms_and_corridors(
+                    w, h, self.rooms_count, rng) if ok else ([], []))
             cells = {(lx + x, ly + y): c for y, row in enumerate(g)
                      for x, c in enumerate(row)}
-            ok, small = any(c == "." for c in cells.values()), "5x4"
+            ok = ok and any(c == "." for c in cells.values())
         if not ok:
             self.msg = _("Zone trop petite : %s au moins.") % small
             return
         name = GENERATOR_NAME[kind]
         self.paint(cells, label=name)
         self.msg = _("%s tracé(e) (u puis Espace : un autre tirage).") % name
+        if kind == "rooms":
+            self.msg = _("%d salle(s) reliée(s) par des couloirs (u puis "
+                         "Espace : un autre tirage).") % len(rooms)
 
     def ask_generator(self):
         """Choix du générateur de l'outil Q, puis ses options."""
@@ -468,8 +477,12 @@ class ToolsMixin:
                                   self.gen_kind)
         if self.gen_kind == "maze":
             self.ask_maze()
-        else:
+        elif self.gen_kind == "cave":
             self.ask_cave()
+        else:
+            self.rooms_count = self.ask_int(
+                _("Nombre de salles voulu (moins si la zone est petite)"),
+                self.rooms_count, 2, 12)
 
     def ask_cave(self):
         fill, walls = self.cave_opts

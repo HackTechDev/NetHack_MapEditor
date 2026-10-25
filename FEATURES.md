@@ -89,7 +89,11 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
       pour moins de culs-de-sac ;
     - grotte comme les mines : automate cellulaire, % de roche au
       départ, seule la plus grande caverne gardée, bord en murs `-` et
-      `|` (forme calculée) ou en roche.
+      `|` (forme calculée) ou en roche ;
+    - salles et couloirs : salles murées sans chevauchement (nombre
+      voulu, moins si la zone est petite), reliées par des couloirs en L
+      qui n'entrent que par une porte au milieu d'un mur ; toutes les
+      salles se rejoignent.
 - Murs automatiques (`=`) : pinceau mur qui donne à chaque `-` ou `|`
   posé, et à ses voisins, la forme qui convient (`|` au milieu d'un mur
   vertical, jonctions comprises, `-` pour les murs horizontaux et les
@@ -298,7 +302,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 116 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 117 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

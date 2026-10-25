@@ -63,6 +63,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.gen_kind = "maze"      # générateur de l'outil Q
         self.maze_opts = ("-", ".", 0)  # murs, passages, % de boucles
         self.cave_opts = (45, True)  # % de roche au départ, murs autour
+        self.rooms_count = 6        # nombre de salles voulu
         # outil Remplissage par motif : motif, 1er et 2e terrain, largeur
         self.pattern = ("checker", ".", "}", 1)
         self.auto_walls = False     # pinceau mur automatique (touche =)

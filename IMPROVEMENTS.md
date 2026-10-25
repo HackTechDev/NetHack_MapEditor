@@ -15,7 +15,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 |---|---|---|
 | 1. Couverture du format Lua | 5 / 5 | — |
 | 2. Affichage | 5 / 5 | — |
-| 3. Outils d'édition | 10 / 11 | salles et couloirs |
+| 3. Outils d'édition | 11 / 11 | — |
 | 4. Entités | 4 / 4 | — |
 | 5. Vérification | 3 / 3 | — |
 | 6. Intégration avec le jeu | 3 / 3 | — |
@@ -114,10 +114,9 @@ mais invisible dans l'éditeur.
 - ✅ **Fait** — **Générateurs : grottes** **[moyen]** : grottes de type
   « mines » (automate cellulaire), dans une zone : outil `Q` →
   grotte, avec le % de roche au départ et un bord en murs ou en roche.
-- **Générateurs : salles et couloirs** **[moyen]** : placement
-  automatique de salles reliées par des couloirs. Même chose : fait pour
-  une carte entière dans l'assistant (`nhgen.rooms_and_corridors`), pas
-  encore sur une zone.
+- ✅ **Fait** — **Générateurs : salles et couloirs** **[moyen]** :
+  placement automatique de salles reliées par des couloirs, dans une
+  zone : outil `Q` → salles et couloirs, avec le nombre de salles voulu.
 
 ## 4. Entités
 
