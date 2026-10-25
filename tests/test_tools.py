@@ -454,6 +454,28 @@ class Stats(unittest.TestCase):
         self.assertRegex(text, r"\? +1  aléatoire")
         self.assertRegex(text, r"pit +1")
 
+    def test_difficulty(self):
+        ed = editor(["......"])
+        self.assertIsNone(ed.difficulty())
+        ed.lvl.entities = [Entity("monster", 0, 0, None)]
+        self.assertIsNone(ed.difficulty()["max"])
+        self.assertIn("tous aléatoires", "\n".join(ed.difficulty_lines()))
+        ed.lvl.entities += [Entity("monster", 1, 0, "newt"),
+                            Entity("monster", 2, 0, "Medusa"),
+                            Entity("monster", 3, 0, "gnome lady")]
+        d = ed.difficulty()
+        self.assertEqual((d["count"], d["named"], d["unknown"]), (4, 3, 1))
+        self.assertEqual((d["hardest"], d["max"], d["depth"]),
+                         ("Medusa", 25, 25))
+        self.assertEqual(d["levels"], 0 + 20 + 3)
+        self.assertAlmostEqual(d["mean"], (1 + 25 + 4) / 3)
+        # une classe compte pour sa difficulté médiane
+        ed.lvl.entities = [Entity("monster", 0, 0, "D")]
+        d = ed.difficulty()
+        self.assertEqual((d["classes"], d["hardest"]), (1, "classe D"))
+        self.assertIn("profondeur conseillée : %d" % d["depth"],
+                      ed.stats_text())
+
 
 class Minimap(unittest.TestCase):
     def test_minimap(self):

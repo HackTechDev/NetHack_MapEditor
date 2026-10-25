@@ -3,247 +3,345 @@
   {
    "name": "giant ant",
    "sym": "a",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 2,
+   "difficulty": 4
   },
   {
    "name": "killer bee",
    "sym": "a",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 1,
+   "difficulty": 6
   },
   {
    "name": "soldier ant",
    "sym": "a",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 3,
+   "difficulty": 7
   },
   {
    "name": "fire ant",
    "sym": "a",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 3,
+   "difficulty": 6
   },
   {
    "name": "giant beetle",
    "sym": "a",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "queen bee",
    "sym": "a",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 9,
+   "difficulty": 12
   },
   {
    "name": "acid blob",
    "sym": "b",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "quivering blob",
    "sym": "b",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "gelatinous cube",
    "sym": "b",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "chickatrice",
    "sym": "c",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 4,
+   "difficulty": 7
   },
   {
    "name": "cockatrice",
    "sym": "c",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 5,
+   "difficulty": 8
   },
   {
    "name": "pyrolisk",
    "sym": "c",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "jackal",
    "sym": "d",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 0,
+   "difficulty": 1
   },
   {
    "name": "fox",
    "sym": "d",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 0,
+   "difficulty": 1
   },
   {
    "name": "coyote",
    "sym": "d",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "werejackal",
    "sym": "d",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 2,
+   "difficulty": 4
   },
   {
    "name": "little dog",
    "sym": "d",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 2,
+   "difficulty": 3
   },
   {
    "name": "dingo",
    "sym": "d",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 4,
+   "difficulty": 5
   },
   {
    "name": "dog",
    "sym": "d",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 4,
+   "difficulty": 5
   },
   {
    "name": "large dog",
    "sym": "d",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 6,
+   "difficulty": 7
   },
   {
    "name": "wolf",
    "sym": "d",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "werewolf",
    "sym": "d",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "winter wolf cub",
    "sym": "d",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "warg",
    "sym": "d",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 7,
+   "difficulty": 8
   },
   {
    "name": "winter wolf",
    "sym": "d",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 7,
+   "difficulty": 9
   },
   {
    "name": "hell hound pup",
    "sym": "d",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 7,
+   "difficulty": 9
   },
   {
    "name": "hell hound",
    "sym": "d",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 12,
+   "difficulty": 14
   },
   {
    "name": "Cerberus",
    "sym": "d",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 12,
+   "difficulty": 14
   },
   {
    "name": "gas spore",
    "sym": "e",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "floating eye",
    "sym": "e",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 2,
+   "difficulty": 3
   },
   {
    "name": "freezing sphere",
    "sym": "e",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 6,
+   "difficulty": 9
   },
   {
    "name": "flaming sphere",
    "sym": "e",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 6,
+   "difficulty": 9
   },
   {
    "name": "shocking sphere",
    "sym": "e",
-   "color": "HI_ZAP"
+   "color": "HI_ZAP",
+   "level": 6,
+   "difficulty": 10
   },
   {
    "name": "beholder",
    "sym": "e",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 6,
+   "difficulty": 13
   },
   {
    "name": "kitten",
    "sym": "f",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 2,
+   "difficulty": 3
   },
   {
    "name": "housecat",
    "sym": "f",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 4,
+   "difficulty": 5
   },
   {
    "name": "jaguar",
    "sym": "f",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "lynx",
    "sym": "f",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "panther",
    "sym": "f",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "large cat",
    "sym": "f",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 6,
+   "difficulty": 7
   },
   {
    "name": "tiger",
    "sym": "f",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "displacer beast",
    "sym": "f",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 12,
+   "difficulty": 14
   },
   {
    "name": "gremlin",
    "sym": "g",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 5,
+   "difficulty": 8
   },
   {
    "name": "gargoyle",
    "sym": "g",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "winged gargoyle",
    "sym": "g",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 9,
+   "difficulty": 11
   },
   {
    "name": "hobbit",
    "sym": "h",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "dwarf",
    "sym": "h",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 2,
+   "difficulty": 4
   },
   {
    "name": "bugbear",
    "sym": "h",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "dwarf lord",
    "sym": "h",
    "color": "CLR_BLUE",
+   "level": 4,
+   "difficulty": 6,
    "aliases": [
     "dwarf lady",
     "dwarf leader"
@@ -253,6 +351,8 @@
    "name": "dwarf king",
    "sym": "h",
    "color": "HI_LORD",
+   "level": 6,
+   "difficulty": 8,
    "aliases": [
     "dwarf queen",
     "dwarf ruler"
@@ -261,72 +361,100 @@
   {
    "name": "mind flayer",
    "sym": "h",
-   "color": "CLR_BRIGHT_MAGENTA"
+   "color": "CLR_BRIGHT_MAGENTA",
+   "level": 9,
+   "difficulty": 13
   },
   {
    "name": "master mind flayer",
    "sym": "h",
-   "color": "CLR_BRIGHT_MAGENTA"
+   "color": "CLR_BRIGHT_MAGENTA",
+   "level": 13,
+   "difficulty": 19
   },
   {
    "name": "manes",
    "sym": "i",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 1,
+   "difficulty": 3
   },
   {
    "name": "homunculus",
    "sym": "i",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 2,
+   "difficulty": 3
   },
   {
    "name": "imp",
    "sym": "i",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "lemure",
    "sym": "i",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "quasit",
    "sym": "i",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 3,
+   "difficulty": 7
   },
   {
    "name": "tengu",
    "sym": "i",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 6,
+   "difficulty": 7
   },
   {
    "name": "blue jelly",
    "sym": "j",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 4,
+   "difficulty": 5
   },
   {
    "name": "spotted jelly",
    "sym": "j",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "ochre jelly",
    "sym": "j",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "kobold",
    "sym": "k",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 0,
+   "difficulty": 1
   },
   {
    "name": "large kobold",
    "sym": "k",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "kobold lord",
    "sym": "k",
    "color": "HI_LORD",
+   "level": 2,
+   "difficulty": 3,
    "aliases": [
     "kobold lady",
     "kobold leader"
@@ -335,537 +463,751 @@
   {
    "name": "kobold shaman",
    "sym": "k",
-   "color": "HI_ZAP"
+   "color": "HI_ZAP",
+   "level": 2,
+   "difficulty": 4
   },
   {
    "name": "leprechaun",
    "sym": "l",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 5,
+   "difficulty": 4
   },
   {
    "name": "small mimic",
    "sym": "m",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 7,
+   "difficulty": 8
   },
   {
    "name": "large mimic",
    "sym": "m",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 8,
+   "difficulty": 9
   },
   {
    "name": "giant mimic",
    "sym": "m",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 9,
+   "difficulty": 11
   },
   {
    "name": "wood nymph",
    "sym": "n",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "water nymph",
    "sym": "n",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "mountain nymph",
    "sym": "n",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "goblin",
    "sym": "o",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 0,
+   "difficulty": 1
   },
   {
    "name": "hobgoblin",
    "sym": "o",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 1,
+   "difficulty": 3
   },
   {
    "name": "orc",
    "sym": "o",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 1,
+   "difficulty": 3
   },
   {
    "name": "hill orc",
    "sym": "o",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 2,
+   "difficulty": 4
   },
   {
    "name": "Mordor orc",
    "sym": "o",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "Uruk-hai",
    "sym": "o",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "orc shaman",
    "sym": "o",
-   "color": "HI_ZAP"
+   "color": "HI_ZAP",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "orc-captain",
    "sym": "o",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "rock piercer",
    "sym": "p",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "iron piercer",
    "sym": "p",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "glass piercer",
    "sym": "p",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 7,
+   "difficulty": 9
   },
   {
    "name": "rothe",
    "sym": "q",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 2,
+   "difficulty": 4
   },
   {
    "name": "mumak",
    "sym": "q",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "leocrotta",
    "sym": "q",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "wumpus",
    "sym": "q",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 8,
+   "difficulty": 9
   },
   {
    "name": "titanothere",
    "sym": "q",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "baluchitherium",
    "sym": "q",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 14,
+   "difficulty": 15
   },
   {
    "name": "mastodon",
    "sym": "q",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 20,
+   "difficulty": 22
   },
   {
    "name": "sewer rat",
    "sym": "r",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 0,
+   "difficulty": 1
   },
   {
    "name": "giant rat",
    "sym": "r",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "rabid rat",
    "sym": "r",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 2,
+   "difficulty": 4
   },
   {
    "name": "wererat",
    "sym": "r",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 2,
+   "difficulty": 4
   },
   {
    "name": "rock mole",
    "sym": "r",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "woodchuck",
    "sym": "r",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "cave spider",
    "sym": "s",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 1,
+   "difficulty": 3
   },
   {
    "name": "centipede",
    "sym": "s",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 2,
+   "difficulty": 4
   },
   {
    "name": "giant spider",
    "sym": "s",
-   "color": "CLR_MAGENTA"
+   "color": "CLR_MAGENTA",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "scorpion",
    "sym": "s",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 5,
+   "difficulty": 8
   },
   {
    "name": "lurker above",
    "sym": "t",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "trapper",
    "sym": "t",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 12,
+   "difficulty": 14
   },
   {
    "name": "pony",
    "sym": "u",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "white unicorn",
    "sym": "u",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "gray unicorn",
    "sym": "u",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "black unicorn",
    "sym": "u",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "horse",
    "sym": "u",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "warhorse",
    "sym": "u",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 7,
+   "difficulty": 9
   },
   {
    "name": "fog cloud",
    "sym": "v",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "dust vortex",
    "sym": "v",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "ice vortex",
    "sym": "v",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "energy vortex",
    "sym": "v",
-   "color": "HI_ZAP"
+   "color": "HI_ZAP",
+   "level": 6,
+   "difficulty": 9
   },
   {
    "name": "steam vortex",
    "sym": "v",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 7,
+   "difficulty": 9
   },
   {
    "name": "fire vortex",
    "sym": "v",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 8,
+   "difficulty": 10
   },
   {
    "name": "baby long worm",
    "sym": "w",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "baby purple worm",
    "sym": "w",
-   "color": "CLR_MAGENTA"
+   "color": "CLR_MAGENTA",
+   "level": 8,
+   "difficulty": 9
   },
   {
    "name": "long worm",
    "sym": "w",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 9,
+   "difficulty": 10
   },
   {
    "name": "purple worm",
    "sym": "w",
-   "color": "CLR_MAGENTA"
+   "color": "CLR_MAGENTA",
+   "level": 15,
+   "difficulty": 17
   },
   {
    "name": "grid bug",
    "sym": "x",
-   "color": "CLR_MAGENTA"
+   "color": "CLR_MAGENTA",
+   "level": 0,
+   "difficulty": 1
   },
   {
    "name": "xan",
    "sym": "x",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 7,
+   "difficulty": 9
   },
   {
    "name": "yellow light",
    "sym": "y",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "black light",
    "sym": "y",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "zruty",
    "sym": "z",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 9,
+   "difficulty": 11
   },
   {
    "name": "couatl",
    "sym": "A",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 8,
+   "difficulty": 11
   },
   {
    "name": "Aleax",
    "sym": "A",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "Angel",
    "sym": "A",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 14,
+   "difficulty": 19
   },
   {
    "name": "ki-rin",
    "sym": "A",
-   "color": "HI_GOLD"
+   "color": "HI_GOLD",
+   "level": 16,
+   "difficulty": 21
   },
   {
    "name": "Archon",
    "sym": "A",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 19,
+   "difficulty": 26
   },
   {
    "name": "bat",
    "sym": "B",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 0,
+   "difficulty": 2
   },
   {
    "name": "giant bat",
    "sym": "B",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 2,
+   "difficulty": 3
   },
   {
    "name": "raven",
    "sym": "B",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "vampire bat",
    "sym": "B",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "plains centaur",
    "sym": "C",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "forest centaur",
    "sym": "C",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 5,
+   "difficulty": 8
   },
   {
    "name": "mountain centaur",
    "sym": "C",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 6,
+   "difficulty": 9
   },
   {
    "name": "baby gray dragon",
    "sym": "D",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "baby gold dragon",
    "sym": "D",
-   "color": "HI_GOLD"
+   "color": "HI_GOLD",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "baby silver dragon",
    "sym": "D",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "baby shimmering dragon",
    "sym": "D",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "baby red dragon",
    "sym": "D",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "baby white dragon",
    "sym": "D",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "baby orange dragon",
    "sym": "D",
-   "color": "CLR_ORANGE"
+   "color": "CLR_ORANGE",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "baby black dragon",
    "sym": "D",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "baby blue dragon",
    "sym": "D",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "baby green dragon",
    "sym": "D",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "baby yellow dragon",
    "sym": "D",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "gray dragon",
    "sym": "D",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "gold dragon",
    "sym": "D",
-   "color": "HI_GOLD"
+   "color": "HI_GOLD",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "silver dragon",
    "sym": "D",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "shimmering dragon",
    "sym": "D",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "red dragon",
    "sym": "D",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "white dragon",
    "sym": "D",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "orange dragon",
    "sym": "D",
-   "color": "CLR_ORANGE"
+   "color": "CLR_ORANGE",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "black dragon",
    "sym": "D",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "blue dragon",
    "sym": "D",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "green dragon",
    "sym": "D",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "yellow dragon",
    "sym": "D",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "stalker",
    "sym": "E",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 8,
+   "difficulty": 9
   },
   {
    "name": "air elemental",
    "sym": "E",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 8,
+   "difficulty": 10
   },
   {
    "name": "fire elemental",
    "sym": "E",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 8,
+   "difficulty": 10
   },
   {
    "name": "earth elemental",
    "sym": "E",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 8,
+   "difficulty": 10
   },
   {
    "name": "water elemental",
    "sym": "E",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 8,
+   "difficulty": 10
   },
   {
    "name": "lichen",
    "sym": "F",
-   "color": "CLR_BRIGHT_GREEN"
+   "color": "CLR_BRIGHT_GREEN",
+   "level": 0,
+   "difficulty": 1
   },
   {
    "name": "brown mold",
    "sym": "F",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "yellow mold",
    "sym": "F",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "green mold",
    "sym": "F",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "red mold",
    "sym": "F",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "shrieker",
    "sym": "F",
-   "color": "CLR_MAGENTA"
+   "color": "CLR_MAGENTA",
+   "level": 3,
+   "difficulty": 2
   },
   {
    "name": "violet fungus",
    "sym": "F",
-   "color": "CLR_MAGENTA"
+   "color": "CLR_MAGENTA",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "gnome",
    "sym": "G",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 1,
+   "difficulty": 3
   },
   {
    "name": "gnome lord",
    "sym": "G",
    "color": "CLR_BLUE",
+   "level": 3,
+   "difficulty": 4,
    "aliases": [
     "gnome lady",
     "gnome leader"
@@ -874,12 +1216,16 @@
   {
    "name": "gnomish wizard",
    "sym": "G",
-   "color": "HI_ZAP"
+   "color": "HI_ZAP",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "gnome king",
    "sym": "G",
    "color": "HI_LORD",
+   "level": 5,
+   "difficulty": 6,
    "aliases": [
     "gnome queen",
     "gnome ruler"
@@ -888,187 +1234,261 @@
   {
    "name": "giant",
    "sym": "H",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "stone giant",
    "sym": "H",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "hill giant",
    "sym": "H",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 8,
+   "difficulty": 10
   },
   {
    "name": "fire giant",
    "sym": "H",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 9,
+   "difficulty": 11
   },
   {
    "name": "frost giant",
    "sym": "H",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 10,
+   "difficulty": 13
   },
   {
    "name": "ettin",
    "sym": "H",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 10,
+   "difficulty": 13
   },
   {
    "name": "storm giant",
    "sym": "H",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 16,
+   "difficulty": 19
   },
   {
    "name": "titan",
    "sym": "H",
-   "color": "CLR_MAGENTA"
+   "color": "CLR_MAGENTA",
+   "level": 16,
+   "difficulty": 20
   },
   {
    "name": "minotaur",
    "sym": "H",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 15,
+   "difficulty": 17
   },
   {
    "name": "jabberwock",
    "sym": "J",
-   "color": "CLR_ORANGE"
+   "color": "CLR_ORANGE",
+   "level": 15,
+   "difficulty": 18
   },
   {
    "name": "vorpal jabberwock",
    "sym": "J",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 25
   },
   {
    "name": "Keystone Kop",
    "sym": "K",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 1,
+   "difficulty": 3
   },
   {
    "name": "Kop Sergeant",
    "sym": "K",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 2,
+   "difficulty": 4
   },
   {
    "name": "Kop Lieutenant",
    "sym": "K",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "Kop Kaptain",
    "sym": "K",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "lich",
    "sym": "L",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 11,
+   "difficulty": 14
   },
   {
    "name": "demilich",
    "sym": "L",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 14,
+   "difficulty": 18
   },
   {
    "name": "master lich",
    "sym": "L",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 17,
+   "difficulty": 21
   },
   {
    "name": "arch-lich",
    "sym": "L",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 25,
+   "difficulty": 29
   },
   {
    "name": "kobold mummy",
    "sym": "M",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "gnome mummy",
    "sym": "M",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 4,
+   "difficulty": 5
   },
   {
    "name": "orc mummy",
    "sym": "M",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "dwarf mummy",
    "sym": "M",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "elf mummy",
    "sym": "M",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 6,
+   "difficulty": 7
   },
   {
    "name": "human mummy",
    "sym": "M",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 6,
+   "difficulty": 7
   },
   {
    "name": "ettin mummy",
    "sym": "M",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 7,
+   "difficulty": 8
   },
   {
    "name": "giant mummy",
    "sym": "M",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 8,
+   "difficulty": 10
   },
   {
    "name": "red naga hatchling",
    "sym": "N",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "black naga hatchling",
    "sym": "N",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "golden naga hatchling",
    "sym": "N",
-   "color": "HI_GOLD"
+   "color": "HI_GOLD",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "guardian naga hatchling",
    "sym": "N",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "red naga",
    "sym": "N",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "black naga",
    "sym": "N",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 8,
+   "difficulty": 10
   },
   {
    "name": "golden naga",
    "sym": "N",
-   "color": "HI_GOLD"
+   "color": "HI_GOLD",
+   "level": 10,
+   "difficulty": 13
   },
   {
    "name": "guardian naga",
    "sym": "N",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 12,
+   "difficulty": 17
   },
   {
    "name": "ogre",
    "sym": "O",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "ogre lord",
    "sym": "O",
    "color": "CLR_RED",
+   "level": 7,
+   "difficulty": 9,
    "aliases": [
     "ogre lady",
     "ogre leader"
@@ -1078,6 +1498,8 @@
    "name": "ogre king",
    "sym": "O",
    "color": "HI_LORD",
+   "level": 9,
+   "difficulty": 11,
    "aliases": [
     "ogre queen",
     "ogre tyrant"
@@ -1086,112 +1508,156 @@
   {
    "name": "gray ooze",
    "sym": "P",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "brown pudding",
    "sym": "P",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "green slime",
    "sym": "P",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "black pudding",
    "sym": "P",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "quantum mechanic",
    "sym": "Q",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 7,
+   "difficulty": 9
   },
   {
    "name": "genetic engineer",
    "sym": "Q",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 12,
+   "difficulty": 14
   },
   {
    "name": "rust monster",
    "sym": "R",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 5,
+   "difficulty": 8
   },
   {
    "name": "disenchanter",
    "sym": "R",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 12,
+   "difficulty": 14
   },
   {
    "name": "garter snake",
    "sym": "S",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 1,
+   "difficulty": 3
   },
   {
    "name": "snake",
    "sym": "S",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "water moccasin",
    "sym": "S",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 4,
+   "difficulty": 7
   },
   {
    "name": "python",
    "sym": "S",
-   "color": "CLR_MAGENTA"
+   "color": "CLR_MAGENTA",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "pit viper",
    "sym": "S",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 6,
+   "difficulty": 9
   },
   {
    "name": "cobra",
    "sym": "S",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 6,
+   "difficulty": 10
   },
   {
    "name": "troll",
    "sym": "T",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 7,
+   "difficulty": 9
   },
   {
    "name": "ice troll",
    "sym": "T",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 9,
+   "difficulty": 12
   },
   {
    "name": "rock troll",
    "sym": "T",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 9,
+   "difficulty": 12
   },
   {
    "name": "water troll",
    "sym": "T",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 11,
+   "difficulty": 13
   },
   {
    "name": "Olog-hai",
    "sym": "T",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 13,
+   "difficulty": 16
   },
   {
    "name": "umber hulk",
    "sym": "U",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 9,
+   "difficulty": 12
   },
   {
    "name": "vampire",
    "sym": "V",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "vampire lord",
    "sym": "V",
    "color": "CLR_BLUE",
+   "level": 12,
+   "difficulty": 14,
    "aliases": [
     "vampire lady",
     "vampire leader"
@@ -1200,212 +1666,296 @@
   {
    "name": "vampire mage",
    "sym": "V",
-   "color": "HI_ZAP"
+   "color": "HI_ZAP",
+   "level": 20,
+   "difficulty": 26
   },
   {
    "name": "Vlad the Impaler",
    "sym": "V",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 28,
+   "difficulty": 32
   },
   {
    "name": "barrow wight",
    "sym": "W",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 3,
+   "difficulty": 8
   },
   {
    "name": "wraith",
    "sym": "W",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "Nazgul",
    "sym": "W",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 13,
+   "difficulty": 17
   },
   {
    "name": "xorn",
    "sym": "X",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 8,
+   "difficulty": 11
   },
   {
    "name": "monkey",
    "sym": "Y",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 2,
+   "difficulty": 4
   },
   {
    "name": "ape",
    "sym": "Y",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "owlbear",
    "sym": "Y",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "yeti",
    "sym": "Y",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "carnivorous ape",
    "sym": "Y",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "sasquatch",
    "sym": "Y",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 7,
+   "difficulty": 9
   },
   {
    "name": "kobold zombie",
    "sym": "Z",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 0,
+   "difficulty": 1
   },
   {
    "name": "gnome zombie",
    "sym": "Z",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "orc zombie",
    "sym": "Z",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 2,
+   "difficulty": 3
   },
   {
    "name": "dwarf zombie",
    "sym": "Z",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 2,
+   "difficulty": 3
   },
   {
    "name": "elf zombie",
    "sym": "Z",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "human zombie",
    "sym": "Z",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 4,
+   "difficulty": 5
   },
   {
    "name": "ettin zombie",
    "sym": "Z",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 6,
+   "difficulty": 7
   },
   {
    "name": "ghoul",
    "sym": "Z",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "giant zombie",
    "sym": "Z",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 8,
+   "difficulty": 9
   },
   {
    "name": "skeleton",
    "sym": "Z",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 12,
+   "difficulty": 14
   },
   {
    "name": "straw golem",
    "sym": "'",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "paper golem",
    "sym": "'",
-   "color": "HI_PAPER"
+   "color": "HI_PAPER",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "rope golem",
    "sym": "'",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "gold golem",
    "sym": "'",
-   "color": "HI_GOLD"
+   "color": "HI_GOLD",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "leather golem",
    "sym": "'",
-   "color": "HI_LEATHER"
+   "color": "HI_LEATHER",
+   "level": 6,
+   "difficulty": 7
   },
   {
    "name": "wood golem",
    "sym": "'",
-   "color": "HI_WOOD"
+   "color": "HI_WOOD",
+   "level": 7,
+   "difficulty": 8
   },
   {
    "name": "flesh golem",
    "sym": "'",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 9,
+   "difficulty": 10
   },
   {
    "name": "clay golem",
    "sym": "'",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 11,
+   "difficulty": 12
   },
   {
    "name": "stone golem",
    "sym": "'",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 14,
+   "difficulty": 15
   },
   {
    "name": "glass golem",
    "sym": "'",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 16,
+   "difficulty": 18
   },
   {
    "name": "iron golem",
    "sym": "'",
-   "color": "HI_METAL"
+   "color": "HI_METAL",
+   "level": 18,
+   "difficulty": 22
   },
   {
    "name": "human",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 0,
+   "difficulty": 2
   },
   {
    "name": "wererat",
    "sym": "@",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 2,
+   "difficulty": 3
   },
   {
    "name": "werejackal",
    "sym": "@",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 2,
+   "difficulty": 3
   },
   {
    "name": "werewolf",
    "sym": "@",
-   "color": "CLR_ORANGE"
+   "color": "CLR_ORANGE",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "elf",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 0,
+   "difficulty": 1
   },
   {
    "name": "Woodland-elf",
    "sym": "@",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 4,
+   "difficulty": 6
   },
   {
    "name": "Green-elf",
    "sym": "@",
-   "color": "CLR_BRIGHT_GREEN"
+   "color": "CLR_BRIGHT_GREEN",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "Grey-elf",
    "sym": "@",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "elf-lord",
    "sym": "@",
    "color": "CLR_BRIGHT_BLUE",
+   "level": 8,
+   "difficulty": 11,
    "aliases": [
     "elf-lady",
     "elf-noble"
@@ -1415,6 +1965,8 @@
    "name": "Elvenking",
    "sym": "@",
    "color": "HI_LORD",
+   "level": 9,
+   "difficulty": 11,
    "aliases": [
     "Elvenqueen",
     "elven monarch"
@@ -1423,32 +1975,44 @@
   {
    "name": "doppelganger",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 9,
+   "difficulty": 11
   },
   {
    "name": "shopkeeper",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 12,
+   "difficulty": 15
   },
   {
    "name": "guard",
    "sym": "@",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 12,
+   "difficulty": 14
   },
   {
    "name": "prisoner",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 12,
+   "difficulty": 14
   },
   {
    "name": "Oracle",
    "sym": "@",
-   "color": "HI_ZAP"
+   "color": "HI_ZAP",
+   "level": 12,
+   "difficulty": 13
   },
   {
    "name": "priest",
    "sym": "@",
    "color": "CLR_WHITE",
+   "level": 12,
+   "difficulty": 15,
    "aliases": [
     "priestess",
     "aligned cleric"
@@ -1458,6 +2022,8 @@
    "name": "high priest",
    "sym": "@",
    "color": "CLR_WHITE",
+   "level": 25,
+   "difficulty": 30,
    "aliases": [
     "high priestess",
     "high cleric"
@@ -1466,77 +2032,107 @@
   {
    "name": "soldier",
    "sym": "@",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "sergeant",
    "sym": "@",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 8,
+   "difficulty": 10
   },
   {
    "name": "nurse",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 11,
+   "difficulty": 13
   },
   {
    "name": "lieutenant",
    "sym": "@",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "captain",
    "sym": "@",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 12,
+   "difficulty": 14
   },
   {
    "name": "watchman",
    "sym": "@",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 6,
+   "difficulty": 8
   },
   {
    "name": "watch captain",
    "sym": "@",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "Medusa",
    "sym": "@",
-   "color": "CLR_BRIGHT_GREEN"
+   "color": "CLR_BRIGHT_GREEN",
+   "level": 20,
+   "difficulty": 25
   },
   {
    "name": "Wizard of Yendor",
    "sym": "@",
-   "color": "HI_OVERLORD"
+   "color": "HI_OVERLORD",
+   "level": 30,
+   "difficulty": 34
   },
   {
    "name": "Croesus",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 22
   },
   {
    "name": "Charon",
    "sym": "@",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 76,
+   "difficulty": 38
   },
   {
    "name": "ghost",
    "sym": " ",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "shade",
    "sym": " ",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 12,
+   "difficulty": 14
   },
   {
    "name": "water demon",
    "sym": "&",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 8,
+   "difficulty": 11
   },
   {
    "name": "incubus",
    "sym": "&",
    "color": "CLR_GRAY",
+   "level": 6,
+   "difficulty": 8,
    "aliases": [
     "succubus",
     "amorous demon"
@@ -1545,217 +2141,303 @@
   {
    "name": "horned devil",
    "sym": "&",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 6,
+   "difficulty": 9
   },
   {
    "name": "erinys",
    "sym": "&",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 7,
+   "difficulty": 10
   },
   {
    "name": "barbed devil",
    "sym": "&",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 8,
+   "difficulty": 11
   },
   {
    "name": "marilith",
    "sym": "&",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 7,
+   "difficulty": 11
   },
   {
    "name": "vrock",
    "sym": "&",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 8,
+   "difficulty": 11
   },
   {
    "name": "hezrou",
    "sym": "&",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 9,
+   "difficulty": 12
   },
   {
    "name": "bone devil",
    "sym": "&",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 9,
+   "difficulty": 13
   },
   {
    "name": "ice devil",
    "sym": "&",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 11,
+   "difficulty": 15
   },
   {
    "name": "nalfeshnee",
    "sym": "&",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 11,
+   "difficulty": 15
   },
   {
    "name": "pit fiend",
    "sym": "&",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 13,
+   "difficulty": 16
   },
   {
    "name": "sandestin",
    "sym": "&",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 13,
+   "difficulty": 15
   },
   {
    "name": "balrog",
    "sym": "&",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 16,
+   "difficulty": 20
   },
   {
    "name": "Juiblex",
    "sym": "&",
-   "color": "CLR_BRIGHT_GREEN"
+   "color": "CLR_BRIGHT_GREEN",
+   "level": 50,
+   "difficulty": 26
   },
   {
    "name": "Yeenoghu",
    "sym": "&",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 56,
+   "difficulty": 31
   },
   {
    "name": "Orcus",
    "sym": "&",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 66,
+   "difficulty": 36
   },
   {
    "name": "Geryon",
    "sym": "&",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 72,
+   "difficulty": 36
   },
   {
    "name": "Dispater",
    "sym": "&",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 78,
+   "difficulty": 40
   },
   {
    "name": "Baalzebub",
    "sym": "&",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 89,
+   "difficulty": 45
   },
   {
    "name": "Asmodeus",
    "sym": "&",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 105,
+   "difficulty": 53
   },
   {
    "name": "Demogorgon",
    "sym": "&",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 106,
+   "difficulty": 57
   },
   {
    "name": "Death",
    "sym": "&",
-   "color": "HI_OVERLORD"
+   "color": "HI_OVERLORD",
+   "level": 30,
+   "difficulty": 34
   },
   {
    "name": "Pestilence",
    "sym": "&",
-   "color": "HI_OVERLORD"
+   "color": "HI_OVERLORD",
+   "level": 30,
+   "difficulty": 34
   },
   {
    "name": "Famine",
    "sym": "&",
-   "color": "HI_OVERLORD"
+   "color": "HI_OVERLORD",
+   "level": 30,
+   "difficulty": 34
   },
   {
    "name": "mail daemon",
    "sym": "&",
-   "color": "CLR_BRIGHT_BLUE"
+   "color": "CLR_BRIGHT_BLUE",
+   "level": 56,
+   "difficulty": 26
   },
   {
    "name": "djinni",
    "sym": "&",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 7,
+   "difficulty": 8
   },
   {
    "name": "jellyfish",
    "sym": ";",
-   "color": "CLR_BLUE"
+   "color": "CLR_BLUE",
+   "level": 3,
+   "difficulty": 5
   },
   {
    "name": "piranha",
    "sym": ";",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "shark",
    "sym": ";",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 7,
+   "difficulty": 9
   },
   {
    "name": "giant eel",
    "sym": ";",
-   "color": "CLR_CYAN"
+   "color": "CLR_CYAN",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "electric eel",
    "sym": ";",
-   "color": "CLR_BRIGHT_BLUE"
+   "color": "CLR_BRIGHT_BLUE",
+   "level": 7,
+   "difficulty": 10
   },
   {
    "name": "kraken",
    "sym": ";",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 20,
+   "difficulty": 22
   },
   {
    "name": "newt",
    "sym": ":",
-   "color": "CLR_YELLOW"
+   "color": "CLR_YELLOW",
+   "level": 0,
+   "difficulty": 1
   },
   {
    "name": "gecko",
    "sym": ":",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 1,
+   "difficulty": 2
   },
   {
    "name": "iguana",
    "sym": ":",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 2,
+   "difficulty": 3
   },
   {
    "name": "baby crocodile",
    "sym": ":",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 3,
+   "difficulty": 4
   },
   {
    "name": "lizard",
    "sym": ":",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 5,
+   "difficulty": 6
   },
   {
    "name": "chameleon",
    "sym": ":",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 6,
+   "difficulty": 7
   },
   {
    "name": "crocodile",
    "sym": ":",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 6,
+   "difficulty": 7
   },
   {
    "name": "salamander",
    "sym": ":",
-   "color": "CLR_ORANGE"
+   "color": "CLR_ORANGE",
+   "level": 8,
+   "difficulty": 12
   },
   {
    "name": "long worm tail",
    "sym": "~",
-   "color": "CLR_BROWN"
+   "color": "CLR_BROWN",
+   "level": 0,
+   "difficulty": 1
   },
   {
    "name": "archeologist",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "barbarian",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "caveman",
    "sym": "@",
    "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12,
    "aliases": [
     "cavewoman",
     "cave dweller"
@@ -1764,22 +2446,30 @@
   {
    "name": "healer",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "knight",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "monk",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 11
   },
   {
    "name": "priest",
    "sym": "@",
    "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12,
    "aliases": [
     "priestess",
     "cleric"
@@ -1788,247 +2478,345 @@
   {
    "name": "ranger",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "rogue",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "samurai",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "tourist",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "valkyrie",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "wizard",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 10,
+   "difficulty": 12
   },
   {
    "name": "Lord Carnarvon",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 24
   },
   {
    "name": "Pelias",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 24
   },
   {
    "name": "Shaman Karnov",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 24
   },
   {
    "name": "Earendil",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 22
   },
   {
    "name": "Elwing",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 22
   },
   {
    "name": "Hippocrates",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 26
   },
   {
    "name": "King Arthur",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 24
   },
   {
    "name": "Grand Master",
    "sym": "@",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 25,
+   "difficulty": 30
   },
   {
    "name": "Arch Priest",
    "sym": "@",
-   "color": "CLR_WHITE"
+   "color": "CLR_WHITE",
+   "level": 25,
+   "difficulty": 30
   },
   {
    "name": "Orion",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 24
   },
   {
    "name": "Master of Thieves",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 24
   },
   {
    "name": "Lord Sato",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 24
   },
   {
    "name": "Twoflower",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 20,
+   "difficulty": 22
   },
   {
    "name": "Norn",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 20,
+   "difficulty": 24
   },
   {
    "name": "Neferet the Green",
    "sym": "@",
-   "color": "CLR_GREEN"
+   "color": "CLR_GREEN",
+   "level": 20,
+   "difficulty": 25
   },
   {
    "name": "Minion of Huhetotl",
    "sym": "&",
-   "color": "CLR_ORANGE"
+   "color": "CLR_ORANGE",
+   "level": 16,
+   "difficulty": 23
   },
   {
    "name": "Thoth Amon",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 16,
+   "difficulty": 22
   },
   {
    "name": "Chromatic Dragon",
    "sym": "D",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 16,
+   "difficulty": 23
   },
   {
    "name": "Goblin King",
    "sym": "o",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 15,
+   "difficulty": 18
   },
   {
    "name": "Cyclops",
    "sym": "H",
-   "color": "CLR_GRAY"
+   "color": "CLR_GRAY",
+   "level": 18,
+   "difficulty": 23
   },
   {
    "name": "Ixoth",
    "sym": "D",
-   "color": "CLR_RED"
+   "color": "CLR_RED",
+   "level": 15,
+   "difficulty": 22
   },
   {
    "name": "Master Kaen",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 25,
+   "difficulty": 31
   },
   {
    "name": "Nalzok",
    "sym": "&",
-   "color": "CLR_ORANGE"
+   "color": "CLR_ORANGE",
+   "level": 16,
+   "difficulty": 23
   },
   {
    "name": "Scorpius",
    "sym": "s",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 15,
+   "difficulty": 17
   },
   {
    "name": "Master Assassin",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "Ashikaga Takauji",
    "sym": "@",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 15,
+   "difficulty": 19
   },
   {
    "name": "Lord Surtur",
    "sym": "H",
-   "color": "HI_LORD"
+   "color": "HI_LORD",
+   "level": 15,
+   "difficulty": 19
   },
   {
    "name": "Dark One",
    "sym": "@",
-   "color": "CLR_BLACK"
+   "color": "CLR_BLACK",
+   "level": 15,
+   "difficulty": 20
   },
   {
    "name": "student",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "chieftain",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "neanderthal",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "High-elf",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "attendant",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "page",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "abbot",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 8
   },
   {
    "name": "acolyte",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 8
   },
   {
    "name": "hunter",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "thug",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "ninja",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "roshi",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "guide",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 8
   },
   {
    "name": "warrior",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 7
   },
   {
    "name": "apprentice",
    "sym": "@",
-   "color": "HI_DOMESTIC"
+   "color": "HI_DOMESTIC",
+   "level": 5,
+   "difficulty": 8
   }
  ],
  "objects": [

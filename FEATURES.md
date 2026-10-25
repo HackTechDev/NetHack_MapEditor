@@ -204,6 +204,12 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   les plus fréquents, pièges par type, régions par genre et salles
   typées, placements aléatoires du script (n'importe où ou dans une
   zone).
+- Difficulté estimée : niveau et difficulté de chaque monstre extraits
+  des sources de NetHack (`gen_data.py`) ; monstres nommés, classes
+  (difficulté médiane de la classe) et appels aléatoires du script qui
+  nomment le monstre ; monstre le plus dur, difficulté moyenne, somme des
+  niveaux et profondeur conseillée (NetHack ne tire un monstre de
+  difficulté D que si (profondeur + niveau du héros) / 2 ≥ D).
 
 ## Vérification (`v`)
 
@@ -261,7 +267,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 105 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 106 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

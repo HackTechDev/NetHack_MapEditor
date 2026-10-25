@@ -3,6 +3,7 @@
 import collections
 import os
 import random
+import re
 import shutil
 import time
 
@@ -99,7 +100,71 @@ class LevelMixin:
                 lines.append("  %-28s %5d  %s" % (
                     k, n, _("n'importe où dans la carte") if anywhere
                     else _("dans une zone ou une liste de cases")))
+        lines += self.difficulty_lines()
         return "\n".join(lines)
+
+    def difficulty(self):
+        """Difficulté estimée d'après les monstres placés (positions fixes
+        et appels aléatoires du script qui nomment le monstre). NetHack ne
+        tire au hasard un monstre de difficulté D que si (profondeur +
+        niveau du héros) / 2 >= D : pour un héros de niveau voisin de la
+        profondeur, D est la profondeur où il apparaît naturellement.
+        Renvoie None sans monstre."""
+        named, classes, unknown = [], [], 0
+        values = [e.value for e in self.lvl.entities if e.kind == "monster"]
+        for r in self.lvl.randoms:
+            if r.kind == "monster":
+                m = re.search(r'"([^"]+)"', r.text)
+                values.append(m.group(1) if m else None)
+        for v in values:
+            if v is None or v not in self.mon and len(v) != 1:
+                unknown += 1
+            elif len(v) == 1:
+                diffs = sorted(m["difficulty"] for m in self.data["monsters"]
+                               if m["sym"] == v and "difficulty" in m)
+                if diffs:                       # médiane de la classe
+                    classes.append((diffs[len(diffs) // 2], 0,
+                                    _("classe %s") % v))
+                else:
+                    unknown += 1
+            elif "difficulty" in self.mon[v]:
+                m = self.mon[v]
+                named.append((m["difficulty"], m.get("level", 0), v))
+            else:
+                unknown += 1
+        if not values:
+            return None
+        diffs = [d for d, _l, _n in named + classes]
+        hardest = max(named + classes, default=None)
+        return {"count": len(values), "named": len(named),
+                "classes": len(classes), "unknown": unknown,
+                "max": hardest[0] if hardest else None,
+                "hardest": hardest[2] if hardest else None,
+                "mean": sum(diffs) / len(diffs) if diffs else None,
+                "levels": sum(lv for _d, lv, _n in named),
+                "depth": max(1, hardest[0]) if hardest else None}
+
+    def difficulty_lines(self):
+        d = self.difficulty()
+        if d is None:
+            return []
+        lines = ["", _("Difficulté estimée :"),
+                 _("  monstres comptés : %d (nommés %d, par classe %d, "
+                   "aléatoires %d)") % (
+                     d["count"], d["named"], d["classes"], d["unknown"])]
+        if d["max"] is None:
+            lines.append(_("  monstres tous aléatoires : ils suivront la "
+                           "profondeur du niveau"))
+            return lines
+        lines.append(_("  le plus dur : %s (difficulté %d)") % (
+            d["hardest"], d["max"]))
+        lines.append(_("  difficulté moyenne : %.1f") % d["mean"])
+        if d["named"]:
+            lines.append(_("  somme des niveaux des monstres nommés : %d")
+                         % d["levels"])
+        lines.append(_("  profondeur conseillée : %d ou plus (là où NetHack "
+                       "les ferait apparaître)") % d["depth"])
+        return lines
 
     def show_stats(self):
         self.message_box(_("Statistiques du niveau"), self.stats_text())

@@ -24,7 +24,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
 | 11. Idées supplémentaires | 6 / 12 | tirage, $EDITOR, `.des`, sélections, Sokoban, donjon |
-| 12. Encore d'autres idées | 2 / 14 | voir la liste |
+| 12. Encore d'autres idées | 3 / 14 | voir la liste |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -288,7 +288,7 @@ plus utiles aux plus accessoires.
   quelques questions (type de niveau, taille, salles, nombre de
   monstres), construit avec les générateurs existants et retouché
   ensuite à la main.
-- **Difficulté estimée** **[moyen]** : additionner le niveau des monstres
+- ✅ **Fait** — **Difficulté estimée** **[moyen]** : additionner le niveau des monstres
   placés (`mlevel`, extrait des sources de NetHack) et indiquer à quelle
   profondeur le niveau conviendrait, en complément des statistiques.
 - **Équilibre des objets** **[facile]** : signaler les objets puissants

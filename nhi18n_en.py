@@ -913,6 +913,19 @@ EN = {
     'Roche au départ en % (plus : caverne plus étroite)':
         'Initial rock in % (more: narrower cave)',
     'Éléments de décor': 'Decor features',
+    # difficulté estimée
+    'Difficulté estimée :': 'Estimated difficulty:',
+    '  monstres comptés : %d (nommés %d, par classe %d, aléatoires %d)':
+        '  monsters counted: %d (named %d, by class %d, random %d)',
+    '  monstres tous aléatoires : ils suivront la profondeur du niveau':
+        '  all monsters are random: they will follow the level depth',
+    '  le plus dur : %s (difficulté %d)': '  toughest: %s (difficulty %d)',
+    '  difficulté moyenne : %.1f': '  average difficulty: %.1f',
+    '  profondeur conseillée : %d ou plus (là où NetHack les ferait apparaître)':
+        '  suggested depth: %d or more (where NetHack would generate them)',
+    '  somme des niveaux des monstres nommés : %d':
+        '  sum of named monster levels: %d',
+    'classe %s': 'class %s',
 }
 
 HELP = """\
@@ -1020,7 +1033,8 @@ LEVEL AND FILES
   N  map list: go to a map, add one, see where they lie in the
      80x21 level
   %  level statistics: terrain, entities, monsters and objects by
-     class, traps, regions, random placements of the script
+     class, traps, regions, random placements of the script, and
+     estimated difficulty (toughest monster, suggested depth)
   v  check the map, including connectivity: down stairs reachable
      from the up stairs (doors without diagonals, secret passages,
      water and lava reported) and closed areas; NetHack rules (door in a

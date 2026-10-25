@@ -56,6 +56,15 @@ def monsters(src):
         entry = {"name": m.group(1),
                  "sym": symchar.get(m.group(3), "?"),
                  "color": col[-1] if col else "CLR_GRAY"}
+        # LVL(niveau, vitesse, CA, RM, alignement) et la difficulté,
+        # avant-dernier nombre devant la couleur : MON(..., 4, CLR_BROWN, X)
+        lvl = re.search(r"LVL\(\s*(-?\d+)", body)
+        dif = re.search(r",\s*(\d+)\s*,\s*(?:CLR_\w+|HI_\w+|DRAGON_\w+)\s*,\s*\w+\s*\)",
+                        body)
+        if lvl:
+            entry["level"] = int(lvl.group(1))
+        if dif:
+            entry["difficulty"] = int(dif.group(1))
         # NAMS("priest", "priestess", "aligned cleric") : formes féminine
         # et neutre, acceptées aussi par des.monster()
         aliases = re.findall(r'"([^"]+)"', m.group(2))
