@@ -174,6 +174,9 @@ class DisplayMixin:
             name += _(" : salle « %s »") % lvl.theme["name"]
         head = " nhmapedit — %s%s   %dx%d" % (
             name, _(" [modifié]") if self.modified else "", lvl.w, lvl.h)
+        if len(lvl.maps) > 1:
+            head += _("   carte %d/%d ([ ] N)") % (lvl.map_index + 1,
+                                                  len(lvl.maps))
         if lvl.w > nhlevel.MAP_X_LIM:
             head += "  (largeur > %d !)" % nhlevel.MAP_X_LIM
         if lvl.allowed_flips() and not lvl.theme:

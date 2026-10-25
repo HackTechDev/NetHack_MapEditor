@@ -715,6 +715,35 @@ EN = {
         'room or typed area: { region = {...}, type = ... }',
     'éclairage seul : selection.area(...), "lit"':
         'lighting only: selection.area(...), "lit"',
+    # plusieurs cartes
+    "la carte n° %d n'est pas lisible (texte calculé par le script)":
+        'map no. %d is not readable (text computed by the script)',
+    'Une seule carte dans ce fichier (N pour en ajouter une).':
+        'Only one map in this file (N to add one).',
+    '   carte %d/%d ([ ] N)': '   map %d/%d ([ ] N)',
+    'carte %d : %dx%d, %s': 'map %d: %dx%d, %s',
+    'Carte %d / %d (%dx%d).': 'Map %d / %d (%dx%d).',
+    "Une salle à thème n'a qu'une carte.": 'A themed room has only one map.',
+    'Taille de la nouvelle carte (largeur x hauteur) : ':
+        'Size of the new map (width x height): ',
+    'Placement horizontal': 'Horizontal placement',
+    'Placement vertical': 'Vertical placement',
+    'Carte %d / %d ajoutée (%dx%d).': 'Map %d / %d added (%dx%d).',
+    'carte %d : texte calculé par le script':
+        'map %d: text computed by the script',
+    'position x=%d y=%d': 'position x=%d y=%d',
+    '+ ajouter une carte à la fin du fichier':
+        '+ add a map at the end of the file',
+    '  place des cartes dans le niveau (80x21)':
+        '  map placement in the level (80x21)',
+    'Cartes du fichier': 'Maps in the file',
+    'Ajout de la carte %d': 'Add map %d',
+    'Place des cartes dans le niveau': 'Map placement in the level',
+    'carte %d : position aléatoire ou inconnue':
+        'map %d: random or unknown position',
+    'carte 1 : %dx%d': 'map 1: %dx%d',
+    # ouverture
+    ' %d cartes : [ ] ou N pour changer.': ' %d maps: [ ] or N to switch.',
 }
 
 HELP = """\
@@ -792,6 +821,9 @@ LEVEL AND FILES
   p  properties (size, flags, level_init, alignment, lighting);
      "Dungeon" adds the level to dat/dungeon.lua (depth, chance…),
      or edits and removes the special levels of the dungeon
+  [ ]  previous / next map of a file with several des.map()
+  N  map list: go to a map, add one, see where they lie in the
+     80x21 level
   v  check the map, including connectivity: down stairs reachable
      from the up stairs (doors without diagonals, secret passages,
      water and lava reported) and closed areas; NetHack rules (door in a

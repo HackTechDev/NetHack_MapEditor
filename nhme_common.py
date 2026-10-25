@@ -362,6 +362,9 @@ NIVEAU ET FICHIERS
   p  propriétés (taille, drapeaux, level_init, alignement, éclairage) ;
      « Donjon » y ajoute le niveau à dat/dungeon.lua (profondeur,
      probabilité…), ou modifie et retire les niveaux spéciaux du donjon
+  [ ]  carte précédente / suivante d'un fichier à plusieurs des.map()
+  N  liste des cartes : aller à une carte, en ajouter une, voir leur
+     place dans le niveau de 80x21
   v  vérifier la carte, dont la connexité : escalier descendant accessible
      depuis le montant (portes sans diagonale, passages secrets, eau et
      lave signalés) et zones fermées ; règles de NetHack (porte dans un

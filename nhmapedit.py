@@ -264,6 +264,15 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.undo()
         elif k in ("U", "\x12", "\x19"):
             self.redo()
+        elif k in ("[", "]"):
+            if len(lvl.maps) < 2:
+                self.msg = _("Une seule carte dans ce fichier (N pour en "
+                             "ajouter une).")
+            else:
+                self.switch_map((lvl.map_index + (1 if k == "]" else -1))
+                                % len(lvl.maps))
+        elif k == "N":
+            self.maps_menu()
         elif k == "V":
             self.history()
         elif k == "n":

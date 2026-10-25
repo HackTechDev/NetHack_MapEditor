@@ -122,12 +122,17 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 ## Fichiers
 
 - Ouverture de n'importe quel niveau de `dat/` contenant un `des.map()` :
-  la première carte, `level_init`, `level_flags`, les entités à
+  chaque carte, `level_init`, `level_flags`, les entités à
   position fixe et les régions sont éditables, qu'ils suivent la carte
   ou soient dans sa fonction `contents = function() ... end` ; tout le reste du script est conservé.
 - Aller-retour exact : un fichier ouvert puis enregistré sans
   modification reste identique octet pour octet (vérifié sur les 93
   niveaux de `dat/`).
+- Fichiers à plusieurs cartes : passage de l'une à l'autre (`[`, `]`),
+  liste des cartes (`N`) avec leur taille et leur placement, ajout d'une
+  carte, plan du niveau de 80x21 montrant la place de chacune ; les
+  entités suivant une carte lui appartiennent ; l'annulation traverse
+  les changements de carte.
 - Copie de l'original sous `fichier.lua~` au premier enregistrement.
 - Enregistrer (`s`), enregistrer sous (`w`), ouvrir (`o`) avec
   complétion des chemins par Tab ; confirmation avant de perdre des
@@ -194,7 +199,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 79 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 81 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

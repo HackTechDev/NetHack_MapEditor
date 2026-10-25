@@ -17,6 +17,128 @@ from nhme_common import (
 class LevelMixin:
     """Méthodes de l'éditeur (voir nhmapedit.Editor)."""
 
+    # --- fichiers à plusieurs cartes ------------------------------------
+    def map_label(self, i, info):
+        if info is None:
+            return _("carte %d : texte calculé par le script") % (i + 1)
+        place = (_("position x=%d y=%d") % tuple(info["pos"]) if info["pos"]
+                 else "%s/%s" % (info["halign"], info["valign"]))
+        return _("carte %d : %dx%d, %s") % (i + 1, info["w"], info["h"],
+                                            place)
+
+    def switch_map(self, i):
+        """Passe à la carte n° i du fichier. Les modifications de la carte
+        quittée sont reportées dans le texte ; l'historique continue (une
+        annulation peut ramener à l'autre carte)."""
+        if self.theme_guard():
+            return False
+        lvl = self.lvl
+        if not 0 <= i < len(lvl.maps) or i == lvl.map_index:
+            return False
+        try:
+            new = nhlevel.parse_level(lvl.to_lua(), i)[0]
+        except ValueError as e:
+            self.msg = str(e)
+            return False
+        self.lvl = new
+        self.anchor = None
+        if self.tool == "region":
+            self.end_region()
+        self.cx = self.cy = self.ox = self.oy = 0
+        self.msg = _("Carte %d / %d (%dx%d).") % (i + 1, len(new.maps),
+                                                   new.w, new.h)
+        return True
+
+    def theme_guard(self):
+        if self.lvl.theme:
+            self.msg = _("Une salle à thème n'a qu'une carte.")
+            return True
+        return False
+
+    def maps_menu(self):
+        """Liste des cartes du fichier : aller à une carte, en ajouter
+        une, voir leur place dans le niveau."""
+        lvl = self.lvl
+        if self.theme_guard():
+            return
+        items = [(("● " if i == lvl.map_index else "  ")
+                  + self.map_label(i, info), i)
+                 for i, info in enumerate(lvl.maps)]
+        if not lvl.maps:            # niveau neuf
+            items = [("● " + _("carte 1 : %dx%d") % (lvl.w, lvl.h), 0)]
+        items += [(_("+ ajouter une carte à la fin du fichier"), "add"),
+                  (_("  place des cartes dans le niveau (80x21)"), "view")]
+        try:
+            what = self.pick(_("Cartes du fichier"), items, lvl.map_index)
+        except Cancel:
+            return
+        if what == "add":
+            self.add_map()
+        elif what == "view":
+            self.message_box(_("Place des cartes dans le niveau"),
+                             self.maps_overview())
+        else:
+            self.switch_map(what)
+
+    def add_map(self):
+        if self.theme_guard():
+            return
+        s = self.prompt(_("Taille de la nouvelle carte (largeur x "
+                          "hauteur) : "), "21x7")
+        try:
+            w, h = (int(v) for v in s.lower().replace(" ", "").split("x"))
+            if not (1 <= w <= nhlevel.MAX_W and 1 <= h <= nhlevel.MAX_H):
+                raise ValueError
+        except ValueError:
+            self.msg = _("Taille invalide.")
+            return
+        halign = self.pick(_("Placement horizontal"), [
+            (v, v) for v in ("center", "left", "half-left", "half-right",
+                             "right")])
+        valign = self.pick(_("Placement vertical"), [
+            (v, v) for v in ("center", "top", "bottom")])
+        text = self.lvl.to_lua().rstrip("\n")
+        text += ('\n\ndes.map({ halign = "%s", valign = "%s", map = [[\n%s\n'
+                 ']] });\n' % (halign, valign,
+                               "\n".join(["." * w] * h)))
+        old = self.lvl
+        try:
+            # un niveau neuf n'a pas encore de liste de cartes
+            new = nhlevel.parse_level(text, max(1, len(old.maps)))[0]
+        except ValueError as e:
+            self.msg = str(e)
+            return
+        self.checkpoint(_("Ajout de la carte %d") % len(new.maps))
+        self.lvl = new
+        self.anchor = None
+        self.cx = self.cy = self.ox = self.oy = 0
+        self.msg = _("Carte %d / %d ajoutée (%dx%d).") % (
+            len(new.maps), len(new.maps), w, h)
+
+    def maps_overview(self):
+        """Dessin du niveau de 80x21 avec le cadre de chaque carte, marqué
+        de son numéro (la carte éditée en #)."""
+        grid = [["."] * nhlevel.COLNO for _r in range(nhlevel.ROWNO)]
+        notes = []
+        for i, info in enumerate(self.lvl.maps):
+            tmp = Level(1, 1)
+            if info:
+                tmp.w, tmp.h = info["w"], info["h"]
+                tmp.halign, tmp.valign = info["halign"], info["valign"]
+                tmp.pos = info["pos"]
+            o = tmp.origin() if info else None
+            if o is None:
+                notes.append(_("carte %d : position aléatoire ou inconnue")
+                             % (i + 1))
+                continue
+            mark = "#" if i == self.lvl.map_index else str((i + 1) % 10)
+            for y in range(o[1], o[1] + tmp.h):
+                for x in range(o[0], o[0] + tmp.w):
+                    if 0 <= x < nhlevel.COLNO and 0 <= y < nhlevel.ROWNO:
+                        grid[y][x] = mark
+        text = "\n".join("".join(r) for r in grid)
+        return text + ("\n\n" + "\n".join(notes) if notes else "")
+
     def properties(self):
         sel = 0
         while True:
@@ -278,6 +400,9 @@ class LevelMixin:
             path, lvl.w, lvl.h, n,
             _(", carte avec contenu : placement non modifiable")
             if lvl.map_partial else "")
+        if len(lvl.maps) > 1:
+            self.msg += _(" %d cartes : [ ] ou N pour changer.") % len(
+                lvl.maps)
         return True
 
     def save(self, as_new=False):

@@ -183,6 +183,26 @@ class Generation(unittest.TestCase):
                       '   if percent(50)', out)
         self.assertNotIn("orc", out)
 
+    def test_several_maps(self):
+        src = (INIT + 'des.map({ halign = "left", valign = "top", '
+               'map = [[\n...\n]] });\ndes.stair("up", 0, 0);\n'
+               'des.map({ halign = "right", valign = "bottom", '
+               'map = [[\n||\n||\n]] });\ndes.stair("down", 1, 1);\n')
+        for i, kind in ((0, "up"), (1, "down")):
+            lvl = nhlevel.parse_level(src, i)[0]
+            self.assertEqual((lvl.map_index, len(lvl.maps)), (i, 2))
+            self.assertEqual([e.value for e in lvl.entities], [kind])
+            self.assertEqual(lvl.to_lua(), src)
+        self.assertEqual(lvl.maps[1], {"w": 2, "h": 2, "halign": "right",
+                                       "valign": "bottom", "pos": None})
+        lvl.grid[0][0] = "-"
+        lvl.flags = ["noflip"]
+        out = lvl.to_lua()
+        # drapeaux ajoutés avant la première carte, pas avant celle-ci
+        self.assertIn('des.level_flags("noflip");\ndes.map({ halign = '
+                      '"left"', out)
+        self.assertIn("[[\n-|\n||\n]]", out)
+
     def test_new_region_written(self):
         lvl = level(["...."] * 3)
         lvl.regions.append(nhlevel.Region("region", (0, 0, 3, 2),

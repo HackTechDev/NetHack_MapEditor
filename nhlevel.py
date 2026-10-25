@@ -264,6 +264,11 @@ class Level:
         # Texte Lua d'origine découpé (None pour un niveau neuf)
         self.source = None
         self.map_partial = False    # des.map non littérale (contents=...)
+        # fichier à plusieurs des.map() : n° de la carte éditée et, pour
+        # chaque carte, {"w", "h", "halign", "valign", "pos"} (None si elle
+        # n'est pas lisible)
+        self.map_index = 0
+        self.maps = []
         # salle à thème de themerms.lua : {"path", "name", "k", "new"}
         self.theme = None
 
@@ -493,6 +498,7 @@ class Level:
         out, pos = [], 0
         have_init = any(c["role"] == "init" for c in calls)
         have_flags = any(c["role"] == "flags" for c in calls)
+        have_first = any(c["role"] == "first" for c in calls)
         ent_calls = [i for i, c in enumerate(calls)
                      if c["role"] in ("entity", "region")]
         last_ent = ent_calls[-1] if ent_calls else None
@@ -511,11 +517,18 @@ class Level:
                 out.append(same(c, self.init_lua()))
             elif role == "flags":
                 out.append(same(c, self.flags_lua()))
-            elif role == "map":
+            elif role == "first":
                 pre = []
                 if not have_init:
                     pre.append(self.init_lua())
                 if not have_flags and self.flags:
+                    pre.append(self.flags_lua())
+                out.append("\n".join(pre + [text[c["start"]:c["end"]]]))
+            elif role == "map":
+                pre = []
+                if not have_init and not have_first:
+                    pre.append(self.init_lua())
+                if not have_flags and self.flags and not have_first:
                     pre.append(self.flags_lua())
                 if self.map_partial:
                     m = self._merge_map_call(text, c, by_origin, same)
@@ -1027,8 +1040,21 @@ def _readonly_region(name, args):
     return Region(name, rect, extra, "table", readonly=True)
 
 
-def parse_level(text):
-    """Construit un Level à partir d'un script Lua de niveau."""
+def map_info(args):
+    """Taille et placement d'un appel des.map() ; None s'il n'est pas
+    lisible."""
+    tmp = Level(1, 1)
+    try:
+        _read_map(tmp, {}, args)
+    except NotLiteral:
+        return None
+    return {"w": tmp.w, "h": tmp.h, "halign": tmp.halign,
+            "valign": tmp.valign, "pos": tmp.pos}
+
+
+def parse_level(text, index=0):
+    """Construit un Level à partir d'un script Lua de niveau ; index :
+    n° de la carte des.map() à éditer quand il y en a plusieurs."""
     lvl = Level(1, 1)
     calls = scan_des_calls(text)
     kept, warnings = [], []
@@ -1063,22 +1089,37 @@ def parse_level(text):
             return False
         return True
 
+    nmap = 0                            # cartes déjà rencontrées
     for c in calls:
         name, args = c["name"], c["args"]
         try:
-            if name == "level_init" and not map_seen:
+            if name == "map":
+                lvl.maps.append(map_info(args))
+                nmap += 1
+                if nmap - 1 < index:
+                    if nmap == 1:
+                        # première carte : level_init et level_flags
+                        # manquants s'écriront juste avant
+                        c["role"] = "first"
+                        kept.append(c)
+                    continue
+                if nmap - 1 > index:
+                    map_done = True
+                    continue
+            if name == "level_init" and nmap == 0:
                 vals = _parse_args(args, 0, len(args))[0]
                 if len(vals) != 1 or not isinstance(_to_py(vals[0]), dict):
                     raise NotLiteral()
                 lvl.init = _to_py(vals[0])
                 c["role"] = "init"
-            elif name == "level_flags" and not map_seen:
+            elif name == "level_flags" and nmap == 0:
                 vals = _parse_args(args, 0, len(args))[0]
                 if not all(isinstance(v, str) for v in vals):
                     raise NotLiteral()
                 lvl.flags = list(vals)
                 c["role"] = "flags"
             elif name == "map" and not map_seen:
+                lvl.map_index = index
                 _read_map(lvl, c, args)
                 map_seen = True
                 c["role"] = "map"
@@ -1094,9 +1135,6 @@ def parse_level(text):
                                       for k, v, s, e in ic["args"]]
                         if take(ic, ic["name"], ic["args"]):
                             c["inner"].append(ic)
-            elif name == "map" and map_seen:
-                map_done = True
-                raise NotLiteral()
             elif map_seen and not map_done and take(c, name, args):
                 pass
             else:
@@ -1104,6 +1142,9 @@ def parse_level(text):
             kept.append(c)
         except NotLiteral:
             pass
+    if not map_seen and index and index < nmap:
+        raise ValueError(_("la carte n° %d n'est pas lisible (texte calculé "
+                           "par le script)") % (index + 1))
     if not map_seen:
         raise ValueError(_("aucun appel des.map() trouvé dans ce fichier"))
     has_init = any(c["role"] == "init" for c in kept)
@@ -1117,7 +1158,7 @@ def parse_level(text):
                  if not getattr(e, "readonly", False)}
     for c in kept + [ic for c in kept for ic in c.get("inner", ())]:
         c["gen"] = {"init": lvl.init_lua, "flags": lvl.flags_lua,
-                    "map": lvl.map_lua,
+                    "map": lvl.map_lua, "first": lambda: None,
                     "entity": lambda: by_origin[c["origin"]].to_lua(),
                     "region": lambda: by_origin[c["origin"]].to_lua(),
                     }[c["role"]]()

@@ -106,6 +106,8 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `c` | afficher / masquer les règles de coordonnées (colonnes en haut, lignes à gauche) |
 | `f` | aperçu du retournement aléatoire que NetHack applique aux niveaux sans `noflip` : aucun → horizontal → vertical → les deux (l'édition reste possible, les règles gardent les vraies coordonnées) |
 | `J` | rendu « comme dans le jeu » : murs en traits avec leurs coins et jonctions, sol en points, symboles et couleurs du jeu, portes et couloirs secrets cachés (l'édition reste possible) |
+| `[`, `]` | carte précédente, suivante d'un fichier à plusieurs `des.map()` (Juiblex, Asmodée…) |
+| `N` | liste des cartes du fichier : aller à une carte, en ajouter une à la fin, voir leur place dans le niveau de 80x21 |
 | `p` | propriétés : taille, `level_init`, drapeaux, placement (halign/valign ou x,y), éclairage, place du niveau dans le donjon (`dungeon.lua`, voir plus bas) |
 | `v` | vérifier la carte : largeur > 76, entités dans les murs, escaliers en double, connexité… (voir « Vérification ») |
 | `t` | tester : copie la carte dans le répertoire du jeu ; avec tmux, lance NetHack et y charge la carte (voir plus bas) |
@@ -149,15 +151,17 @@ L'éditeur ouvre n'importe quel niveau de `dat/` qui contient un `des.map()`.
 Il édite :
 
 - `des.level_init()` et `des.level_flags()` ;
-- la **première** carte `des.map()` du fichier ;
-- les entités à **coordonnées fixes** écrites après cette carte ou dans sa
+- les cartes `des.map()` du fichier, une à la fois (`[`, `]` ou `N` pour
+  changer de carte) ;
+- les entités à **coordonnées fixes** écrites après la carte (jusqu'à la
+  suivante) ou dans sa
   fonction `des.map({ ..., contents = function() ... end })` (escaliers,
   échelles, autels, monstres, objets, pièges, portes, gravures, or,
   tombes, ponts-levis, éléments de décor, terrain d'une case), y compris
   l'inventaire des monstres (`inventory = function() ... end`) et le
   contenu des conteneurs et des statues (`contents = function() ... end`)
   quand ces fonctions ne contiennent que des `des.object()` littéraux ;
-- les régions écrites après cette carte ou dans sa fonction `contents` : `des.region()` (salles typées et
+- les régions écrites après la carte ou dans sa fonction `contents` : `des.region()` (salles typées et
   `selection.area(...)` éclairées ou sombres), `des.non_diggable()`,
   `des.non_passwall()`, `des.teleport_region()`, `des.levregion()`. Une
   région dont l'appel contient du code Lua est affichée mais reste non

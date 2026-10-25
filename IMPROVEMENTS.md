@@ -13,7 +13,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 
 | Thème | Fait | Reste |
 |---|---|---|
-| 1. Couverture du format Lua | 3 / 5 | plusieurs cartes, éléments aléatoires |
+| 1. Couverture du format Lua | 4 / 5 | éléments aléatoires |
 | 2. Affichage | 5 / 5 | — |
 | 3. Outils d'édition | 8 / 9 | générateurs |
 | 4. Entités | 4 / 4 | — |
@@ -30,9 +30,9 @@ coûteuse maintenant que les tests existent.
 
 ## 1. Couverture du format Lua des niveaux
 
-Aujourd'hui, l'éditeur ne gère que la première `des.map()` et les entités à
-coordonnées fixes qui la suivent. Le reste du script est conservé, mais il
-reste invisible dans l'éditeur.
+Au départ, l'éditeur ne gérait que la première `des.map()` et les entités
+à coordonnées fixes qui la suivent ; le reste du script était conservé,
+mais invisible dans l'éditeur.
 
 - ✅ **Fait** — **Régions** **[moyen]** : afficher et éditer `des.region()` (zones
   éclairées ou sombres, salles typées : temple, boutique, zoo…),
@@ -43,7 +43,7 @@ reste invisible dans l'éditeur.
 - ✅ **Fait** — **Entités manquantes** **[facile]** : `des.gold()`, `des.grave()`,
   `des.drawbridge()`, `des.feature()` (avec ses options `looted`,
   `swarm`…) et `des.terrain()` sur une seule case.
-- **Plusieurs cartes par fichier** **[gros]** : beaucoup de niveaux
+- ✅ **Fait** — **Plusieurs cartes par fichier** **[gros]** : beaucoup de niveaux
   (Vlad, Sokoban, les quêtes…) enchaînent plusieurs `des.map()`. On
   pourrait proposer un onglet ou une liste des cartes, chacune avec ses
   propres entités, et afficher leur position les unes par rapport aux

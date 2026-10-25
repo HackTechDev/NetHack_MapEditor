@@ -203,6 +203,31 @@ if __name__ == "__main__":
     unittest.main()
 
 
+class Maps(unittest.TestCase):
+    def test_add_switch_undo(self):
+        ed = editor(["...."] * 2)
+        ed.prompt = lambda *a, **k: "5x3"
+        answers = iter(["left", "top"])
+        ed.pick = lambda *a, **k: next(answers)
+        ed.lvl.grid[0][0] = "#"
+        ed.add_map()
+        self.assertEqual((ed.lvl.map_index, len(ed.lvl.maps)), (1, 2))
+        self.assertEqual((ed.lvl.w, ed.lvl.h), (5, 3))
+        ed.paint({(0, 0): "L"})
+        ed.switch_map(0)
+        self.assertEqual(ed.lvl.grid[0][0], "#")
+        self.assertIn("L....", ed.lvl.to_lua())
+        ed.undo()                   # le trait sur la carte 2
+        self.assertEqual((ed.lvl.map_index, ed.lvl.grid[0][0]), (1, "."))
+        ed.undo()                   # l'ajout de la carte
+        self.assertEqual(len(ed.lvl.maps), 0)
+        ed.redo()
+        ed.redo()                   # retour sur la carte 1, comme avant
+        self.assertEqual((ed.lvl.map_index, ed.lvl.grid[0][0]), (0, "#"))
+        self.assertIn("L....", ed.lvl.to_lua())
+        self.assertIn(".22222.", ed.maps_overview())
+
+
 class Regions(unittest.TestCase):
     def test_draw_edit_undo(self):
         ed = editor(["....."] * 4)

@@ -67,14 +67,17 @@ class ToolsMixin:
     # Historique des commandes : undo_stack et redo_stack contiennent des
     # HistoryEntry. Une entrée de undo_stack garde l'état d'avant sa
     # commande ; annuler l'échange avec l'état courant et la passe dans
-    # redo_stack (et inversement pour rétablir).
+    # redo_stack (et inversement pour rétablir). L'état est un couple
+    # (Level, snapshot) : dans un fichier à plusieurs cartes, chaque carte
+    # éditée est un Level distinct, et annuler peut ramener à une autre.
 
     def checkpoint(self, label=None, snap=None):
         """Point d'annulation nommé label ; snap : état pris avant la
         modification (sinon, l'état actuel)."""
         self.serial += 1
         self.undo_stack.append(HistoryEntry(
-            label or _("Modification"), snap or self.lvl.snapshot(),
+            label or _("Modification"),
+            (self.lvl, snap or self.lvl.snapshot()),
             self.serial, (self.cx, self.cy)))
         if len(self.undo_stack) > HISTORY_MAX:
             del self.undo_stack[0]
@@ -93,8 +96,9 @@ class ToolsMixin:
 
     def _swap(self, src, dst):
         e = src.pop()
-        dst.append(e._replace(snap=self.lvl.snapshot()))
-        self.lvl.restore(e.snap)
+        dst.append(e._replace(snap=(self.lvl, self.lvl.snapshot())))
+        self.lvl, snap = e.snap
+        self.lvl.restore(snap)
         self.cx, self.cy = e.pos
         self.clamp_cursor()
         self.modified = self.history_state() != self.saved_state
