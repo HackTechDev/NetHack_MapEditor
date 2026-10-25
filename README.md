@@ -253,7 +253,14 @@ précise.
   script) : il n'aura pas de prêtre ;
 - une entité sur du terrain solide, ou hors de la carte ;
 - deux escaliers montants (ou descendants) ;
-- un monstre ou un objet dont le nom est inconnu.
+- un monstre ou un objet dont le nom est inconnu ;
+- une boutique (`des.region` de type `… shop`) qui n'a pas exactement une
+  porte, ou dont les murs ont une brèche : NetHack n'en ferait pas une
+  boutique ;
+- une région ou une zone d'arrivée entièrement hors du niveau de 80x21
+  (une zone qui déborde seulement est rognée par le jeu) ;
+- en remarque, les monstres, objets, autels ou escaliers hors d'atteinte
+  depuis l'escalier montant (voulu pour un coffre-fort, une réserve…).
 
 **Vérification avec le vrai Lua.** Si un interpréteur Lua est disponible,
 `v` exécute aussi le script complet, tel qu'il serait enregistré, avec une

@@ -282,6 +282,71 @@ def rules(lvl, monsters=None, objects=None):
     return out
 
 
+def region_problems(lvl):
+    """Régions entièrement hors du niveau de 80x21 et boutiques sans
+    porte unique."""
+    out = []
+    o = lvl.origin()
+    for r in lvl.regions:
+        if r.rect is None:
+            continue
+        x1, y1, x2, y2 = r.rect
+        if not r.islev():
+            if o is None:
+                continue
+            x1, y1, x2, y2 = x1 + o[0], y1 + o[1], x2 + o[0], y2 + o[1]
+        # NetHack rogne une zone qui déborde (medusa-1 le fait exprès) ;
+        # seule une zone sans aucune case dans le niveau est une erreur
+        if (max(x1, x2) < 0 or max(y1, y2) < 0 or min(x1, x2) >= nhlevel.COLNO
+                or min(y1, y2) >= nhlevel.ROWNO):
+            out.append(_("! %s : la zone (%d,%d)-(%d,%d) du niveau est "
+                         "entièrement hors du niveau de 80x21.")
+                       % (r.describe(), x1, y1, x2, y2))
+    for r in lvl.regions:
+        t = r.extra.get("type", "")
+        if (r.kind != "region" or not isinstance(t, str)
+                or not t.endswith("shop") or r.rect is None or r.islev()
+                or r.extra.get("irregular")):
+            continue
+        x1, y1, x2, y2 = r.rect
+        # pourtour de la salle (sans les coins) : portes et ouvertures
+        ring = ({(x, y) for x in range(x1, x2 + 1) for y in (y1 - 1, y2 + 1)}
+                | {(x, y) for y in range(y1, y2 + 1) for x in (x1 - 1, x2 + 1)})
+        doors = _door_cells(lvl) | {(e.x, e.y) for e in lvl.entities
+                                    if e.kind == "door"}
+        n = len(ring & doors)
+        gaps = [p for p in ring - doors
+                if 0 <= p[0] < lvl.w and 0 <= p[1] < lvl.h
+                and lvl.grid[p[1]][p[0]] in WALK]
+        if n != 1 or gaps:
+            out.append(_("! Boutique (%d,%d)-(%d,%d) : %d porte(s) et %d "
+                         "ouverture(s) dans ses murs ; NetHack n'en fait une "
+                         "boutique qu'avec une seule porte.")
+                       % (x1, y1, x2, y2, n, len(gaps)))
+    return out
+
+
+def enclosed(lvl):
+    """Entités hors d'atteinte depuis l'escalier montant (passages
+    secrets, eau et lave comptés comme franchissables)."""
+    ups = _stairs(lvl, "up")
+    if not ups:
+        return []
+    ok = _passable(lvl, True, True)
+    near = reachable(lvl, ups[0], secret=True, liquid=True)
+    far = [e for e in lvl.entities
+           if e.kind in ("monster", "object", "gold", "altar", "stair",
+                         "ladder") and (e.x, e.y) not in near
+           and 0 <= e.x < lvl.w and 0 <= e.y < lvl.h
+           and ok(lvl.grid[e.y][e.x])]
+    if not far:
+        return []
+    e = far[0]
+    return [_("- %d entité(s) hors d'atteinte depuis l'escalier montant, par "
+              "exemple %s en (%d,%d) (voulu pour un coffre-fort ou une "
+              "réserve ?).") % (len(far), e.describe(), e.x, e.y)]
+
+
 def applied(lvl):
     """Copie du niveau dont la grille reçoit le terrain posé par les
     entités des.terrain() et des.feature() (pour la connexité)."""
@@ -298,7 +363,9 @@ def applied(lvl):
 
 def check(lvl, monsters=None, objects=None):
     """Toutes les vérifications ; ["Aucun problème détecté."] sinon."""
-    out = rules(lvl, monsters, objects) + connectivity(applied(lvl))
+    full = applied(lvl)
+    out = (rules(lvl, monsters, objects) + region_problems(full)
+           + connectivity(full) + enclosed(full))
     return out or [_("Aucun problème détecté.")]
 
 

@@ -23,7 +23,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 8. Configuration et confort | 3 / 3 | — |
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
-| 11. Idées supplémentaires | 3 / 12 | voir la liste |
+| 11. Idées supplémentaires | 4 / 12 | voir la liste |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -259,7 +259,7 @@ utiles aux plus accessoires.
 - ✅ **Fait** — **Sélection multiple d'entités** **[moyen]** : déplacer, copier ou
   supprimer d'un coup les entités d'un rectangle, sans toucher au
   terrain.
-- **Vérifications supplémentaires** **[facile]** : région ou zone
+- ✅ **Fait** — **Vérifications supplémentaires** **[facile]** : région ou zone
   d'arrivée hors du niveau de 80x21, objet ou monstre enfermé dans une
   zone inaccessible, boutique (`shop`) sans porte unique.
 - **Règles de Sokoban** **[facile]** : compter rochers et trous, signaler

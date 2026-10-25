@@ -193,7 +193,9 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   dans un coin ou hors d'un mur, escalier ou autel dans l'eau ou sur du
   terrain remplacé, autel hors d'une salle `temple`, entité dans un mur
   ou hors de la carte, escaliers en double, noms inconnus, retournement
-  possible, escaliers absents.
+  possible, escaliers absents, boutique sans porte unique ou avec une
+  brèche, région entièrement hors du niveau, entités hors d'atteinte
+  depuis l'escalier montant.
 - Exécution du script complet avec le vrai Lua et une bibliothèque `des`
   factice : erreurs de syntaxe et d'exécution, noms, paramètres,
   drapeaux, styles, états et types invalides, fonctions inexistantes,
@@ -232,7 +234,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 92 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 95 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

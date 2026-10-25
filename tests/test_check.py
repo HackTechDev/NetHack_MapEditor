@@ -96,6 +96,40 @@ class Rules(unittest.TestCase):
         lvl.entities[0].y = 1
         self.assertTrue(any("Pont-levis" in m for m in self.messages(lvl)))
 
+    def test_shop_needs_one_door(self):
+        rows = ["-----", "|...|", "|...+", "|...|", "--+--"]
+        lvl = level(rows)
+        lvl.regions = [nhlevel.Region("region", (1, 1, 3, 3),
+                                      {"type": "tool shop", "lit": 1})]
+        out = nhcheck.region_problems(lvl)
+        self.assertEqual(len(out), 1)
+        self.assertIn("2 porte(s) et 0 ouverture(s)", out[0])
+        lvl.grid[4][2] = "-"
+        self.assertEqual(nhcheck.region_problems(lvl), [])
+        lvl.grid[0][2] = "."            # brèche dans le mur
+        self.assertIn("1 porte(s) et 1 ouverture(s)",
+                      nhcheck.region_problems(lvl)[0])
+
+    def test_region_outside_level(self):
+        lvl = level(["....."])
+        lvl.pos = (10, 5)
+        lvl.regions = [
+            nhlevel.Region("teleport_region", (1, 0, 79, 20)),   # rognée
+            nhlevel.Region("levregion", (85, 0, 90, 3),
+                           {"type": "branch", "region_islev": 1})]
+        out = nhcheck.region_problems(lvl)
+        self.assertEqual(len(out), 1)
+        self.assertIn("entièrement hors du niveau", out[0])
+
+    def test_enclosed_entities(self):
+        lvl = with_stairs(["-------", "|..|..|", "-------"], (1, 1), (2, 1))
+        lvl.entities.append(Entity("object", 5, 1, "diamond"))
+        out = nhcheck.enclosed(lvl)
+        self.assertEqual(len(out), 1)
+        self.assertIn("objet diamond en (5,1)", out[0])
+        lvl.grid[1][3] = "S"            # passage secret : atteignable
+        self.assertEqual(nhcheck.enclosed(lvl), [])
+
     def test_entity_outside_map(self):
         lvl = level(["..."])
         lvl.entities = [Entity("stair", 5, 0, "up")]

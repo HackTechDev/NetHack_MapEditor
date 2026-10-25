@@ -843,6 +843,13 @@ EN = {
     'Suppression de %d entité(s)': 'Deletion of %d entity(ies)',
     'Déplacement de %d entité(s)': 'Move of %d entity(ies)',
     'Copie de %d entité(s)': 'Copy of %d entity(ies)',
+    # vérifications supplémentaires
+    "- %d entité(s) hors d'atteinte depuis l'escalier montant, par exemple %s en (%d,%d) (voulu pour un coffre-fort ou une réserve ?).":
+        '- %d entity(ies) out of reach from the up stairs, for example %s at (%d,%d) (intended for a vault or a closet?).',
+    '! %s : la zone (%d,%d)-(%d,%d) du niveau est entièrement hors du niveau de 80x21.':
+        '! %s: the area (%d,%d)-(%d,%d) of the level lies entirely outside the 80x21 level.',
+    "! Boutique (%d,%d)-(%d,%d) : %d porte(s) et %d ouverture(s) dans ses murs ; NetHack n'en fait une boutique qu'avec une seule porte.":
+        '! Shop (%d,%d)-(%d,%d): %d door(s) and %d opening(s) in its walls; NetHack only makes it a shop with a single door.',
 }
 
 HELP = """\
@@ -949,7 +956,8 @@ LEVEL AND FILES
   v  check the map, including connectivity: down stairs reachable
      from the up stairs (doors without diagonals, secret passages,
      water and lava reported) and closed areas; NetHack rules (door in a
-     corner, stairs in water, altar outside a temple, map overflowing…);
+     corner, stairs in water, altar outside a temple, map overflowing,
+     shop without a single door, entity out of reach…);
      with a Lua interpreter, runs the whole script with a fake des
      library (names, parameters, syntax errors)
   t  test: copies the map to the game directory, to load with
