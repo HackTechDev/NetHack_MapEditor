@@ -731,8 +731,9 @@ class ToolsMixin:
     def templates(self):
         """Bibliothèque de modèles : le modèle choisi va dans le
         presse-papiers, et l'outil Coller le pose où l'on veut."""
-        items = [("%-22s %s" % (t, d), p)
-                 for t, d, p in nhexport.list_templates(TEMPLATE_DIRS)]
+        items = [("%-26s %s" % (t, d), p)
+                 for t, d, p in nhexport.list_templates(TEMPLATE_DIRS,
+                                                  self.game_theme())]
         items.append((_("+ enregistrer le presse-papiers comme modèle"),
                       "_save"))
         path = self.pick(_("Modèles (tapez pour filtrer)"), items)

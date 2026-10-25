@@ -49,6 +49,8 @@ Résumé ci-dessous ; la liste complète est dans [FEATURES.md](FEATURES.md).
   chargée automatiquement), ajout du niveau au donjon (`dungeon.lua`) ;
 - import/export en texte brut, export en image SVG ou PNG, bibliothèque
   de modèles, sauvegarde de secours ;
+- relation avec la version cyberpunk du jeu : noms vus en jeu, palette
+  néon, modèles et textes de Night City, noms des lieux du donjon ;
 - fichier de configuration, interface en français ou en anglais.
 
 ## Lancement
@@ -213,11 +215,17 @@ elle vaut `(?)` quand la carte est placée au hasard.
   directement. Le PNG est converti avec `rsvg-convert` ou ImageMagick
   (`magick`/`convert`), s'ils sont installés.
 - **Modèles** : `b` ouvre la bibliothèque de modèles. Ce sont des morceaux
-  de carte prêts à coller. Quarante sont livrés :
+  de carte prêts à coller. Quarante-sept sont livrés :
 
   | Salles | Décors et terrain | Pièges et secrets |
   |---|---|---|
   | temple, boutique, salle du trône, bibliothèque (rouleaux et livres), armurerie (porte verrouillée), cuisine (évier, provisions), tour ronde, prison (cellules à barreaux), escaliers, caserne (soldats endormis), zoo (monstres sur leur or), ruche (reine et gelée royale), cimetière (tombes et morts-vivants), laboratoire d'alchimiste, cabinet du magicien, poste de garde, arène, salle à colonnes, sanctuaire aux fontaines | fontaine décorée, bosquet, pont sur la rivière, île entourée de douves, îlot dans la lave (avec coffre), antre du dragon, lac souterrain (anguilles), marais, jardin, coulée de lave (pont-levis), glacier, ruines, galerie de mine (gnomes et gemmes) | coffre-fort, cachette secrète (coffre garni), crypte (sarcophage et morts-vivants), couloir piégé, petit labyrinthe, chambre au trésor piégée, gouffre (trous), galerie de statues (piège à statue) |
+
+  Sept sont propres à Night City : infirmerie (clinique de charcudoc),
+  atelier d'apprentis (planque de hackers), boutique de baguettes
+  (boutique d'implants), repaire d'orques (squat de gang), poste des
+  Keystone Kops (poste du NCPD), laboratoire militaire (labo Militech)
+  et salle aux grilles (data center).
 
   Les salles typées (caserne, zoo, ruche, cimetière, marais…) sont
   peuplées par leurs entités ; pour que NetHack les traite comme telles,
@@ -417,6 +425,39 @@ Ensuite, en mode wizard, la variable `THEMERM` impose la salle :
 `THEMERM="L-shaped" nethack -D`. Avec tmux, l'éditeur propose de lancer
 le jeu ainsi.
 
+## Relation avec la version cyberpunk de NetHack
+
+La branche `cybernethack` traduit le jeu à l'affichage, avec un thème
+cyberpunk (Night City) par défaut : `fr@cyber`. Les scripts de niveau
+gardent les noms anglais ; l'éditeur montre ce que le joueur verra.
+
+- **Noms du jeu** : monstres, objets et pièges sont affichés avec leur
+  nom en jeu, lu dans le catalogue du répertoire du jeu
+  (`fr@cyber.mo`, à défaut `fr.mo`) : « jackal (chien errant) »,
+  « potion of healing — stim de soins ». C'est le cas dans les listes,
+  la barre d'état, la liste des entités et les statistiques. Les listes
+  se filtrent par l'un ou l'autre nom ; le Lua écrit reste en anglais.
+  La langue est celle du jeu : option `language` de `NETHACKOPTIONS` ou
+  du `~/.nethackrc`, sinon `fr@cyber`. On la change avec la clé
+  `langue` de la section `[jeu]` (`en` : noms anglais seuls) ou la
+  variable `NHMAPEDIT_GAME_LANG`.
+- **Couleurs néon** : le rendu jeu (`J`) prend les symboles et les
+  couleurs du jeu : la palette `doc/cyberpunk.nethackrc` des sources
+  (si le jeu est en `@cyber`), puis les options `glyph:` de votre
+  `~/.nethackrc`. Les couleurs RVB s'affichent en 256 couleurs, ou par
+  la couleur de base la plus proche. Clé `palette` (`auto`, `aucune` ou
+  un fichier) ou variable `NHMAPEDIT_PALETTE`. L'export SVG/PNG en mode
+  jeu garde ces couleurs.
+- **Modèles et textes** : avec le thème `@cyber`, la bibliothèque
+  (`b`) montre les titres et descriptions de Night City (ligne
+  `-- Modèle nhmapedit@cyber : …` en tête du modèle). Pour une tombe ou
+  une gravure, on choisit parmi les épitaphes et graffitis du jeu
+  (`dat/epitaph-fr@cyber.txt`, `dat/engrave-fr@cyber.txt`), ou on tape
+  son texte.
+- **Lieux du donjon** : `p` → Donjon montre les donjons sous leur nom en
+  jeu : « The Dungeons of Doom — Night City », « The Gnomish Mines — Les
+  Bas-fonds », « Sokoban — Les Entrepôts automatisés »…
+
 ## Langue
 
 L'interface est en français ou en anglais. La langue suit la locale :
@@ -441,6 +482,8 @@ exemple commenté :
 [jeu]
 repertoire = ~/nh/install/games/lib/nethackdir
 dungeon = ~/JEUX/NETHACK/NetHack-5.0.0/dat/dungeon.lua
+langue = fr@cyber     ; noms du jeu (défaut : option language du jeu)
+palette = auto        ; couleurs du rendu jeu : auto, aucune ou un fichier
 
 [editeur]
 taille = 75x19        ; taille d'une nouvelle carte
@@ -486,13 +529,17 @@ au démarrage, sans empêcher l'éditeur de s'ouvrir.
   Lua.
 - `nhi18n.py` : choix de la langue et fonction `_()` ; `nhi18n_en.py` :
   la traduction anglaise.
+- `nhgamenames.py` : noms du jeu (catalogue gettext du jeu), textes
+  d'épitaphes et de gravures ; `nhpalette.py` : symboles et couleurs du
+  jeu (options `glyph:` des `.nethackrc`).
 - `nhconfig.py` : lecture du fichier de configuration ;
   `docs/config.exemple` : un exemple commenté.
 - `gen_data.py` : extrait des sources de NetHack les listes de monstres
   (avec leurs formes féminines et neutres), d'objets (avec leurs noms sans
   préfixe et leurs descriptions) et de pièges dans `nhdata.json`. À
   relancer si les sources changent : `python3 gen_data.py [chemin/vers/NetHack-5.0.0]`.
-- `nhdata.json` : les données générées (394 monstres, 422 objets, 24 pièges).
+- `nhdata.json` : les données générées (394 monstres, 422 objets, 24 pièges,
+  avec le nom en jeu et le symbole de chaque piège).
 - `TUTORIAL.md` : le tutoriel ; `FEATURES.md` : la liste des
   fonctionnalités ; `IMPROVEMENTS.md` : les améliorations faites et
   possibles.

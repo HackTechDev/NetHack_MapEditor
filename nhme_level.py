@@ -78,7 +78,8 @@ class LevelMixin:
                 elif len(e.value) == 1:
                     groups[e.value][_("classe aléatoire")] += 1
                 else:
-                    groups[sym[kind].get(e.value, "?")][e.value] += 1
+                    groups[sym[kind].get(e.value, "?")][
+                        self.names.label(kind, e.value)] += 1
             if not groups:
                 continue
             lines += ["", titles[kind]]
@@ -92,7 +93,8 @@ class LevelMixin:
                 lines.append("  %s %4d  %s" % (s, sum(names.values()),
                                                detail))
         traps = collections.Counter(
-            _("aléatoire") if e.value is None else e.value
+            _("aléatoire") if e.value is None
+            else self.names.label("trap", e.value)
             for e in lvl.entities if e.kind == "trap")
         if traps:
             lines += ["", _("Pièges :")]
@@ -177,7 +179,7 @@ class LevelMixin:
                            "profondeur du niveau"))
             return lines
         lines.append(_("  le plus dur : %s (difficulté %d)") % (
-            d["hardest"], d["max"]))
+            self.names.label("monster", d["hardest"]), d["max"]))
         lines.append(_("  difficulté moyenne : %.1f") % d["mean"])
         if d["named"]:
             lines.append(_("  somme des niveaux des monstres nommés : %d")

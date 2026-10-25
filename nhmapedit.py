@@ -13,7 +13,9 @@ import sys
 import time
 
 import nhconfig
+import nhgamenames
 import nhlevel
+import nhpalette
 from nhi18n import _
 from nhlevel import Level
 from nhme_common import (
@@ -94,6 +96,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.dungeon_path = next((f for f in [self.config.get("dungeon")]
                                   + DUNGEON_FILES
                                   if f and os.path.isfile(f)), "")
+        self.load_game_names()
         self.game_where = ""
         self.launch = None          # réponse à « lancer le jeu ? »
         self.last_test = None       # dernier essai (touche !, retour du jeu)
@@ -121,6 +124,36 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                 self.offer_autosave()
         else:
             self.offer_autosave()
+
+    def load_game_names(self):
+        """Noms vus en jeu (thème cyberpunk de cybernethack), lus dans le
+        catalogue du répertoire du jeu, et palette du rendu jeu."""
+        self.names = nhgamenames.GameNames(
+            self.hackdir, os.environ.get("NHMAPEDIT_GAME_LANG")
+            or self.config.get("game_lang") or nhgamenames.game_language(),
+            self.data.get("trap_names"))
+        nhlevel.GAME_NAME = self.names.name
+        # palette du rendu jeu (J) : néon du thème cyberpunk, puis les
+        # options glyph du .nethackrc du joueur
+        pal = (os.environ.get("NHMAPEDIT_PALETTE")
+               or self.config.get("palette", "auto"))
+        if pal == "auto":
+            paths = nhpalette.default_paths(self.source_dirs(),
+                                            self.names.lang)
+        else:
+            paths = [] if pal == "aucune" else [pal]
+        self.palette = nhpalette.Palette(paths, self.unicode)
+
+    def source_dirs(self):
+        """Dossiers des sources du jeu (ceux de dat/dungeon.lua)."""
+        return list(dict.fromkeys(
+            os.path.dirname(os.path.dirname(f)) for f in
+            [self.dungeon_path] + DUNGEON_FILES[1:] if f))
+
+    def game_theme(self):
+        """Thème du jeu (« cyber » pour fr@cyber), ou None."""
+        lang = getattr(getattr(self, "names", None), "lang", "") or ""
+        return lang.split("@", 1)[1] if "@" in lang else None
 
     def run(self):
         curses.raw()
@@ -260,6 +293,9 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.game = not self.game
             self.msg = (_("Rendu « comme dans le jeu ».") if self.game
                         else _("Rendu des caractères de carte (des.map)."))
+            if self.game and self.palette:
+                self.msg += _(" Symboles et couleurs : %s.") % ", ".join(
+                    os.path.basename(p) for p in self.palette.sources)
         elif k == "f":
             self.flip = FLIP_CYCLE[self.flip]
             if not self.flip:

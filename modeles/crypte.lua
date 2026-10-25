@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Crypte
 -- Petite salle funéraire cachée derrière une porte secrète : un
 -- sarcophage (grande caisse) gardé par des morts-vivants.
+-- Modèle nhmapedit@cyber : Morgue clandestine
+-- Chambre froide cachée derrière une porte secrète : une caisse gardée
+-- par des voyous zombies et une momie.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 ---------

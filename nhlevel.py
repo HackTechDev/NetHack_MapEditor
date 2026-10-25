@@ -87,6 +87,11 @@ FEATURES = {"fountain": "{", "sink": "K", "pool": "P", "throne": "\\",
             "tree": "T"}
 
 
+# Nom vu en jeu d'une valeur d'entité (kind, value) -> texte ou None :
+# installé par l'éditeur (nhgamenames), pour describe()
+GAME_NAME = None
+
+
 class Entity:
     def __init__(self, kind, x, y, value=None, extra=None, origin=None):
         self.kind = kind
@@ -111,6 +116,9 @@ class Entity:
         s = ENTITY_LABEL[self.kind]
         if self.value is not None:
             s += " " + str(self.value)
+            shown = GAME_NAME and GAME_NAME(self.kind, self.value)
+            if shown:
+                s += " (%s)" % shown
             if self.kind in ("monster", "object") and len(self.value) == 1:
                 s += _(" (classe, aléatoire)")
         elif self.kind in ("monster", "object"):

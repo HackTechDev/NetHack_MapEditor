@@ -204,7 +204,10 @@ leurs coordonnées.
 
 1. `[m]`, **Monstre**.
 2. Tapez `jackal` pour filtrer la liste, puis Entrée. (Une lettre seule,
-   comme `d`, donnerait un monstre aléatoire de cette classe.)
+   comme `d`, donnerait un monstre aléatoire de cette classe.) Avec la
+   version cyberpunk du jeu, la liste montre aussi le nom vu en jeu :
+   « jackal — chien errant » ; taper `chien` le trouve aussi. Le script
+   garde le nom anglais.
 3. Le formulaire **Options du monstre** s'ouvre. Descendez sur
    « endormi (asleep) » et appuyez sur Entrée : la valeur passe de
    « (défaut) » à « oui ». `[Échap]` termine.
@@ -226,6 +229,12 @@ déplacez-vous en `(31,4)` puis `[r]`, en `(29,4)` puis `[r]`.
 
 Quand plusieurs entités occupent une case, son symbole est souligné et la
 barre d'état les énumère.
+
+**Une tombe.** En `(5,2)`, `[m]`, **Tombe** : la liste propose les
+épitaphes que le jeu tire au hasard (« Déconnecté », « Connexion
+perdue »… dans le thème cyberpunk), « (aléatoire) » pour laisser le jeu
+choisir, ou tapez votre propre texte puis Entrée. Les gravures marchent
+de même, avec les graffitis du jeu.
 
 **La liste des entités.** `[i]` les montre toutes : Entrée y amène le
 curseur, `[e]` en modifie une, `[d]` la supprime. Sur la carte,

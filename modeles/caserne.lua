@@ -2,6 +2,9 @@
 -- Dortoir de soldats endormis autour de leur sergent ; une armurerie
 -- de fortune dans le coin. Pour une vraie caserne, déclarez la salle
 -- avec des.region({ region = {...}, type = "barracks" }).
+-- Modèle nhmapedit@cyber : Caserne de Militech
+-- Dortoir de soldats de Militech endormis autour de leur sergent, armes
+-- à portée de main. Type de salle : "barracks" pour une vraie caserne.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 -----------

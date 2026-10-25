@@ -2,6 +2,7 @@
 
 import glob
 import os
+import re
 import shutil
 import subprocess
 
@@ -64,6 +65,8 @@ CW, CH, PAD = 10, 18, 12        # taille d'une case et marge, en pixels
 
 
 def rgb(clr):
+    if isinstance(clr, tuple):      # couleur (r, g, b) d'une palette
+        return "#%02x%02x%02x" % clr
     i, bright = NH_RGB_INDEX.get(clr, (7, False))
     return (_BRIGHT if bright else _NORMAL)[i]
 
@@ -121,31 +124,40 @@ def svg_to_png(svg_path, png_path):
 # Bibliothèque de modèles
 # ----------------------------------------------------------------------
 TEMPLATE_TAG = "-- Modèle nhmapedit :"
+# titre d'un thème du jeu : « -- Modèle nhmapedit@cyber : Essaim de drones »
+THEME_TAG = re.compile(r"^-- Modèle nhmapedit@(\w+) :(.*)$")
 
 
-def template_info(text, path):
+def template_info(text, path, theme=None):
     """(titre, description) d'un modèle, lus dans ses commentaires de
-    tête ; le nom du fichier sinon."""
-    title = os.path.splitext(os.path.basename(path))[0]
-    desc = []
+    tête ; le nom du fichier sinon. theme (« cyber ») : le titre et la
+    description de ce thème du jeu s'il en a."""
+    blocks = {None: [os.path.splitext(os.path.basename(path))[0], []]}
+    cur = None
     for line in text.split("\n"):
+        m = THEME_TAG.match(line)
         if line.startswith(TEMPLATE_TAG):
-            title = line[len(TEMPLATE_TAG):].strip()
-        elif line.startswith("--") and title and desc is not None:
-            desc.append(line[2:].strip())
+            cur = None
+            blocks[None][0] = line[len(TEMPLATE_TAG):].strip()
+        elif m:
+            cur = m.group(1)
+            blocks[cur] = [m.group(2).strip(), []]
+        elif line.startswith("--"):
+            blocks[cur][1].append(line[2:].strip())
         else:
             break
+    title, desc = blocks.get(theme) or blocks[None]
     return title, " ".join(d for d in desc if d)
 
 
-def list_templates(dirs):
+def list_templates(dirs, theme=None):
     """[(titre, description, chemin)] des modèles .lua des dossiers."""
     out = []
     for d in dirs:
         for path in sorted(glob.glob(os.path.join(d, "*.lua"))):
             try:
                 with open(path, encoding="utf-8") as f:
-                    title, desc = template_info(f.read(), path)
+                    title, desc = template_info(f.read(), path, theme)
             except (OSError, UnicodeDecodeError):
                 continue
             out.append((title, desc, path))

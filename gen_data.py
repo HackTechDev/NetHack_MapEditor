@@ -122,12 +122,35 @@ def traps(src):
     return [n for n in re.findall(r'\{\s*"([^"]+)"', block.group(1))]
 
 
+def trap_names(src, field=1):
+    """Nom de des.trap() -> nom du piège dans le jeu (« arrow » -> « arrow
+    trap »), traduit par le catalogue du jeu (msgctxt « trap ») ; avec
+    field=0, son symbole (S_arrow_trap, des options glyph:). Le piège
+    n° k de include/trap.h est le k-ième symbole de piège de
+    include/defsym.h."""
+    text = read(src, "src", "sp_lev.c")
+    block = re.search(r"trap_types\[\]\s*=\s*\{(.*?)\};", text, re.S)
+    des = re.findall(r'\{\s*"([^"]+)"\s*,\s*(\w+)\s*\}', block.group(1))
+    num = {m.group(1): int(m.group(2)) for m in re.finditer(
+        r"^\s*(\w+)\s*=\s*(\d+)\s*,", read(src, "include", "trap.h"),
+        re.M)}
+    # PCHAR2(n, c, S_x, "nom", "explication", couleur) : l'explication
+    # est le nom affiché
+    syms = [(m.group(1), m.group(3) or m.group(2)) for m in re.finditer(
+        r'PCHAR2?\(\s*\d+,\s*\'[^\']*\',\s*(S_\w+),\s*"([^"]+)"'
+        r'(?:\s*,\s*"([^"]+)")?', read(src, "include", "defsym.h"))]
+    first = [s for _sym, s in syms].index("arrow trap")
+    return {name: syms[first + num[const] - 1][field] for name, const in des
+            if num.get(const, 0) > 0}
+
+
 def main():
     src = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_SRC
     if not os.path.isdir(os.path.join(src, "include")):
         sys.exit("Sources NetHack introuvables : %s" % src)
     data = {"monsters": monsters(src), "objects": objects(src),
-            "traps": traps(src)}
+            "traps": traps(src), "trap_names": trap_names(src),
+            "trap_syms": trap_names(src, 0)}
     out = os.path.join(os.path.dirname(os.path.abspath(__file__)),
                        "nhdata.json")
     with open(out, "w", encoding="utf-8") as f:

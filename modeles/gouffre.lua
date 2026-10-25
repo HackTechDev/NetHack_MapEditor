@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Gouffre
 -- Salle crevée de trous qui mènent au niveau inférieur ; une
 -- passerelle de sol permet de la traverser.
+-- Modèle nhmapedit@cyber : Dalle effondrée
+-- Salle crevée de trous qui mènent au niveau inférieur ; une passerelle
+-- permet de la traverser.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 -----------

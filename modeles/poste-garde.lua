@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Poste de garde
 -- Petite salle de garde commandant un couloir : deux gardes
 -- vigilants derrière une porte fermée.
+-- Modèle nhmapedit@cyber : Poste de sécurité
+-- Petite guérite commandant un couloir : deux vigiles derrière une
+-- porte fermée.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 -----     

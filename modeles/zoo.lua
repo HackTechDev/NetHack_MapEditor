@@ -2,6 +2,9 @@
 -- Salle pleine de monstres endormis, chacun sur un tas d'or. Déclarez
 -- la salle avec des.region({ region = {...}, type = "zoo" }) pour que
 -- NetHack la peuple lui-même.
+-- Modèle nhmapedit@cyber : Salle des gardes du corps
+-- Salle pleine de monstres endormis, chacun sur un tas d'eddies. Type
+-- de salle : "zoo" pour que NetHack la peuple lui-même.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 ---------

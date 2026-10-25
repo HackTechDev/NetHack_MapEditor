@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Couloir piégé
 -- Long couloir semé de pièges ; une porte secrète permet de le
 -- contourner.
+-- Modèle nhmapedit@cyber : Couloir sous surveillance
+-- Long couloir truffé de pièges ; une porte secrète permet de le
+-- contourner.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 -------------

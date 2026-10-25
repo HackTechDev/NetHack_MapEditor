@@ -25,6 +25,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
 | 11. Idées supplémentaires | 6 / 12 | tirage, $EDITOR, `.des`, sélections, Sokoban, donjon |
 | 12. Encore d'autres idées | 8 / 14 | voir la liste |
+| 13. Version cyberpunk du jeu | 4 / 4 | — |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -323,3 +324,25 @@ plus utiles aux plus accessoires.
 - **Profilage** **[facile]** : mesurer le temps d'affichage des grandes
   cartes chargées de régions, et mettre en cache le calque et la
   mini-carte si nécessaire.
+
+## 13. Version cyberpunk du jeu
+
+L'éditeur suit la branche `cybernethack`, qui traduit le jeu à
+l'affichage avec un thème cyberpunk (Night City, langue `fr@cyber`).
+
+- ✅ **Fait** — **Noms du jeu** **[moyen]** : montrer à côté du nom
+  anglais du script le nom vu en jeu des monstres, objets et pièges
+  (catalogue `fr@cyber.mo`, puis `fr.mo`, du répertoire du jeu), dans
+  les listes, la barre d'état, la liste des entités et les
+  statistiques ; filtrer par l'un ou l'autre nom.
+- ✅ **Fait** — **Couleurs néon** **[moyen]** : le rendu jeu (`J`) et
+  l'export image prennent les symboles et couleurs de
+  `doc/cyberpunk.nethackrc` et des options `glyph:` du `~/.nethackrc`.
+- ✅ **Fait** — **Modèles et textes cyberpunk** **[moyen]** : titres et
+  descriptions de Night City pour les modèles, sept modèles du thème
+  (clinique de charcudoc, planque de hackers, boutique d'implants, squat
+  de gang, poste du NCPD, labo Militech, data center), épitaphes et
+  graffitis du jeu au choix pour les tombes et les gravures.
+- ✅ **Fait** — **Lieux du donjon** **[facile]** : `p` → Donjon montre
+  les donjons sous leur nom en jeu (Night City, les Bas-fonds, les
+  Entrepôts automatisés…).

@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Ruche
 -- Salle irrégulière d'abeilles tueuses autour de leur reine, avec de
 -- la gelée royale. Type de salle : "beehive".
+-- Modèle nhmapedit@cyber : Essaim de drones
+-- Salle irrégulière de drones tueurs autour de leur reine de l'essaim,
+-- avec de la gelée royale. Type de salle : "beehive".
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
  ------ 

@@ -217,7 +217,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 - Import d'une carte en texte brut (`o` sur un `.txt`).
 - Export de la carte seule en texte (`.txt`) ou en image (`.svg`, `.png`
   via `rsvg-convert` ou ImageMagick), telle qu'elle est affichée.
-- Bibliothèque de modèles (`b`), quarante livrés avec leurs entités :
+- Bibliothèque de modèles (`b`), quarante-sept livrés avec leurs entités :
   temple, boutique, salle du trône, bibliothèque, armurerie, cuisine,
   tour ronde, prison, escaliers, caserne, zoo, ruche, cimetière,
   laboratoire d'alchimiste, cabinet du magicien, poste de garde, arène,
@@ -226,8 +226,11 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   du dragon, lac souterrain, marais, jardin, coulée de lave (pont-levis),
   glacier, ruines, galerie de mine, coffre-fort, cachette secrète,
   crypte, couloir piégé, petit labyrinthe, chambre au trésor piégée,
-  gouffre, galerie de statues ; enregistrement du presse-papiers comme
-  nouveau modèle.
+  gouffre, galerie de statues, infirmerie, atelier d'apprentis, boutique
+  de baguettes, repaire d'orques, poste des Keystone Kops, laboratoire
+  militaire, salle aux grilles ; enregistrement du presse-papiers comme
+  nouveau modèle. Titres et descriptions de Night City si le jeu est en
+  `fr@cyber`.
 - Sauvegarde de secours régulière (`.nhme-autosave`), proposée à la
   réouverture après un arrêt brutal.
 - Historique persistant (`.nhme-history`) : écrit à l'enregistrement,
@@ -292,22 +295,43 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   niveaux spéciaux, avec contrôles.
 - Essai des salles à thème avec la variable `THEMERM`.
 
+## Version cyberpunk du jeu (cybernethack)
+
+- Noms en jeu des monstres, objets et pièges (catalogue `fr@cyber.mo`,
+  puis `fr.mo`, du répertoire du jeu ; composition « stim de soins » et
+  élision comme le jeu) : listes, barre d'état, liste des entités,
+  statistiques ; filtrage par l'un ou l'autre nom ; Lua en anglais.
+- Langue du jeu lue dans `NETHACKOPTIONS` et `~/.nethackrc` (défaut
+  `fr@cyber`), imposable (`langue` de `[jeu]`, `NHMAPEDIT_GAME_LANG`).
+- Rendu jeu (`J`) et export image avec la palette néon
+  `doc/cyberpunk.nethackrc` et les options `glyph:` du `~/.nethackrc` :
+  symboles Unicode, couleurs RVB en 256 couleurs ou approchées (clé
+  `palette`, `NHMAPEDIT_PALETTE`).
+- Modèles : titre et description par thème (`-- Modèle
+  nhmapedit@cyber :`), sept modèles de Night City.
+- Tombes et gravures : choix parmi les épitaphes et graffitis du jeu
+  (`dat/epitaph-<langue>.txt`, `dat/engrave-<langue>.txt`) ou texte
+  libre.
+- `p` → Donjon : donjons sous leur nom en jeu (Night City, les
+  Bas-fonds…).
+
 ## Configuration
 
 - Fichier `~/.config/nhmapedit/config` (ou `$NHMAPEDIT_CONFIG`), au
   format INI, exemple commenté dans `docs/config.exemple` :
   répertoire du jeu, `dungeon.lua`, taille par défaut, règles, entités,
-  Unicode, délai de la sauvegarde de secours, langue, couleurs des
-  terrains, remplacement de touches.
+  Unicode, délai de la sauvegarde de secours, langue, langue du jeu,
+  palette du rendu jeu, couleurs des terrains, remplacement de touches.
 - Erreurs de configuration signalées au démarrage sans bloquer.
 - Variables d'environnement : `NHMAPEDIT_HACKDIR`, `NHMAPEDIT_DUNGEON`,
-  `NHMAPEDIT_LANG`, `NHMAPEDIT_LUA`, `NHMAPEDIT_DAT`, `NHMAPEDIT_LUAC`.
+  `NHMAPEDIT_LANG`, `NHMAPEDIT_LUA`, `NHMAPEDIT_DAT`, `NHMAPEDIT_LUAC`,
+  `NHMAPEDIT_GAME_LANG`, `NHMAPEDIT_PALETTE`.
 - Langue choisie selon la locale (français si elle commence par `fr`,
   anglais sinon), imposable par la configuration ou `NHMAPEDIT_LANG`.
 
 ## Qualité
 
-- 117 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 128 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

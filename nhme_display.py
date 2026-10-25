@@ -7,6 +7,7 @@ import tempfile
 
 import nhexport
 import nhlevel
+import nhpalette
 from nhi18n import _
 from nhme_common import (
     ASCII_GLYPH, Cancel, FLIP_NAME, HI_COLORS, NH_COLORS, OBJ_CLASS_COLOR,
@@ -27,6 +28,7 @@ class DisplayMixin:
             bg = -1
         except curses.error:
             bg = curses.COLOR_BLACK
+        self.bg = bg
         for i, c in enumerate(range(8)):
             curses.init_pair(i + 1, c, bg)
             self.pairs[c] = curses.color_pair(i + 1)
@@ -42,6 +44,16 @@ class DisplayMixin:
         calque des régions (REGION_BG)."""
         if clr == RANDOM:
             return self.pairs.get(RANDOM, curses.A_DIM) | curses.A_BOLD
+        if isinstance(clr, tuple):      # (r, g, b) d'une palette du jeu
+            if family or not self.pairs or curses.COLORS < 256:
+                return self.attr(nhpalette.nearest_basic(clr), family)
+            key = ("rgb", nhpalette.xterm256(clr))
+            if (key not in self.pairs
+                    and getattr(self, "next_pair", 99999) < curses.COLOR_PAIRS):
+                curses.init_pair(self.next_pair, key[1], self.bg)
+                self.pairs[key] = curses.color_pair(self.next_pair)
+                self.next_pair += 1
+            return self.pairs.get(key, 0)
         clr = HI_COLORS.get(clr, clr)
         c, bold = NH_COLORS.get(clr, (curses.COLOR_WHITE, False))
         a = self.pairs.get(c, 0)
@@ -210,6 +222,27 @@ class DisplayMixin:
             "point", "points") for p in rp.cells(self.lvl)}
 
     def entity_glyph(self, e):
+        ch, clr = self.base_glyph(e)
+        if self.game and self.palette:
+            sym = self.entity_sym(e, ch)
+            if sym:
+                ch, clr = self.palette.apply(sym, ch, clr)
+        return ch, clr
+
+    def entity_sym(self, e, ch):
+        """Symbole du jeu (options glyph) d'une entité, en rendu jeu."""
+        k, v = e.kind, e.value
+        if k in ("stair", "ladder"):
+            return "S_%s%s" % ("up" if v == "up" else "dn",
+                               "stair" if k == "stair" else "ladder")
+        if k == "trap":
+            return self.data.get("trap_syms", {}).get(v)
+        if k == "object":
+            return nhpalette.CLASS_SYM.get(ch)
+        return {"altar": "S_altar", "gold": "S_coin",
+                "grave": "S_grave"}.get(k)
+
+    def base_glyph(self, e):
         k, v = e.kind, e.value
         if k == "stair":
             return ("<" if v == "up" else ">"), "CLR_YELLOW"
@@ -375,7 +408,7 @@ class DisplayMixin:
             shown = [[grid[y][x] for x, y in
                       (self.fl(dx, dy) for dx in range(lvl.w))]
                      for dy in range(lvl.h)]
-            view = game_view(shown, lvl.init.get("fg", " "))
+            view = game_view(shown, lvl.init.get("fg", " "), self.palette)
         for sy in range(vh):
             for sx in range(vw):
                 dx, dy = self.ox + sx, self.oy + sy
@@ -577,7 +610,7 @@ class DisplayMixin:
         affichée : rendu d'édition ou « comme dans le jeu », entités
         visibles ou non."""
         lvl = self.lvl
-        view = game_view(lvl.grid, lvl.init.get("fg", " ")) \
+        view = game_view(lvl.grid, lvl.init.get("fg", " "), self.palette) \
             if self.game else None
         index = lvl.entity_index()
         cells = []

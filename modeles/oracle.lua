@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Sanctuaire aux fontaines
 -- Comme celui de l'Oracle : une enceinte à quatre fontaines, des
 -- centaures pacifiques et un sage au centre.
+-- Modèle nhmapedit@cyber : Bureau de la Courtière
+-- Comme celui de la Courtière : une enceinte à quatre fontaines, des
+-- centaures pacifiques et une sage au centre.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 -----------

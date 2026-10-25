@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Armurerie
 -- Réserve d'armes et d'armures aléatoires, derrière une porte
 -- verrouillée.
+-- Modèle nhmapedit@cyber : Planque d'armes
+-- Stock d'armes et d'armures derrière une porte verrouillée, en
+-- attendant le prochain coup.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 -------

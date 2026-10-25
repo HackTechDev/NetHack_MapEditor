@@ -1,5 +1,8 @@
 -- Modèle nhmapedit : Fontaine décorée
 -- Fontaine entourée de bassins et d'arbres, au milieu d'une place.
+-- Modèle nhmapedit@cyber : Place de la fontaine
+-- Fontaine entourée de bassins et d'arbres, au milieu d'une place du
+-- centre-ville.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 .........

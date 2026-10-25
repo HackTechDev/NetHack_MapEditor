@@ -3,6 +3,7 @@
 import collections
 import copy
 
+import nhgamenames
 import nhlevel
 from nhi18n import _
 from nhlevel import Entity
@@ -77,6 +78,35 @@ class EntitiesMixin:
             except Cancel:
                 pass
 
+    def pick_label(self, kind, entry):
+        """Ligne d'une liste de monstres ou d'objets : symbole, nom du
+        script et nom vu en jeu (filtrable par l'un ou l'autre)."""
+        shown = self.names.name(kind, entry["name"])
+        return ("%s  %s%s" % (entry["sym"], entry["name"],
+                              "  — " + shown if shown else ""),
+                entry["name"])
+
+    def pick_text(self, base, title, value=None, random=False):
+        """Texte d'une gravure ou d'une épitaphe : tapé, ou choisi parmi
+        ceux que le jeu tire au hasard (dat/epitaph-fr@cyber.txt…)."""
+        texts = nhgamenames.game_texts(self.source_dirs(), base,
+                                       self.names.lang)
+        if not texts:
+            if random:
+                return self.prompt(_("Épitaphe (vide : aléatoire) : "),
+                                   value or "").strip() or None
+            return self.prompt(_("Texte gravé : "), value or "Elbereth")
+        items = [(_("(aléatoire)"), "_random")] if random else []
+        if value and value not in texts:
+            items.append((value, value))
+        items += [(t, t) for t in texts]
+        r = self.pick(_("%s (textes du jeu ; tapez un autre texte puis "
+                        "Entrée)") % title, items,
+                      value or ("_random" if random else None), custom=True)
+        if r == "_random" or (random and not (r or "").strip()):
+            return None
+        return r
+
     def pick_value(self, kind, value=None):
         """Valeur principale d'une entité (monstre, type de piège,
         direction…), demandée selon son genre."""
@@ -89,24 +119,24 @@ class EntitiesMixin:
                              [(a, a) for a in nhlevel.ALTAR_ALIGNS], value)
         if kind == "monster":
             items = [(_("(aléatoire)"), None)] + [
-                ("%s  %s" % (m["sym"], m["name"]), m["name"])
-                for m in self.data["monsters"]]
+                self.pick_label(kind, m) for m in self.data["monsters"]]
             return self.pick(_("Monstre (tapez pour filtrer ; une lettre "
                                "seule = classe)"), items, value, custom=True)
         if kind == "object":
             items = [(_("(aléatoire)"), None)] + [
-                ("%s  %s" % (o["sym"], o["name"]), o["name"])
-                for o in self.data["objects"]]
+                self.pick_label(kind, o) for o in self.data["objects"]]
             return self.pick(_("Objet (tapez pour filtrer ; un symbole "
                                "seul = classe)"), items, value, custom=True)
         if kind == "trap":
             return self.pick(_("Type de piège"),
-                             [(t, t) for t in self.data["traps"]], value)
+                             [(self.names.label("trap", t), t)
+                              for t in self.data["traps"]], value)
         if kind == "door":
             return self.pick(_("État de la porte"),
                              [(s, s) for s in nhlevel.DOOR_STATES], value)
         if kind == "engraving":
-            return self.prompt(_("Texte gravé : "), value or "Elbereth")
+            return self.pick_text("engrave", _("Texte gravé"),
+                                  value or "Elbereth")
         if kind == "gold":
             s = self.prompt(_("Montant (vide : aléatoire) : "),
                             "" if value is None else str(value)).strip()
@@ -115,8 +145,8 @@ class EntitiesMixin:
             except ValueError:
                 return None
         if kind == "grave":
-            return self.prompt(_("Épitaphe (vide : aléatoire) : "),
-                               value or "").strip() or None
+            return self.pick_text("epitaph", _("Épitaphe"), value,
+                                  random=True)
         if kind == "drawbridge":
             return self.pick(_("Côté du mur où le pont s'abaisse"),
                              [(d, d) for d in nhlevel.DRAWBRIDGE_DIRS],

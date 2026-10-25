@@ -157,7 +157,7 @@ class GameMixin:
         di = 0
         while True:
             items = [(_("%-24s %d niveau(x) spécial(aux)") % (
-                df.dungeon_name(d), len(df.levels(d))), i)
+                self.dungeon_label(df, d), len(df.levels(d))), i)
                 for i, d in enumerate(df.dungeons())]
             try:
                 di = self.pick(_("Donjons de %s (%d niveaux spéciaux sur %d)")
@@ -167,6 +167,13 @@ class GameMixin:
             except Cancel:
                 return
             df = self.dungeon_levels(df, di)
+
+    def dungeon_label(self, df, d):
+        """Nom d'un donjon, suivi de son nom en jeu s'il diffère
+        (« The Dungeons of Doom — Night City »)."""
+        name = df.dungeon_name(d)
+        shown = self.names.name("place", name)
+        return "%s — %s" % (name, shown) if shown else name
 
     def dungeon_levels(self, df, di):
         """Liste des niveaux spéciaux d'un donjon. Renvoie le fichier
@@ -183,8 +190,8 @@ class GameMixin:
             items.append((_("+ ajouter ce niveau"), "add"))
             hint = _("Entrée/e: modifier  d: supprimer  Échap: retour")
             try:
-                i, action = self.pick_action(df.dungeon_name(d), items, sel,
-                                             hint)
+                i, action = self.pick_action(self.dungeon_label(df, d),
+                                             items, sel, hint)
             except Cancel:
                 return df
             try:
@@ -318,6 +325,7 @@ class GameMixin:
                              "refusé.") % d
                 return
             self.hackdir = d
+            self.load_game_names()
         base = os.path.splitext(os.path.basename(self.path or "sans-nom"))[0]
         name = TEST_PREFIX + re.sub(r"[^A-Za-z0-9_-]", "_", base)
         dest = os.path.join(self.hackdir, name + ".lua")

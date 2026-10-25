@@ -62,6 +62,16 @@ def load(path):
             cfg["hackdir"] = os.path.expanduser(val)
         elif key == "dungeon":
             cfg["dungeon"] = os.path.expanduser(val)
+        elif key == "langue":
+            # langue du jeu (fr@cyber, fr, en) ; défaut : celle du
+            # .nethackrc, sinon le thème par défaut du jeu
+            cfg["game_lang"] = val.strip()
+        elif key == "palette":
+            # rendu jeu : auto (néon du thème cyberpunk et .nethackrc),
+            # aucune, ou le chemin d'un .nethackrc
+            low = val.strip().lower()
+            cfg["palette"] = (low if low in ("auto", "aucune")
+                              else os.path.expanduser(val.strip()))
         else:
             bad("jeu", key, _("clé inconnue"))
     for key, val in (cp.items("editeur") if cp.has_section("editeur")

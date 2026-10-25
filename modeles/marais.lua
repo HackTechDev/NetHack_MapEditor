@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Marais
 -- Damier de sol et d'eau, comme le marais de Juiblex ; des créatures
 -- rampent entre les mares. Type de salle : "swamp".
+-- Modèle nhmapedit@cyber : Égouts inondés
+-- Damier de sol et d'eau, comme le marais de Juiblex ; des créatures
+-- rampent entre les flaques. Type de salle : "swamp".
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 -----------

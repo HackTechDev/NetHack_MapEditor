@@ -8,6 +8,15 @@
 #repertoire = ~/nh/install/games/lib/nethackdir
 # Fichier dungeon.lua modifié par la touche « D »
 #dungeon = ~/JEUX/NETHACK/NetHack-5.0.0/dat/dungeon.lua
+# Langue du jeu, pour montrer les noms vus en jeu (« chien errant » pour
+# jackal) : fr@cyber (thème cyberpunk), fr, ou en (noms du script seuls).
+# Par défaut : l'option language du ~/.nethackrc, sinon fr@cyber.
+#langue = fr@cyber
+# Symboles et couleurs du rendu « comme dans le jeu » (touche J) : auto
+# (palette néon doc/cyberpunk.nethackrc des sources si le jeu est en
+# fr@cyber, puis les options glyph de votre ~/.nethackrc), aucune, ou le
+# chemin d'un .nethackrc
+#palette = auto
 
 [editeur]
 # Taille d'une nouvelle carte

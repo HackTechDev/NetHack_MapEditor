@@ -299,7 +299,7 @@ class DialogsMixin:
                     self.set_option(extra, sel, v)
                 elif typ == "mon":
                     items = [(_("(défaut)"), None)] + [
-                        ("%s  %s" % (m["sym"], m["name"]), m["name"])
+                        self.pick_label("monster", m)
                         for m in self.data["monsters"]]
                     v = self.pick(_("Monstre (tapez pour filtrer ; une lettre "
                                     "seule = classe)"), items, extra.get(sel),

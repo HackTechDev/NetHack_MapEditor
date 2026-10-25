@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Îlot dans la lave
 -- Îlot de sol au milieu d'un lac de lave, avec un coffre : il faut
 -- voler, geler ou se téléporter pour l'atteindre.
+-- Modèle nhmapedit@cyber : Îlot dans le métal en fusion
+-- Îlot au milieu d'un bain de lave, avec un coffre : il faut voler,
+-- geler ou se téléporter pour l'atteindre.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 LLLLLLLLL

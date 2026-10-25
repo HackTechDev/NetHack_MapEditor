@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Cabinet du magicien
 -- Pièce ronde derrière une porte verrouillée : un lanceur de sorts
 -- endormi, ses livres et une baguette.
+-- Modèle nhmapedit@cyber : Repaire du netrunner
+-- Pièce ronde derrière une porte verrouillée : un netrunner endormi,
+-- ses logiciels et un implant.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
   -----  

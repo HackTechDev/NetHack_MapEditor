@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Ruines
 -- Restes d'une salle aux murs effondrés : des pans de mur, des
 -- rochers et un objet oublié.
+-- Modèle nhmapedit@cyber : Immeuble effondré
+-- Restes d'une salle aux murs écroulés : des pans de mur, des rochers
+-- et un objet oublié.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 --- --  --- 

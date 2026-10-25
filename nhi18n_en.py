@@ -1021,6 +1021,12 @@ EN = {
         '%d room(s) joined by corridors (u then Space: another draw).',
     'Nombre de salles voulu (moins si la zone est petite)':
         'Wanted number of rooms (fewer if the area is small)',
+    # thème cyberpunk du jeu : palette, textes
+    ' Symboles et couleurs : %s.': ' Symbols and colours: %s.',
+    '%s (textes du jeu ; tapez un autre texte puis Entrée)':
+        '%s (game texts; type another text then Enter)',
+    'Texte gravé': 'Engraved text',
+    'Épitaphe': 'Epitaph',
 }
 
 HELP = """\
@@ -1091,7 +1097,8 @@ TOOLS (Space or Enter to apply)
      entities are shifted)
   b  template library (temple, shop, fountain…): the chosen template
      goes to the clipboard; the last line saves the clipboard as a
-     template (~/.config/nhmapedit/modeles)
+     template (~/.config/nhmapedit/modeles). Game in fr@cyber: Night
+     City titles and descriptions
   Clipboard: X mirror left/right   Y mirror top/bottom
              O rotate a quarter turn (clockwise)
   Two-point tools: 1st press = anchor, 2nd press = draw. Esc cancels.
@@ -1140,7 +1147,12 @@ ENTITIES (coordinates relative to the map)
   An underlined symbol means several entities on the cell (only the
   most important is drawn; the status bar lists them all)
   J  render "as in the game" (walls as lines, floor as dots, secret
-     doors and corridors hidden); editing still works
+     doors and corridors hidden); editing still works. Game symbols and
+     colours: neon palette of the cyberpunk theme
+     (doc/cyberpunk.nethackrc) and glyph options of ~/.nethackrc
+  Game names: monsters, objects, traps and dungeons are also shown
+  under their in-game name (fr@cyber.mo catalogue in the game
+  directory); lists filter by either name, the script keeps English
 
 LEVEL AND FILES
   p  properties (size, flags, level_init, alignment, lighting);

@@ -1,5 +1,7 @@
 -- Modèle nhmapedit : Cuisine
 -- Salle avec un évier et des provisions tirées au hasard.
+-- Modèle nhmapedit@cyber : Cuisine de rue
+-- Salle avec un évier et des provisions douteuses tirées au hasard.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 -------

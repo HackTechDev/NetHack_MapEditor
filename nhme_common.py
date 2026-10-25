@@ -240,12 +240,13 @@ ASCII_GLYPH = {"·": ".", "│": "|", "─": "-"}
 ASCII_GLYPH.update({c: "-" for c in "┌┐└┘├┤┬┴┼"})
 
 
-def game_view(grid, fill=" "):
+def game_view(grid, fill=" ", palette=None):
     """Grille de (caractère, couleur) proche de l'affichage du jeu.
 
     Les portes secrètes sont dessinées comme le mur qui les entoure, les
     couloirs secrets comme de la roche ; « x » montre le terrain de
-    remplissage de level_init."""
+    remplissage de level_init. palette (nhpalette.Palette) : symboles et
+    couleurs des options glyph du jeu."""
     h, w = len(grid), len(grid[0])
 
     def at(x, y):
@@ -268,15 +269,18 @@ def game_view(grid, fill=" "):
         for x in range(w):
             c = at(x, y)
             if c not in "-|S":
-                row.append(GAME_GLYPH.get(c, (c, "CLR_GRAY")))
+                ch, clr = GAME_GLYPH.get(c, (c, "CLR_GRAY"))
+                row.append(palette.terrain(c, ch, clr) if palette
+                           else (ch, clr))
                 continue
             o = orient(x, y)
             vert = set("|+S") | ({"-"} if o == "|" else set())
             horiz = set("-+S") | ({"|"} if o == "-" else set())
             key = (int(at(x, y - 1) in vert), int(at(x, y + 1) in vert),
                    int(at(x - 1, y) in horiz), int(at(x + 1, y) in horiz))
-            row.append((WALL_GLYPH[key] or ("─" if o == "-" else "│"),
-                        "CLR_GRAY"))
+            ch = WALL_GLYPH[key] or ("─" if o == "-" else "│")
+            row.append(palette.terrain(c, ch, "CLR_GRAY") if palette
+                       else (ch, "CLR_GRAY"))
         out.append(row)
     return out
 
@@ -432,7 +436,8 @@ OUTILS (Espace ou Entrée pour appliquer)
      les entités sont décalées)
   b  bibliothèque de modèles (temple, boutique, fontaine…) : le modèle
      choisi va dans le presse-papiers ; la dernière ligne enregistre le
-     presse-papiers comme modèle (~/.config/nhmapedit/modeles)
+     presse-papiers comme modèle (~/.config/nhmapedit/modeles). Jeu en
+     fr@cyber : titres et descriptions de Night City
   Presse-papiers : X miroir gauche/droite   Y miroir haut/bas
                    O rotation d'un quart de tour (sens horaire)
   Les outils à deux points : 1er appui = ancre, 2e appui = tracé. Échap annule.
@@ -482,7 +487,13 @@ ENTITÉS (coordonnées relatives à la carte)
   Un symbole souligné signale plusieurs entités sur la case (seule la plus
   importante est dessinée ; la barre d'état les liste toutes)
   J  rendu « comme dans le jeu » (murs en traits, sol en points, portes
-     et couloirs secrets cachés) ; l'édition reste possible
+     et couloirs secrets cachés) ; l'édition reste possible. Symboles et
+     couleurs du jeu : palette néon du thème cyberpunk
+     (doc/cyberpunk.nethackrc) et options glyph du ~/.nethackrc
+  Noms du jeu : monstres, objets, pièges et donjons sont aussi montrés
+  sous leur nom en jeu (catalogue fr@cyber.mo du répertoire du jeu) ;
+  les listes se filtrent par l'un ou l'autre nom, le script garde
+  l'anglais
 
 NIVEAU ET FICHIERS
   p  propriétés (taille, drapeaux, level_init, alignement, éclairage) ;

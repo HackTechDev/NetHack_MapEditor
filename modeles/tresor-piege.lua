@@ -1,6 +1,8 @@
 -- Modèle nhmapedit : Chambre au trésor piégée
 -- Un coffre garni au fond d'une salle dont chaque approche est
 -- piégée.
+-- Modèle nhmapedit@cyber : Salle des coffres piégée
+-- Un coffre garni au fond d'une salle dont chaque approche est piégée.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
 ---------

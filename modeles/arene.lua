@@ -1,6 +1,9 @@
 -- Modèle nhmapedit : Arène
 -- Grande salle ronde bordée de gradins (piliers) : deux combattants
 -- s'y affrontent, sous l'œil d'un public de statues.
+-- Modèle nhmapedit@cyber : Arène de combats illégaux
+-- Fosse ronde bordée de piliers : deux combattants s'y affrontent
+-- devant un public de statues, sous les paris des fixers.
 des.level_init({ style = "solidfill", fg = " " });
 des.map([[
     -------    
