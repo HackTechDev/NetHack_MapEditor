@@ -926,6 +926,14 @@ EN = {
     '  somme des niveaux des monstres nommés : %d':
         '  sum of named monster levels: %d',
     'classe %s': 'class %s',
+    # annotations
+    'annotations (touche ")': 'annotations (key ")',
+    'Annotation': 'Annotation',
+    'Annotation retirée.': 'Annotation removed.',
+    'Annoter quoi ?': 'Annotate what?',
+    'Annotation (vide : la retirer) : ': 'Annotation (empty: remove it): ',
+    'Annotation : %s': 'Annotation: %s',
+    'la case (%d,%d)': 'the cell (%d,%d)',
 }
 
 HELP = """\
@@ -993,6 +1001,10 @@ ENTITIES (coordinates relative to the map)
      des.non_passwall, des.teleport_region, des.levregion): the region
      starts at the cursor, Space on the opposite corner
   r  repeat the last entity at the cursor
+  "  annotate the cell or one of its entities: Lua comment kept in the
+     file ("-- nhme-note x y : ..." before the map, or at the end of the
+     entity's line); cyan background, text in the status bar; an empty
+     text removes the annotation
   /  find and replace: choose an entity kind and a value (e.g.
      monster orc), then replace the value, set or remove an option
      (asleep=1…) or delete all these entities at once

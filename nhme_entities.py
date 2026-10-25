@@ -268,6 +268,34 @@ class EntitiesMixin:
         self.lvl.entities = [e for e in self.lvl.entities if e not in ents]
         self.msg = _("%d entité(s) supprimée(s).") % len(ents)
 
+    def annotate(self):
+        """Touche \" : annotation de la case ou d'une de ses entités,
+        enregistrée en commentaire Lua (texte vide : la retire)."""
+        x, y = self.cx, self.cy
+        ents = self.lvl.entities_at(x, y)
+        target = None
+        if ents:
+            items = [(_("la case (%d,%d)") % (x, y)
+                      + (" — « %s »" % self.lvl.notes[(x, y)]
+                         if (x, y) in self.lvl.notes else ""), None)]
+            items += [(e.describe(), i) for i, e in enumerate(ents)]
+            i = self.pick(_("Annoter quoi ?"), items, 0)
+            target = ents[i] if i is not None else None
+        old = target.note if target else self.lvl.notes.get((x, y))
+        text = nhlevel.note_text(self.prompt(
+            _("Annotation (vide : la retirer) : "), old or ""))
+        if text == old:
+            return
+        self.checkpoint(_("Annotation"))
+        if target:
+            target.note = text
+        elif text:
+            self.lvl.notes[(x, y)] = text
+        else:
+            self.lvl.notes.pop((x, y), None)
+        self.msg = (_("Annotation : %s") % text if text
+                    else _("Annotation retirée."))
+
     def entity_list(self):
         """Liste des entités, des régions puis des placements aléatoires
         du niveau."""

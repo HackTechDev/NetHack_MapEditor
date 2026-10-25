@@ -58,7 +58,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.advance = False
         self.show_ents = self.config.get("entities", True)
         # calques des régions affichés (familles de region_family())
-        self.show_regions = {"room", "tele", "rand"}
+        self.show_regions = {"room", "tele", "rand", "note"}
         self.show_terrain = True    # calque du terrain (touche ;)
         self.maze_opts = ("-", ".", 0)  # murs, passages, % de boucles
         self.auto_walls = False     # pinceau mur automatique (touche =)
@@ -302,6 +302,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.show_stats()
         elif k == "!":
             self.game_feedback()
+        elif k == '"':
+            self.annotate()
         elif k == "~":
             self.minimap = {"auto": "on", "on": "off",
                             "off": "auto"}[self.minimap]

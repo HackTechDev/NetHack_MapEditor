@@ -149,6 +149,12 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   `trapped`, `eroded`, `greased`, `lit` ; autres options en saisie libre.
 - Inventaire des monstres et contenu des conteneurs et des statues,
   imbriqués (un sac dans un coffre), écrits en `function() ... end`.
+- Annotations (`"`) : commentaire attaché à une case
+  (`-- nhme-note x y : …`, lignes placées juste avant la `des.map()`) ou
+  à une entité (`-- …` en fin de ligne de son appel, relu à
+  l'ouverture) ; fond cyan (calque « annotations »), texte dans la barre
+  d'état ; les annotations des cases suivent l'insertion ou la
+  suppression de lignes et de colonnes.
 
 ## Niveau
 
@@ -267,7 +273,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 106 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 110 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

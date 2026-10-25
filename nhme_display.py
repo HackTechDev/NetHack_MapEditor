@@ -134,12 +134,13 @@ class DisplayMixin:
                 ("lit", _("régions : zones seulement éclairées ou sombres")),
                 ("dig", _("régions : non creusables, sans passe-muraille")),
                 ("tele", _("régions : téléportation et arrivées")),
-                ("rand", _("placements aléatoires du script"))]
+                ("rand", _("placements aléatoires du script")),
+                ("note", _("annotations (touche \")"))]
         presets = {"all": (True, True, {f for f, _l in fams}),
                    "terrain": (True, False, set()),
                    "ents": (False, True, set()),
                    "regions": (False, False, {"room", "lit", "dig", "tele"}),
-                   "default": (True, True, {"room", "tele", "rand"})}
+                   "default": (True, True, {"room", "tele", "rand", "note"})}
         sel = "terrain_l"
         def box(on):
             return "[x]" if on else "[ ]"
@@ -188,7 +189,15 @@ class DisplayMixin:
                 if rp.zone[0] == "rect":
                     for p in rp.cells(self.lvl):
                         out[p] = "rand"
+        if "note" in self.show_regions:
+            for p in self.note_cells():
+                out[p] = "note"
         return out
+
+    def note_cells(self):
+        """Cases annotées, elles-mêmes ou par une de leurs entités."""
+        return set(self.lvl.notes) | {(e.x, e.y) for e in self.lvl.entities
+                                      if e.note}
 
     def random_points(self):
         """Cases où tombera un placement aléatoire limité à quelques
@@ -464,6 +473,8 @@ class DisplayMixin:
         regs = lvl.regions_at(x, y)
         if regs:
             info += "  | " + " ; ".join(r.describe() for r in regs)
+        if (x, y) in lvl.notes:
+            info += "  | « %s »" % lvl.notes[(x, y)]
         rnds = [rp for rp in lvl.randoms if rp.zone[0] != "map"
                 and (x, y) in rp.cells(lvl)]
         if rnds:

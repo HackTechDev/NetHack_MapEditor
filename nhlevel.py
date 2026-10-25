@@ -94,11 +94,18 @@ class Entity:
         self.x, self.y = x, y
         self.value = value          # dir / id / type / state / text
         self.extra = dict(extra or {})   # autres clés de la table Lua
+        self.note = None            # annotation : commentaire de fin de ligne
 
     def copy(self):
         # copie profonde : les extras peuvent contenir des Contents
-        return Entity(self.kind, self.x, self.y, self.value,
-                      copy.deepcopy(self.extra), self.origin)
+        c = Entity(self.kind, self.x, self.y, self.value,
+                   copy.deepcopy(self.extra), self.origin)
+        c.note = self.note
+        return c
+
+    def lua_line(self):
+        """Appel Lua suivi de l'annotation en commentaire."""
+        return self.to_lua() + (" -- " + self.note if self.note else "")
 
     def describe(self):
         s = ENTITY_LABEL[self.kind]
@@ -113,6 +120,8 @@ class Entity:
                 "%s=%s" % (k, v.summary() if isinstance(v, Contents)
                            else lua_value(v))
                 for k, v in self.extra.items()) + "}"
+        if self.note:
+            s += " -- " + self.note
         return s
 
     def to_lua(self):
@@ -154,6 +163,24 @@ class Entity:
             t[key] = v
         t.update(e)
         return "des.%s(%s);" % (k, lua_value(t))
+
+
+# Annotations des cases : une ligne de commentaire par case, juste avant
+# la des.map() de la carte (« -- nhme-note 3 4 : trésor caché ici »)
+NOTE_LINE = re.compile(r"^[ \t]*-- nhme-note (\d+) (\d+) : ?(.*)\n?", re.M)
+# annotation d'une entité : commentaire sur la même ligne que l'appel
+TRAILING_NOTE = re.compile(r"[ \t]*--(?!\[=*\[)[ \t]*([^\n]*)")
+
+
+def note_text(s):
+    """Annotation sur une seule ligne, sans espaces superflus."""
+    return " ".join((s or "").split()) or None
+
+
+def notes_lua(notes):
+    return "".join("-- nhme-note %d %d : %s\n" % (x, y, t)
+                   for (x, y), t in sorted(notes.items(),
+                                           key=lambda kv: kv[0][::-1]))
 
 
 # Régions : des.region(), des.non_diggable(), des.non_passwall(),
@@ -427,6 +454,8 @@ class Level:
         self.randoms = []
         # salle à thème de themerms.lua : {"path", "name", "k", "new"}
         self.theme = None
+        # annotations des cases : (x, y) -> texte
+        self.notes = {}
 
     # --- grille ---------------------------------------------------------
     def get(self, x, y):
@@ -445,6 +474,8 @@ class Level:
                 g[y][x] = self.grid[y][x]
         self.grid, self.w, self.h = g, w, h
         self.entities = [e for e in self.entities if e.x < w and e.y < h]
+        self.notes = {p: t for p, t in self.notes.items()
+                      if p[0] < w and p[1] < h}
 
     def insert_row(self, y, fill=" "):
         """Insère une ligne avant la ligne y ; les entités suivent."""
@@ -456,6 +487,7 @@ class Level:
             if e.y >= y:
                 e.y += 1
         self._shift_regions(1, y, 1)
+        self._shift_notes(1, y, 1)
         return True
 
     def delete_row(self, y):
@@ -469,6 +501,7 @@ class Level:
             if e.y > y:
                 e.y -= 1
         self._shift_regions(1, y, -1)
+        self._shift_notes(1, y, -1)
         return True
 
     def insert_col(self, x, fill=" "):
@@ -482,6 +515,7 @@ class Level:
             if e.x >= x:
                 e.x += 1
         self._shift_regions(0, x, 1)
+        self._shift_notes(0, x, 1)
         return True
 
     def delete_col(self, x):
@@ -496,7 +530,19 @@ class Level:
             if e.x > x:
                 e.x -= 1
         self._shift_regions(0, x, -1)
+        self._shift_notes(0, x, -1)
         return True
+
+    def _shift_notes(self, axis, at, delta):
+        notes = {}
+        for p, t in self.notes.items():
+            if p[axis] == at and delta < 0:
+                continue            # ligne ou colonne supprimée
+            if p[axis] >= at:
+                p = tuple(v + delta if i == axis else v
+                          for i, v in enumerate(p))
+            notes[p] = t
+        self.notes = notes
 
     def _shift_regions(self, axis, at, delta):
         """Décale les régions après une insertion (delta 1) ou une
@@ -537,11 +583,12 @@ class Level:
                 [e.copy() for e in self.entities], self.w, self.h,
                 copy.deepcopy(self.init), list(self.flags), self.lit,
                 self.pos, self.halign, self.valign,
-                [r.copy() for r in self.regions])
+                [r.copy() for r in self.regions], dict(self.notes))
 
     def restore(self, snap):
         (g, ents, self.w, self.h, init, flags, self.lit, self.pos,
-         self.halign, self.valign, regions) = snap
+         self.halign, self.valign, regions, notes) = snap
+        self.notes = dict(notes)
         self.grid = [row[:] for row in g]
         self.entities = [e.copy() for e in ents]
         self.regions = [r.copy() for r in regions]
@@ -633,7 +680,7 @@ class Level:
         # une autre)
         regs = [r for r in self.regions if not r.readonly
                 and (not new_only or r.origin is None)]
-        return "\n".join([e.to_lua() for e in ents]
+        return "\n".join([e.lua_line() for e in ents]
                          + [r.to_lua() for r in regs])
 
     def to_lua(self, name="niveau"):
@@ -643,7 +690,7 @@ class Level:
                  self.init_lua()]
         if self.flags:
             parts.append(self.flags_lua())
-        parts += ["", self.map_lua(), ""]
+        parts += ["", notes_lua(self.notes) + self.map_lua(), ""]
         ents = self.entities_lua()
         if ents:
             parts += [ents, ""]
@@ -667,8 +714,15 @@ class Level:
             return text[c["start"]:c["end"]] if gen == c.get("gen") else gen
 
         for idx, c in enumerate(calls):
-            out.append(text[pos:c["start"]])
+            before = text[pos:c["start"]]
             role = c["role"]
+            if role == "map" and self.notes != c.get("notes", {}):
+                # annotations des cases réécrites juste avant la carte
+                before = NOTE_LINE.sub("", before)
+                if before and not before.endswith("\n"):
+                    before += "\n"
+                before += notes_lua(self.notes)
+            out.append(before)
             if role == "init":
                 out.append(same(c, self.init_lua()))
             elif role == "flags":
@@ -697,10 +751,13 @@ class Level:
             elif role in ("entity", "region"):
                 e = by_origin.get(c["origin"])
                 block = same(c, e.to_lua()) if e else ""
+                end, note = self._note_change(c, e)
+                if note is not None:
+                    block += note
                 if new and idx == last_ent:
                     block += ("\n" if block else "") + new
                 out.append(block)
-            pos = c["end"]
+            pos = c["end"] if role not in ("entity", "region") else end
             if (role in ("entity", "region") and not out[-1]) or (
                     role == "flags" and not self.flags):
                 # avale la fin de ligne laissée vide
@@ -710,18 +767,34 @@ class Level:
         out.append(text[pos:])
         return "".join(out)
 
+    @staticmethod
+    def _note_change(c, e):
+        """Annotation d'une entité à l'enregistrement : (fin du texte
+        d'origine remplacé, nouveau commentaire) ; commentaire None si
+        celui d'origine reste tel quel."""
+        old = c.get("note")
+        if e is None:                   # supprimée, avec son commentaire
+            return (old[1] if old else c["end"]), None
+        note = getattr(e, "note", None)
+        if (old[2] if old else None) == note:
+            return c["end"], None
+        return (old[1] if old else c["end"]), (" -- " + note if note else "")
+
     def _merge_map_call(self, text, c, by_origin, same):
         """Texte de l'appel des.map() gardé tel quel, sauf la carte et les
         éléments modifiés de sa fonction contents."""
         subs = [c["str_span"] + ("[[\n" + self.map_text() + "\n]]",)]
         for ic in c.get("inner", ()):
             e = by_origin.get(ic["origin"])
+            end, note = self._note_change(ic, e)
             if e:
                 subs.append((ic["start"], ic["end"], same(ic, e.to_lua())))
+                if note is not None:
+                    subs.append((ic["end"], end, note))
             else:
                 # élément supprimé : la ligne entière disparaît si l'appel
                 # était seul dessus
-                s, t = ic["start"], ic["end"]
+                s, t = ic["start"], end
                 m1 = re.search(r"\n[ \t]*$", text[c["start"]:s])
                 m2 = re.match(r"[ \t]*\n", text[t:])
                 if m1 and m2:
@@ -1255,6 +1328,10 @@ def parse_level(text, index=0):
                 vals = _parse_args(args, 0, len(args))[0]
                 e = _entity_from_call(name, vals)
                 e.origin = c["origin"] = next(serial)
+                m = TRAILING_NOTE.match(text, c["end"])
+                if m and note_text(m.group(1)):
+                    e.note = note_text(m.group(1))
+                    c["note"] = (c["end"], m.end(), e.note)
                 lvl.entities.append(e)
                 c["role"] = "entity"
             else:
@@ -1295,6 +1372,15 @@ def parse_level(text, index=0):
             elif name == "map" and not map_seen:
                 lvl.map_index = index
                 _read_map(lvl, c, args)
+                # annotations des cases : lignes juste avant la carte
+                prev = max((k["end"] for k in calls
+                            if k["end"] <= c["start"]), default=0)
+                lvl.notes = {(int(m.group(1)), int(m.group(2))):
+                             note_text(m.group(3))
+                             for m in NOTE_LINE.finditer(
+                                 text, prev, c["start"])
+                             if note_text(m.group(3))}
+                c["notes"] = dict(lvl.notes)
                 map_seen = True
                 c["role"] = "map"
                 # appels de « contents = function() ... end » : mêmes

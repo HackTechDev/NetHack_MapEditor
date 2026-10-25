@@ -254,7 +254,7 @@ REGION_FAMILY = {"region": "room", "non_diggable": "dig",
                  "levregion": "tele"}
 REGION_BG = {"room": curses.COLOR_BLUE, "lit": curses.COLOR_YELLOW,
              "dig": curses.COLOR_RED, "tele": curses.COLOR_GREEN,
-             "rand": curses.COLOR_MAGENTA}
+             "rand": curses.COLOR_MAGENTA, "note": curses.COLOR_CYAN}
 
 
 def region_family(r):
@@ -360,6 +360,10 @@ ENTITÉS (coordonnées relatives à la carte)
      des.non_passwall, des.teleport_region, des.levregion) : la région
      part du curseur, Espace sur le coin opposé
   r  répéter la dernière entité au curseur
+  "  annoter la case ou une de ses entités : commentaire Lua conservé
+     dans le fichier (« -- nhme-note x y : … » avant la carte, ou en fin
+     de ligne de l'entité) ; case sur fond cyan, texte dans la barre
+     d'état ; un texte vide retire l'annotation
   /  rechercher et remplacer : choisir un genre d'entité et une valeur
      (ex. monstre orc), puis remplacer la valeur, poser ou retirer une
      option (asleep=1…) ou supprimer toutes ces entités d'un coup

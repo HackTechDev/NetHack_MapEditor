@@ -105,6 +105,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `a` | avance automatique après chaque caractère tapé (pratique pour « taper » une carte) |
 | `m` | placer une entité : escalier, échelle, autel, monstre, objet, piège, porte, gravure, or (`des.gold`), tombe (`des.grave`), pont-levis (`des.drawbridge`), élément de décor (`des.feature` : fontaine, évier, bassin, trône, arbre), terrain d'une case (`des.terrain`), région (`des.region`, `des.non_diggable`, `des.non_passwall`, `des.teleport_region`, `des.levregion` : la zone part du curseur, Espace sur le coin opposé) |
 | `r` | répéter la dernière entité placée sous le curseur |
+| `"` | annoter la case ou une de ses entités : un commentaire Lua conservé dans le fichier (`-- nhme-note x y : …` avant la carte, ou `-- …` en fin de ligne de l'entité) ; la case passe sur fond cyan et le texte s'affiche dans la barre d'état |
 | Suppr, Retour arrière, `z` | supprimer les entités sous le curseur |
 | `i` | liste des entités (Entrée : y aller, `e` : modifier, `d` : supprimer) |
 | `;` | calques d'affichage : terrain, entités, chaque famille de régions, placements aléatoires ; préréglages pour ne voir que le terrain, que les entités ou que les régions |
@@ -178,7 +179,10 @@ Il édite :
   `selection.area(...)` éclairées ou sombres), `des.non_diggable()`,
   `des.non_passwall()`, `des.teleport_region()`, `des.levregion()`. Une
   région dont l'appel contient du code Lua est affichée mais reste non
-  modifiable.
+  modifiable ;
+- les annotations (touche `"`) : lignes `-- nhme-note x y : texte` juste
+  avant la `des.map()` pour les cases, commentaire en fin de ligne pour
+  les entités (`des.monster("newt", 3, 4) -- le gardien`).
 
 Tout le reste du script (boucles, éléments aléatoires, autres
 cartes…) est conservé tel quel à l'enregistrement. Un fichier ouvert puis

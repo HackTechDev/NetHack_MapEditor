@@ -285,6 +285,28 @@ class Layers(unittest.TestCase):
                          (True, False, {"room", "lit", "dig"}))
 
 
+class Annotate(unittest.TestCase):
+    def test_annotate(self):
+        ed = editor(["...", "..."])
+        ed.lvl.entities = [Entity("monster", 1, 1, "newt")]
+        ed.prompt = lambda *a, **k: "  case   vide "
+        ed.annotate()                       # case sans entité
+        self.assertEqual(ed.lvl.notes, {(0, 0): "case vide"})
+        self.assertEqual(ed.region_overlay(), {(0, 0): "note"})
+        ed.cx = ed.cy = 1
+        ed.pick = lambda *a, **k: 0         # la première entité
+        ed.prompt = lambda *a, **k: "le gardien"
+        ed.annotate()
+        self.assertEqual(ed.lvl.entities[0].note, "le gardien")
+        self.assertIn("-- le gardien", ed.lvl.entities[0].describe())
+        ed.undo()
+        self.assertIsNone(ed.lvl.entities[0].note)
+        ed.cx = ed.cy = 0
+        ed.prompt = lambda *a, **k: ""
+        ed.annotate()
+        self.assertEqual(ed.lvl.notes, {})
+
+
 class Maze(unittest.TestCase):
     def test_perfect_maze(self):
         import random

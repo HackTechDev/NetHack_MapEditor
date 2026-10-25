@@ -282,5 +282,58 @@ class Geometry(unittest.TestCase):
         self.assertEqual(lvl.allowed_flips(), 0)
 
 
+class Notes(unittest.TestCase):
+    TEXT = ('des.level_init({ style = "solidfill", fg = " " });\n'
+            '-- nhme-note 1 0 : coin\n'
+            'des.map([[\n...\n...\n]]);\n'
+            'des.monster("newt", 1, 1) -- le gardien\n'
+            'des.object("dagger", 2, 1);\n'
+            'des.trap("pit", 0, 0); -- piège\n')
+
+    def test_read_and_keep(self):
+        lvl = nhlevel.parse_level(self.TEXT)[0]
+        self.assertEqual(lvl.notes, {(1, 0): "coin"})
+        self.assertEqual([e.note for e in lvl.entities],
+                         ["le gardien", None, "piège"])
+        self.assertEqual(lvl.to_lua(), self.TEXT)
+
+    def test_edit(self):
+        lvl = nhlevel.parse_level(self.TEXT)[0]
+        lvl.notes[(2, 1)] = "ici"
+        lvl.entities[0].note = None
+        lvl.entities[1].note = "arme"
+        del lvl.entities[2]                 # avec son commentaire
+        e = Entity("monster", 0, 1, "jackal")
+        e.note = "nouveau"
+        lvl.entities.append(e)
+        out = lvl.to_lua()
+        self.assertIn("-- nhme-note 1 0 : coin\n-- nhme-note 2 1 : ici\n"
+                      "des.map", out)
+        self.assertIn('des.monster("newt", 1, 1)\n', out)
+        self.assertIn('des.object("dagger", 2, 1); -- arme\n', out)
+        self.assertNotIn("piège", out)
+        back = nhlevel.parse_level(out)[0]
+        self.assertEqual(back.notes, {(1, 0): "coin", (2, 1): "ici"})
+        self.assertEqual(sorted((e.value, e.note) for e in back.entities),
+                         [("dagger", "arme"), ("jackal", "nouveau"),
+                          ("newt", None)])
+
+    def test_new_level_and_geometry(self):
+        lvl = level(["...", "..."])
+        lvl.notes = {(2, 1): "a"}
+        back = nhlevel.parse_level(lvl.to_lua())[0]
+        self.assertEqual(back.notes, {(2, 1): "a"})
+        lvl.insert_col(0)
+        self.assertEqual(lvl.notes, {(3, 1): "a"})
+        lvl.delete_row(1)
+        self.assertEqual(lvl.notes, {})
+        # les annotations suivent l'annulation
+        lvl.notes = {(0, 0): "b"}
+        snap = lvl.snapshot()
+        lvl.notes.clear()
+        lvl.restore(snap)
+        self.assertEqual(lvl.notes, {(0, 0): "b"})
+
+
 if __name__ == "__main__":
     unittest.main()
