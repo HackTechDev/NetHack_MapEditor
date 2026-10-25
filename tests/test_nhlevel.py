@@ -124,6 +124,53 @@ class Generation(unittest.TestCase):
                                     + call)[0].entities[0]
             self.assertEqual((e.kind, (e.x, e.y), e.value), (kind, xy, value))
 
+    def test_regions(self):
+        calls = ['des.region({ region = { 1, 0, 3, 1 }, lit = 1, '
+                 'type = "temple", filled = 1 });',
+                 'des.region(selection.area(0,0,2,1), "unlit");',
+                 'des.non_diggable(selection.area(0,0,4,2));',
+                 'des.non_diggable();',
+                 'des.non_passwall(selection.area(1,1,2,2));',
+                 'des.teleport_region({ region = { 1, 1, 3, 2 }, '
+                 'dir = "down" });',
+                 'des.levregion({ region = { 70, 2, 75, 18 }, '
+                 'type = "stair-up" });']
+        code = 'des.region({ region = { 0, 0, 1, 1 }, type = rnd(), lit = 0 });'
+        src = INIT + 'des.map([[\n.....\n.....\n.....\n]]);\n' + "\n".join(
+            calls + [code]) + "\n"
+        lvl = nhlevel.parse_level(src)[0]
+        self.assertEqual(lvl.to_lua(), src)
+        self.assertEqual([r.to_lua() for r in lvl.regions[:-1]], calls)
+        self.assertEqual([len(r.cells(lvl)) for r in lvl.regions],
+                         [6, 6, 15, 15, 4, 6, 0, 4])
+        # appel avec du code : affiché, non modifiable, recopié tel quel
+        self.assertTrue(lvl.regions[-1].readonly)
+        self.assertEqual(lvl.regions_at(1, 1)[0].extra["type"], "temple")
+        # insertion d'une ligne : zones décalées, sauf le niveau entier
+        lvl.insert_row(0)
+        self.assertEqual([r.rect for r in lvl.regions[:4]], [
+            (1, 1, 3, 2), (0, 1, 2, 2), (0, 1, 4, 3), None])
+        self.assertIn("des.non_passwall(selection.area(1,2,2,3));",
+                      lvl.to_lua())
+        self.assertIn(code, lvl.to_lua())
+        # suppression de la ligne qui porte une zone d'une ligne de haut
+        lvl = nhlevel.parse_level(src)[0]
+        lvl.delete_row(0)
+        self.assertEqual(lvl.regions[0].rect, (1, 0, 3, 0))
+        lvl.delete_row(0)
+        self.assertNotIn("type = \"temple\"", lvl.to_lua())
+
+    def test_new_region_written(self):
+        lvl = level(["...."] * 3)
+        lvl.regions.append(nhlevel.Region("region", (0, 0, 3, 2),
+                                          {"type": "temple", "lit": 1}))
+        lvl.regions.append(nhlevel.Region("non_diggable", None, style="sel"))
+        out = lvl.to_lua()
+        self.assertIn('des.region({ region = { 0, 0, 3, 2 }, '
+                      'type = "temple", lit = 1 });', out)
+        self.assertIn("des.non_diggable();", out)
+        self.assertEqual(nhlevel.parse_level(out)[0].to_lua(), out)
+
     @unittest.skipUnless(luac(), "luac absent (NHMAPEDIT_LUAC)")
     def test_luac_accepts_output(self):
         with tempfile.NamedTemporaryFile("w", suffix=".lua",

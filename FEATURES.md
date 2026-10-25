@@ -84,8 +84,21 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   (`des.drawbridge`, côté et état), éléments de décor (`des.feature` :
   fontaine, évier, bassin, trône, arbre) et terrain d'une case
   (`des.terrain`), pris en compte par la vérification de connexité.
+- Régions : `des.region()` sous ses deux formes (salle typée avec `type`,
+  `lit`, `filled`, `irregular`, `joined`, `arrival_room` ; ou
+  `selection.area(...)` éclairée ou sombre), `des.non_diggable()` et
+  `des.non_passwall()` (zone ou niveau entier), `des.teleport_region()`
+  (`dir`, `region_islev`) et `des.levregion()` (type, nom) ; tracé à deux
+  points, options, redessin de la zone, décalage à l'insertion de lignes
+  et de colonnes ; régions affichées en couleur de fond (bleu salles
+  typées, vert téléportation ; jaune éclairage seul et rouge non
+  creusable, masqués par défaut) et listées dans la barre
+  d'état ; régions écrites avec du code affichées en lecture seule.
+- Les salles `temple` créées dans l'éditeur comptent pour la règle
+  « autel hors d'une salle temple ».
 - Placement (`m`), répétition de la dernière entité (`r`), suppression
-  (`z`, Suppr), liste avec aller, modifier, supprimer (`i`).
+  (`z`, Suppr), liste des entités et des régions avec aller, modifier,
+  supprimer (`i`).
 - Listes de monstres, d'objets et de pièges extraites des sources de
   NetHack (`gen_data.py` → `nhdata.json`), filtrables au clavier ; une
   lettre ou un symbole seul donne un monstre ou un objet aléatoire de
@@ -109,8 +122,8 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 ## Fichiers
 
 - Ouverture de n'importe quel niveau de `dat/` contenant un `des.map()` :
-  la première carte, `level_init`, `level_flags` et les entités à
-  position fixe sont éditables ; tout le reste du script est conservé.
+  la première carte, `level_init`, `level_flags`, les entités à
+  position fixe et les régions sont éditables ; tout le reste du script est conservé.
 - Aller-retour exact : un fichier ouvert puis enregistré sans
   modification reste identique octet pour octet (vérifié sur les 93
   niveaux de `dat/`).
@@ -180,7 +193,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 71 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 78 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

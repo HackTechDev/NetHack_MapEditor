@@ -9,8 +9,8 @@ import nhlevel
 from nhi18n import _
 from nhme_common import (
     ASCII_GLYPH, FLIP_NAME, HI_COLORS, NH_COLORS, OBJ_CLASS_COLOR, RANDOM,
-    SELECT, SHORT, SYM_NAME, TERRAIN_COLOR, TOOLS, TOOL_NAME, TWO_POINT,
-    game_view)
+    REGION_BG, SELECT, SHORT, SYM_NAME, TERRAIN_COLOR, TOOLS, TOOL_NAME,
+    TWO_POINT, game_view, region_family)
 
 
 class DisplayMixin:
@@ -32,14 +32,42 @@ class DisplayMixin:
         # style commun des monstres et objets aléatoires : fond magenta
         curses.init_pair(9, curses.COLOR_WHITE, curses.COLOR_MAGENTA)
         self.pairs[RANDOM] = curses.color_pair(9)
+        # calque des régions : une couleur de fond par famille, paires
+        # (texte, fond) créées à la demande à partir de 10
+        self.next_pair = 10
 
-    def attr(self, clr):
+    def attr(self, clr, family=None):
+        """Attribut curses d'une couleur NetHack ; family : fond du
+        calque des régions (REGION_BG)."""
         if clr == RANDOM:
             return self.pairs.get(RANDOM, curses.A_DIM) | curses.A_BOLD
         clr = HI_COLORS.get(clr, clr)
         c, bold = NH_COLORS.get(clr, (curses.COLOR_WHITE, False))
         a = self.pairs.get(c, 0)
+        if family and self.pairs:
+            bg = REGION_BG[family]
+            if c == bg:             # texte invisible sur ce fond
+                c, bold = curses.COLOR_WHITE, True
+            key = (c, bg)
+            if (key not in self.pairs
+                    and getattr(self, "next_pair", 99999) < curses.COLOR_PAIRS):
+                curses.init_pair(self.next_pair, c, bg)
+                self.pairs[key] = curses.color_pair(self.next_pair)
+                self.next_pair += 1
+            a = self.pairs.get(key, curses.A_REVERSE)
         return a | (curses.A_BOLD if bold else 0)
+
+    def region_overlay(self):
+        """Case -> famille de la région affichée dessus (calque)."""
+        out = {}
+        order = {"lit": 0, "dig": 1, "tele": 2, "room": 3}  # salles dessus
+        for r in sorted(self.lvl.regions,
+                        key=lambda r: order[region_family(r)]):
+            fam = region_family(r)
+            if fam in self.show_regions:
+                for p in r.cells(self.lvl):
+                    out[p] = fam
+        return out
 
     def entity_glyph(self, e):
         k, v = e.kind, e.value
@@ -181,6 +209,7 @@ class DisplayMixin:
         # carte
         prev = self.preview_cells()
         index = lvl.entity_index()
+        overlay = self.region_overlay()
         # entités du presse-papiers montrées dans l'aperçu de Coller
         prev_ents = {}
         if self.tool == "paste" and self.clip:
@@ -206,10 +235,11 @@ class DisplayMixin:
                     ch, clr = view[dy][dx]
                     if not self.unicode:
                         ch = ASCII_GLYPH.get(ch, ch)
-                    a = self.attr(clr)
                 else:
                     ch = lvl.grid[y][x]
-                    a = self.attr(TERRAIN_COLOR.get(ch, "CLR_GRAY"))
+                    clr = TERRAIN_COLOR.get(ch, "CLR_GRAY")
+                fam = overlay.get((x, y))
+                a = self.attr(clr, fam)
                 if (x, y) in prev:
                     if self.tool not in SELECT and not self.game:
                         ch = prev[(x, y)]
@@ -222,7 +252,7 @@ class DisplayMixin:
                     e = self.top_entity(x, y, index)
                     if e:
                         ch, clr = self.entity_glyph(e)
-                        a = self.attr(clr)
+                        a = self.attr(clr, None if clr == RANDOM else fam)
                         # plusieurs entités sur la case : symbole souligné
                         if len(index[(x, y)]) > 1:
                             a |= curses.A_UNDERLINE
@@ -290,6 +320,9 @@ class DisplayMixin:
         ents = lvl.entities_at(x, y)
         if ents:
             info += "  | " + " ; ".join(e.describe() for e in ents)
+        regs = lvl.regions_at(x, y)
+        if regs:
+            info += "  | " + " ; ".join(r.describe() for r in regs)
         self.put(maxy - 4, 0, info[:maxx - 1])
         bname = _("roche") if self.brush == " " else self.brush
         st = _("Outil: %s   Pinceau: %s (%s)") % (
@@ -318,6 +351,9 @@ class DisplayMixin:
 
     def context_hint(self):
         """Barre du bas : les touches utiles dans la situation actuelle."""
+        if self.tool == "region":
+            return _(" Zone de la région : Espace/Entrée sur le coin "
+                     "opposé  Échap: annuler")
         if self.anchor:
             return _(" Espace/Entrée: tracer jusqu'au curseur  "
                      "flèches/souris: 2e point  Échap: annuler l'ancre")

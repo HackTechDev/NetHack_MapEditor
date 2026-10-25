@@ -57,6 +57,9 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.pen_down = False
         self.advance = False
         self.show_ents = self.config.get("entities", True)
+        # calques des régions affichés (familles de region_family())
+        self.show_regions = {"room", "tele"}
+        self.pending_region = None  # région en cours de tracé
         # règles de coordonnées autour de la carte
         self.rulers = self.config.get("rulers", True)
         self.game = False           # rendu « comme dans le jeu »
@@ -161,6 +164,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             if self.anchor:
                 self.anchor = None
                 self.msg = _("Tracé annulé.")
+                if self.tool == "region":
+                    self.end_region()
             elif self.tool == "paste":
                 self.tool = "pen"
                 self.msg = _("Outil Pinceau.")

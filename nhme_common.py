@@ -5,6 +5,7 @@ import curses
 import json
 import os
 
+import nhlevel
 from nhi18n import LANG, _
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -64,11 +65,13 @@ TOOLS = [
     ("replace", _("Remplacer du terrain"), _("Remplacer"), "R"),
 ]
 TOOL_NAME = {t: name for t, name, _short, _key in TOOLS}
+# outil temporaire du tracé d'une région (m, puis une région)
+TOOL_NAME["region"] = _("Zone d'une région")
 TOOL_KEY = {key: t for t, _name, _short, key in TOOLS}
 TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut", "ellipse",
-             "fillellipse", "scatter", "replace"}
+             "fillellipse", "scatter", "replace", "region"}
 # outils dont l'aperçu montre la zone sans y dessiner le pinceau
-SELECT = {"copy", "cut", "scatter", "replace"}
+SELECT = {"copy", "cut", "scatter", "replace", "region"}
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
 FLIP_NAME = {0: _("aucun"), 1: _("vertical"), 2: _("horizontal"),
@@ -234,6 +237,46 @@ OBJ_FORM = [
     ("greased", "bool", _("graissé")),
     ("lit", "bool", _("allumé")),
 ]
+# Régions : marque dans les listes, famille d'affichage (couleur de fond
+# du calque) et formulaire d'options
+REGION_MARK = {"region": "R", "non_diggable": "#", "non_passwall": "#",
+               "teleport_region": "T", "levregion": "A"}
+REGION_FAMILY = {"region": "room", "non_diggable": "dig",
+                 "non_passwall": "dig", "teleport_region": "tele",
+                 "levregion": "tele"}
+REGION_BG = {"room": curses.COLOR_BLUE, "lit": curses.COLOR_YELLOW,
+             "dig": curses.COLOR_RED, "tele": curses.COLOR_GREEN}
+
+
+def region_family(r):
+    """Calque d'une région : les des.region() sans type de salle ne font
+    qu'éclairer ou assombrir (souvent toute la carte) : calque « lit »."""
+    fam = REGION_FAMILY[r.kind]
+    if fam == "room" and r.extra.get("type", "ordinary") == "ordinary":
+        return "lit"
+    return fam
+REGION_FORMS = {
+    "region": [
+        ("type", ("choice", nhlevel.ROOM_TYPES), _("type de salle")),
+        ("lit", "bool", _("éclairée")),
+        ("filled", "int", _("remplie (1 : peuplée selon le type)")),
+        ("irregular", "bool", _("forme irrégulière")),
+        ("joined", "bool", _("reliée aux couloirs")),
+        ("arrival_room", "bool", _("salle d'arrivée")),
+    ],
+    "teleport_region": [
+        ("dir", ("choice", nhlevel.TELE_DIRS),
+         _("arrivées concernées (both, down, up)")),
+        ("region_islev", "bool", _("coordonnées du niveau entier")),
+    ],
+    "levregion": [
+        ("type", ("choice", nhlevel.LEVREGION_TYPES), _("type")),
+        ("name", "str", _("nom (branche, portail)")),
+        ("region_islev", "bool", _("coordonnées du niveau entier")),
+        ("padding", "int", _("marge")),
+    ],
+}
+
 BUC = ["random", "blessed", "uncursed", "cursed", "not-cursed",
        "not-uncursed", "not-blessed"]
 
@@ -291,14 +334,22 @@ OUTILS (Espace ou Entrée pour appliquer)
 ENTITÉS (coordonnées relatives à la carte)
   m  placer une entité (escalier, échelle, autel, monstre, objet, piège,
      porte, gravure, or, tombe, pont-levis, élément de décor : fontaine,
-     évier…, terrain d'une case : des.terrain)
+     évier…, terrain d'une case : des.terrain) ou une région
+     (des.region : salle typée ou zone éclairée, des.non_diggable,
+     des.non_passwall, des.teleport_region, des.levregion) : la région
+     part du curseur, Espace sur le coin opposé
   r  répéter la dernière entité au curseur
      Monstres et objets : un formulaire présente leurs options courantes
      (Entrée modifie : défaut -> oui -> non -> défaut ; Échap termine) ;
      « inventaire » (monstre) et « contenu » (coffre, statue…) ouvrent la
      liste de leurs objets (Entrée/e : modifier, d : supprimer)
   Suppr / Retour arrière / z   supprimer les entités sous le curseur
-  i  liste des entités (Entrée: aller, e: modifier, d: supprimer)
+  i  liste des entités et des régions (Entrée: aller, e: modifier,
+     d: supprimer ; e sur une région : options ou zone à redessiner)
+  Régions en couleur de fond : bleu les salles typées (temple…), vert la
+  téléportation et les arrivées ; masquées par défaut : jaune les zones
+  seulement éclairées ou sombres, rouge les zones non creusables ou sans
+  passe-muraille
   Tab  afficher / masquer les entités
   Monstres et objets aléatoires : sur fond magenta, avec le symbole de leur
   classe (d, !…) ou « ? » quand tout est aléatoire

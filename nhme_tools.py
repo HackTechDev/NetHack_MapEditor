@@ -24,7 +24,7 @@ class ToolsMixin:
         if self.anchor is None:
             return {}
         cells = self.shape_cells(self.anchor, (self.cx, self.cy))
-        if self.tool in ("copy", "cut"):
+        if self.tool in ("copy", "cut", "region"):
             return cells
         return self.mirrored(cells)
 
@@ -42,7 +42,7 @@ class ToolsMixin:
                 cells[(x, ly)] = cells[(x, hy)] = br
             for y in range(ly, hy + 1):
                 cells[(lx, y)] = cells[(hx, y)] = br
-        elif t == "fillrect":
+        elif t in ("fillrect", "region"):
             for y in range(ly, hy + 1):
                 for x in range(lx, hx + 1):
                     cells[(x, y)] = br
@@ -216,6 +216,8 @@ class ToolsMixin:
                     len(pick), len(cells), self.density)
             elif t == "replace":
                 self.replace_terrain(a, b)
+            elif t == "region":
+                self.finish_region(a, b)
             elif t in SELECT:
                 self.copy(a, b, cut=t == "cut")
             else:

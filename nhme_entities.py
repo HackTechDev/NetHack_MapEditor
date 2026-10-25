@@ -5,7 +5,8 @@ import copy
 import nhlevel
 from nhi18n import _
 from nhlevel import Entity
-from nhme_common import Cancel, MON_FORM, OBJ_FORM
+from nhme_common import (
+    Cancel, MON_FORM, OBJ_FORM, REGION_FORMS, REGION_MARK)
 
 
 class EntitiesMixin:
@@ -150,8 +151,15 @@ class EntitiesMixin:
             return
         kinds = [("%s" % nhlevel.ENTITY_LABEL[k].capitalize(), k)
                  for k in nhlevel.ENTITY_KINDS]
+        kinds += [("[%s] %s (des.%s)" % (REGION_MARK[k],
+                                         nhlevel.REGION_LABEL[k].capitalize(),
+                                         k), k)
+                  for k in nhlevel.REGION_KINDS]
         kind = self.pick(_("Placer une entité en (%d,%d)")
                          % (self.cx, self.cy), kinds)
+        if kind in nhlevel.REGION_KINDS:
+            self.start_region(kind)
+            return
         value, extra = self.edit_entity_fields(kind)
         self.add_entity(Entity(kind, self.cx, self.cy, value, extra))
 
@@ -189,28 +197,38 @@ class EntitiesMixin:
         self.msg = _("%d entité(s) supprimée(s).") % len(ents)
 
     def entity_list(self):
+        """Liste des entités puis des régions du niveau."""
         sel = None
         while True:
-            ents = self.lvl.entities
-            if not ents:
+            ents, regs = self.lvl.entities, self.lvl.regions
+            if not ents and not regs:
                 self.msg = _("Aucune entité.")
                 return
             ents.sort(key=lambda e: (e.y, e.x))
             items = [("(%2d,%2d) %s %s" % (e.x, e.y, self.entity_glyph(e)[0],
-                                          e.describe()), i)
+                                          e.describe()), ("e", i))
                      for i, e in enumerate(ents)]
+            items += [("[%s] %s" % (REGION_MARK[r.kind], r.describe()),
+                       ("r", i)) for i, r in enumerate(regs)]
             if sel is None:
                 here = [i for i, e in enumerate(ents)
                         if (e.x, e.y) == (self.cx, self.cy)]
                 sel = here[0] if here else 0
             hint = _("Entrée: aller  e: modifier  d: supprimer  Échap: fermer")
             try:
-                i, action = self.pick_action(_("Entités (%d)") % len(ents),
-                                             items, sel, hint)
+                (what, i), action = self.pick_action(
+                    _("Entités (%d) et régions (%d)") % (len(ents),
+                                                         len(regs)),
+                    items, sel, hint)
             except Cancel:
                 return
+            sel = [v for _l, v in items].index((what, i))
+            if what == "r":
+                if self.region_action(regs[i], action):
+                    return
+                sel = min(sel, len(ents) + len(regs) - 2)
+                continue
             e = ents[i]
-            sel = i
             if action == "goto":
                 self.cx, self.cy = e.x, e.y
                 return
@@ -218,7 +236,7 @@ class EntitiesMixin:
                 self.checkpoint(_("Suppression : %s") % e.describe())
                 ents.remove(e)
                 self.msg = _("Supprimé : %s") % e.describe()
-                sel = max(0, i - 1)
+                sel = max(0, sel - 1)
             elif action == "edit":
                 try:
                     value, extra = self.edit_entity_fields(e.kind, e.value,
@@ -228,3 +246,104 @@ class EntitiesMixin:
                 self.checkpoint(_("Modification : %s") % e.describe())
                 e.value, e.extra = value, extra
                 self.msg = _("Modifié : %s") % e.describe()
+
+    # --- régions --------------------------------------------------------
+    def region_action(self, r, action):
+        """Action de la liste sur une région ; True pour fermer la liste."""
+        if action == "goto":
+            cells = r.cells(self.lvl)
+            if cells:
+                self.cx, self.cy = min(cells, key=lambda p: (p[1], p[0]))
+            return True
+        if r.readonly:
+            self.msg = _("Région écrite avec du code Lua : modifiez-la dans "
+                         "le fichier.")
+            return False
+        if action == "delete":
+            self.checkpoint(_("Suppression : %s") % r.describe())
+            self.lvl.regions.remove(r)
+            self.msg = _("Supprimé : %s") % r.describe()
+            return False
+        what = self.pick(_("Modifier : %s") % r.describe(), [
+            (_("options"), "options"),
+            (_("redessiner la zone (à partir du curseur)"), "rect")])
+        if what == "rect":
+            self.start_region(r.kind, r)
+            return True
+        extra = self.edit_region_fields(r.kind, r.extra, r.style)
+        self.checkpoint(_("Modification : %s") % r.describe())
+        r.extra = extra
+        self.msg = _("Modifié : %s") % r.describe()
+        return False
+
+    def edit_region_fields(self, kind, extra, style="table"):
+        """Formulaire des options d'une région. Renvoie extra."""
+        extra = dict(extra)
+        if style == "sel":
+            if kind == "region":
+                extra["lit"] = self.pick(
+                    _("Éclairage de la zone"),
+                    [(_("éclairée (lit)"), "lit"),
+                     (_("sombre (unlit)"), "unlit")],
+                    extra.get("lit", "lit"))
+            return extra
+        form = REGION_FORMS.get(kind)
+        if not form:
+            return extra
+        return self.form(_("Options : %s") % nhlevel.REGION_LABEL[kind],
+                         form, extra)
+
+    def start_region(self, kind, old=None):
+        """Commence le tracé d'une région : le curseur est le premier
+        coin, Espace sur le coin opposé la crée (ou redessine old)."""
+        if old is None:
+            style = "table"
+            if kind in ("non_diggable", "non_passwall"):
+                style = "sel"
+                if self.pick(_("Étendue"), [
+                        (_("une zone (à tracer)"), "zone"),
+                        (_("tout le niveau"), "all")]) == "all":
+                    r = nhlevel.Region(kind, None)
+                    self.checkpoint(_("Ajout : %s") % r.describe())
+                    self.lvl.regions.append(r)
+                    self.msg = _("Ajouté : %s") % r.describe()
+                    return
+            elif kind == "region" and self.pick(_("Forme de l'appel"), [
+                    (_("salle ou zone typée : { region = {...}, type = ... }"),
+                     "table"),
+                    (_("éclairage seul : selection.area(...), \"lit\""),
+                     "sel")]) == "sel":
+                style = "sel"
+            extra = self.edit_region_fields(kind, {}, style)
+            self.pending_region = nhlevel.Region(kind, None, extra, style)
+        else:
+            self.pending_region = old
+        if self.tool != "region":
+            self.region_prev_tool = self.tool
+        self.tool = "region"
+        self.anchor = (self.cx, self.cy)
+        self.msg = _("Zone : allez au coin opposé puis Espace (Échap "
+                     "annule).")
+
+    def finish_region(self, a, b):
+        r = self.pending_region
+        rect = (min(a[0], b[0]), min(a[1], b[1]),
+                max(a[0], b[0]), max(a[1], b[1]))
+        if r.islev() and self.lvl.origin():
+            o = self.lvl.origin()       # coordonnées absolues du niveau
+            rect = (rect[0] + o[0], rect[1] + o[1], rect[2] + o[0],
+                    rect[3] + o[1])
+        if r in self.lvl.regions:
+            self.checkpoint(_("Modification : %s") % r.describe())
+            r.rect = rect
+            self.msg = _("Modifié : %s") % r.describe()
+        else:
+            r.rect = rect
+            self.checkpoint(_("Ajout : %s") % r.describe())
+            self.lvl.regions.append(r)
+            self.msg = _("Ajouté : %s") % r.describe()
+        self.end_region()
+
+    def end_region(self):
+        self.pending_region = None
+        self.tool = getattr(self, "region_prev_tool", "pen")

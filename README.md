@@ -34,6 +34,9 @@ Résumé ci-dessous ; la liste complète est dans [FEATURES.md](FEATURES.md).
 - entités : escaliers, échelles, autels, monstres et objets (avec leurs
   options, inventaires et contenus), pièges, portes, gravures, or,
   tombes, ponts-levis, éléments de décor, terrain d'une case ;
+- régions : salles typées (temple, boutique…), zones éclairées, non
+  creusables, sans passe-muraille, de téléportation et d'arrivée,
+  affichées en couleur de fond ;
 - ouverture des niveaux de `dat/` sans rien perdre du script Lua, et des
   salles à thème de `themerms.lua` ;
 - rendu « comme dans le jeu », aperçu des retournements aléatoires ;
@@ -95,7 +98,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | Espace / Entrée | appliquer l'outil (outils à deux points : ancre puis tracé ; Échap annule) |
 | `d` | crayon baissé : peint en se déplaçant (tout le trait s'annule en une fois) |
 | `a` | avance automatique après chaque caractère tapé (pratique pour « taper » une carte) |
-| `m` | placer une entité : escalier, échelle, autel, monstre, objet, piège, porte, gravure, or (`des.gold`), tombe (`des.grave`), pont-levis (`des.drawbridge`), élément de décor (`des.feature` : fontaine, évier, bassin, trône, arbre), terrain d'une case (`des.terrain`) |
+| `m` | placer une entité : escalier, échelle, autel, monstre, objet, piège, porte, gravure, or (`des.gold`), tombe (`des.grave`), pont-levis (`des.drawbridge`), élément de décor (`des.feature` : fontaine, évier, bassin, trône, arbre), terrain d'une case (`des.terrain`), région (`des.region`, `des.non_diggable`, `des.non_passwall`, `des.teleport_region`, `des.levregion` : la zone part du curseur, Espace sur le coin opposé) |
 | `r` | répéter la dernière entité placée sous le curseur |
 | Suppr, Retour arrière, `z` | supprimer les entités sous le curseur |
 | `i` | liste des entités (Entrée : y aller, `e` : modifier, `d` : supprimer) |
@@ -152,9 +155,14 @@ Il édite :
   tombes, ponts-levis, éléments de décor, terrain d'une case), y compris
   l'inventaire des monstres (`inventory = function() ... end`) et le
   contenu des conteneurs et des statues (`contents = function() ... end`)
-  quand ces fonctions ne contiennent que des `des.object()` littéraux.
+  quand ces fonctions ne contiennent que des `des.object()` littéraux ;
+- les régions écrites après cette carte : `des.region()` (salles typées et
+  `selection.area(...)` éclairées ou sombres), `des.non_diggable()`,
+  `des.non_passwall()`, `des.teleport_region()`, `des.levregion()`. Une
+  région dont l'appel contient du code Lua est affichée mais reste non
+  modifiable.
 
-Tout le reste du script (régions, boucles, éléments aléatoires, autres
+Tout le reste du script (boucles, éléments aléatoires, autres
 cartes…) est conservé tel quel à l'enregistrement. Un fichier ouvert puis
 enregistré sans modification reste identique octet pour octet. Lors du
 premier enregistrement, l'original est gardé sous `fichier.lua~`.

@@ -156,11 +156,106 @@ class Entity:
         return "des.%s(%s);" % (k, lua_value(t))
 
 
+# Régions : des.region(), des.non_diggable(), des.non_passwall(),
+# des.teleport_region(), des.levregion()
+REGION_KINDS = ["region", "non_diggable", "non_passwall", "teleport_region",
+                "levregion"]
+REGION_LABEL = {
+    "region": _("région"), "non_diggable": _("zone non creusable"),
+    "non_passwall": _("zone sans passe-muraille"),
+    "teleport_region": _("zone de téléportation"),
+    "levregion": _("zone d'arrivée"),
+}
+# types de salle de des.region() (room_types[] de src/sp_lev.c)
+ROOM_TYPES = ["ordinary", "themed", "throne", "swamp", "vault", "beehive",
+              "morgue", "barracks", "zoo", "delphi", "temple", "anthole",
+              "cocknest", "leprehall", "shop", "armor shop", "scroll shop",
+              "potion shop", "weapon shop", "food shop", "ring shop",
+              "wand shop", "tool shop", "book shop", "health food shop",
+              "candle shop"]
+TELE_DIRS = ["both", "down", "up"]
+LEVREGION_TYPES = ["stair-down", "stair-up", "portal", "branch", "teleport",
+                   "teleport-up", "teleport-down"]
+
+
+class SelArea(tuple):
+    """selection.area(x1, y1, x2, y2) lu dans un appel."""
+
+
+class Region:
+    """Zone rectangulaire d'un appel des.region() ou apparenté.
+
+    rect : (x1, y1, x2, y2) inclus, relatif à la carte (absolu dans le
+    niveau si region_islev), ou None pour tout le niveau (non_diggable()).
+    style « sel » : écrit avec selection.area() (des.region(sel, "lit"),
+    non_diggable, non_passwall) ; « table » : { region = {...}, ... }.
+    readonly : région lue dans un appel qui contient du code ; affichée
+    mais conservée telle quelle."""
+
+    def __init__(self, kind, rect, extra=None, style=None, origin=None,
+                 readonly=False):
+        self.kind, self.rect = kind, tuple(rect) if rect else None
+        self.extra = dict(extra or {})
+        self.style = style or ("sel" if kind in ("non_diggable",
+                                                 "non_passwall") else "table")
+        self.origin, self.readonly = origin, readonly
+
+    def copy(self):
+        return Region(self.kind, self.rect, copy.deepcopy(self.extra),
+                      self.style, self.origin, self.readonly)
+
+    def islev(self):
+        return bool(self.extra.get("region_islev"))
+
+    def cells(self, lvl):
+        """Cases de la carte couvertes (coordonnées de la carte)."""
+        if self.rect is None:
+            return {(x, y) for y in range(lvl.h) for x in range(lvl.w)}
+        x1, y1, x2, y2 = self.rect
+        if self.islev():
+            o = lvl.origin()
+            if not o:
+                return set()
+            x1, x2, y1, y2 = x1 - o[0], x2 - o[0], y1 - o[1], y2 - o[1]
+        return {(x, y) for y in range(max(0, y1), min(lvl.h, y2 + 1))
+                for x in range(max(0, x1), min(lvl.w, x2 + 1))}
+
+    def describe(self):
+        s = REGION_LABEL[self.kind]
+        if self.rect:
+            s += " (%d,%d)-(%d,%d)" % self.rect
+        else:
+            s += " " + _("(tout le niveau)")
+        if self.style == "sel" and "lit" in self.extra:
+            s += " " + self.extra["lit"]
+        else:
+            ex = {k: v for k, v in self.extra.items()}
+            if ex:
+                s += " {" + ", ".join("%s=%s" % (k, lua_value(v))
+                                      for k, v in ex.items()) + "}"
+        if self.readonly:
+            s += " " + _("[code Lua, non modifiable]")
+        return s
+
+    def to_lua(self):
+        k, r = self.kind, self.rect
+        area = "selection.area(%d,%d,%d,%d)" % r if r else ""
+        if self.style == "sel":
+            if k == "region":
+                return "des.region(%s, %s);" % (
+                    area, lua_value(self.extra.get("lit", "lit")))
+            return "des.%s(%s);" % (k, area)
+        t = {"region": list(r)} if r else {}
+        t.update(self.extra)
+        return "des.%s(%s);" % (k, lua_value(t))
+
+
 class Level:
     def __init__(self, w=75, h=19):
         self.w, self.h = w, h
         self.grid = [[" "] * w for _ in range(h)]
         self.entities = []
+        self.regions = []
         self.init = {"style": "solidfill", "fg": " "}
         self.flags = ["mazelevel"]
         self.halign, self.valign = "center", "center"
@@ -199,6 +294,7 @@ class Level:
         for e in self.entities:
             if e.y >= y:
                 e.y += 1
+        self._shift_regions(1, y, 1)
         return True
 
     def delete_row(self, y):
@@ -211,6 +307,7 @@ class Level:
         for e in self.entities:
             if e.y > y:
                 e.y -= 1
+        self._shift_regions(1, y, -1)
         return True
 
     def insert_col(self, x, fill=" "):
@@ -223,6 +320,7 @@ class Level:
         for e in self.entities:
             if e.x >= x:
                 e.x += 1
+        self._shift_regions(0, x, 1)
         return True
 
     def delete_col(self, x):
@@ -236,7 +334,30 @@ class Level:
         for e in self.entities:
             if e.x > x:
                 e.x -= 1
+        self._shift_regions(0, x, -1)
         return True
+
+    def _shift_regions(self, axis, at, delta):
+        """Décale les régions après une insertion (delta 1) ou une
+        suppression (delta -1) de la ligne ou colonne at (axis 1 : y)."""
+        keep = []
+        for r in self.regions:
+            if r.rect is None or r.islev() or r.readonly:
+                keep.append(r)
+                continue
+            c = list(r.rect)
+            for i in (axis, axis + 2):
+                if c[i] > at or (c[i] == at and delta > 0):
+                    c[i] += delta
+                elif c[i] == at and delta < 0 and i == axis + 2:
+                    c[i] -= 1       # bord supprimé : la zone rétrécit
+            if c[axis] <= c[axis + 2]:
+                r.rect = tuple(c)
+                keep.append(r)
+        self.regions = keep
+
+    def regions_at(self, x, y):
+        return [r for r in self.regions if (x, y) in r.cells(self)]
 
     def entities_at(self, x, y):
         return [e for e in self.entities if e.x == x and e.y == y]
@@ -254,13 +375,15 @@ class Level:
         return ([row[:] for row in self.grid],
                 [e.copy() for e in self.entities], self.w, self.h,
                 copy.deepcopy(self.init), list(self.flags), self.lit,
-                self.pos, self.halign, self.valign)
+                self.pos, self.halign, self.valign,
+                [r.copy() for r in self.regions])
 
     def restore(self, snap):
         (g, ents, self.w, self.h, init, flags, self.lit, self.pos,
-         self.halign, self.valign) = snap
+         self.halign, self.valign, regions) = snap
         self.grid = [row[:] for row in g]
         self.entities = [e.copy() for e in ents]
+        self.regions = [r.copy() for r in regions]
         self.init, self.flags = copy.deepcopy(init), list(flags)
 
     def map_text(self):
@@ -345,7 +468,12 @@ class Level:
         ents = [e for e in self.entities
                 if not new_only or e.origin is None]
         ents.sort(key=lambda e: (order[e.kind], e.y, e.x))
-        return "\n".join(e.to_lua() for e in ents)
+        # puis les régions, dans leur ordre (une région peut en recouvrir
+        # une autre)
+        regs = [r for r in self.regions if not r.readonly
+                and (not new_only or r.origin is None)]
+        return "\n".join([e.to_lua() for e in ents]
+                         + [r.to_lua() for r in regs])
 
     def to_lua(self, name="niveau"):
         if self.source is not None:
@@ -365,10 +493,12 @@ class Level:
         out, pos = [], 0
         have_init = any(c["role"] == "init" for c in calls)
         have_flags = any(c["role"] == "flags" for c in calls)
-        ent_calls = [i for i, c in enumerate(calls) if c["role"] == "entity"]
+        ent_calls = [i for i, c in enumerate(calls)
+                     if c["role"] in ("entity", "region")]
         last_ent = ent_calls[-1] if ent_calls else None
-        by_origin = {e.origin: e for e in self.entities
-                     if e.origin is not None}
+        by_origin = {e.origin: e for e in self.entities + self.regions
+                     if e.origin is not None and not getattr(e, "readonly",
+                                                             False)}
         new = self.entities_lua(new_only=True)
         def same(c, gen):
             # texte d'origine si l'élément n'a pas été modifié
@@ -398,14 +528,14 @@ class Level:
                 if new and last_ent is None:
                     block += "\n\n" + new
                 out.append(block)
-            elif role == "entity":
+            elif role in ("entity", "region"):
                 e = by_origin.get(c["origin"])
                 block = same(c, e.to_lua()) if e else ""
                 if new and idx == last_ent:
                     block += ("\n" if block else "") + new
                 out.append(block)
             pos = c["end"]
-            if (role == "entity" and not out[-1]) or (
+            if (role in ("entity", "region") and not out[-1]) or (
                     role == "flags" and not self.flags):
                 # avale la fin de ligne laissée vide
                 m = re.match(r"[ \t]*\n", text[pos:])
@@ -675,6 +805,21 @@ def _parse_value(toks, i, n):
         return t, i + 1
     if kind == "name" and val == "function":
         return _parse_function(toks, i + 1, n)
+    if (kind == "name" and val == "selection" and i + 3 < n
+            and toks[i + 1][1] == "." and toks[i + 2][1] == "area"
+            and toks[i + 3][1] == "("):
+        depth, j = 0, i + 3
+        while j < n:
+            v = toks[j][1] if toks[j][0] == "op" else None
+            depth += v in ("(", "{", "[")
+            depth -= v in (")", "}", "]")
+            if depth == 0:
+                break
+            j += 1
+        vals = _parse_args(toks, i + 4, j)[0]
+        if len(vals) != 4 or not all(isinstance(v, int) for v in vals):
+            raise NotLiteral()
+        return SelArea(vals), j + 1
     raise NotLiteral()
 
 
@@ -815,6 +960,52 @@ def _entity_from_call(name, args):
     return Entity(name, xy[0], xy[1], value, extra)
 
 
+def _rect(v):
+    if isinstance(v, list) and len(v) == 4 and all(
+            isinstance(c, int) for c in v):
+        return tuple(v)
+    raise NotLiteral()
+
+
+def _region_from_call(name, args):
+    vals = [_to_py(a) for a in args]
+    if name in ("non_diggable", "non_passwall"):
+        if not vals:
+            return Region(name, None)
+        if len(vals) == 1 and isinstance(vals[0], SelArea):
+            return Region(name, vals[0])
+        raise NotLiteral()
+    if (name == "region" and len(vals) == 2 and isinstance(vals[0], SelArea)
+            and vals[1] in ("lit", "unlit")):
+        return Region(name, vals[0], {"lit": vals[1]}, "sel")
+    if len(vals) == 1 and isinstance(vals[0], dict) and "region" in vals[0]:
+        t = dict(vals[0])
+        rect = _rect(t.pop("region"))
+        if "contents" in t:
+            raise NotLiteral()
+        return Region(name, rect, t, "table")
+    raise NotLiteral()
+
+
+def _readonly_region(name, args):
+    """Région d'un appel non littéral (avec du code) dont la zone est
+    quand même lisible ; None sinon."""
+    if name in ("non_diggable", "non_passwall", "region") and args:
+        try:
+            v, j = _parse_value(args, 0, len(args))
+            if isinstance(v, SelArea):
+                return Region(name, v, {}, "sel", readonly=True)
+        except NotLiteral:
+            pass
+    try:
+        rect = _rect(_to_py(_literal_fields(args).get("region")))
+    except NotLiteral:
+        return None
+    extra = {k: v for k, v in _literal_fields(args).items()
+             if k != "region" and not isinstance(v, (dict, list))}
+    return Region(name, rect, extra, "table", readonly=True)
+
+
 def parse_level(text):
     """Construit un Level à partir d'un script Lua de niveau."""
     lvl = Level(1, 1)
@@ -843,6 +1034,18 @@ def parse_level(text):
             elif name == "map" and map_seen:
                 map_done = True
                 raise NotLiteral()
+            elif map_seen and not map_done and name in REGION_KINDS:
+                try:
+                    vals = _parse_args(args, 0, len(args))[0]
+                    r = _region_from_call(name, vals)
+                except NotLiteral:
+                    r = _readonly_region(name, args)
+                    if r:
+                        lvl.regions.append(r)
+                    raise
+                r.origin = c["origin"] = len(kept)
+                lvl.regions.append(r)
+                c["role"] = "region"
             elif map_seen and not map_done and name in ENTITY_KINDS:
                 vals = _parse_args(args, 0, len(args))[0]
                 e = _entity_from_call(name, vals)
@@ -863,11 +1066,13 @@ def parse_level(text):
     if not has_flags:
         lvl.flags = []
     lvl.source = (text, kept)
-    by_origin = {e.origin: e for e in lvl.entities}
+    by_origin = {e.origin: e for e in lvl.entities + lvl.regions
+                 if not getattr(e, "readonly", False)}
     for c in kept:
         c["gen"] = {"init": lvl.init_lua, "flags": lvl.flags_lua,
                     "map": lvl.map_lua,
-                    "entity": lambda: by_origin[c["origin"]].to_lua()
+                    "entity": lambda: by_origin[c["origin"]].to_lua(),
+                    "region": lambda: by_origin[c["origin"]].to_lua(),
                     }[c["role"]]()
     return lvl, warnings
 

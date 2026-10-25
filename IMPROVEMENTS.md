@@ -13,7 +13,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 
 | Thème | Fait | Reste |
 |---|---|---|
-| 1. Couverture du format Lua | 1 / 5 | régions, plusieurs cartes, `contents`, éléments aléatoires |
+| 1. Couverture du format Lua | 2 / 5 | plusieurs cartes, `contents`, éléments aléatoires |
 | 2. Affichage | 5 / 5 | — |
 | 3. Outils d'édition | 8 / 9 | générateurs |
 | 4. Entités | 4 / 4 | — |
@@ -34,7 +34,7 @@ Aujourd'hui, l'éditeur ne gère que la première `des.map()` et les entités à
 coordonnées fixes qui la suivent. Le reste du script est conservé, mais il
 reste invisible dans l'éditeur.
 
-- **Régions** **[moyen]** : afficher et éditer `des.region()` (zones
+- ✅ **Fait** — **Régions** **[moyen]** : afficher et éditer `des.region()` (zones
   éclairées ou sombres, salles typées : temple, boutique, zoo…),
   `des.non_diggable()`, `des.non_passwall()`, `des.teleport_region()` et
   `des.levregion()`. On les montrerait sous forme de rectangles en

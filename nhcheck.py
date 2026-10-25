@@ -144,32 +144,28 @@ WALLS = set("-|")
 
 
 def temple_regions(lvl):
-    """Cases des salles « temple » déclarées par des.region() à
-    coordonnées littérales ; None si une région temple n'est pas lisible
-    (on ne peut alors rien affirmer)."""
-    if not lvl.source:
-        return set()
+    """Cases des salles « temple » déclarées par des.region() (celles de
+    l'éditeur et celles du fichier) ; None si une région temple du
+    fichier n'est pas lisible (on ne peut alors rien affirmer)."""
+    if lvl.source:
+        for c in nhlevel.scan_des_calls(lvl.source[0]):
+            if (c["name"] != "region"
+                    or "temple" not in lvl.source[0][c["start"]:c["end"]]):
+                continue
+            try:
+                nhlevel._parse_args(c["args"], 0, len(c["args"]))
+            except nhlevel.NotLiteral:
+                r = nhlevel._readonly_region("region", c["args"])
+                if r is None or r.extra.get("type") != "temple":
+                    return None
     cells = set()
-    for c in nhlevel.scan_des_calls(lvl.source[0]):
-        if c["name"] != "region":
+    for r in lvl.regions:
+        if r.kind != "region" or r.extra.get("type") != "temple":
             continue
-        try:
-            vals = nhlevel._parse_args(c["args"], 0, len(c["args"]))[0]
-            t = nhlevel._to_py(vals[0]) if len(vals) == 1 else None
-        except nhlevel.NotLiteral:
-            t = None
-        if not isinstance(t, dict):
-            if "temple" in lvl.source[0][c["start"]:c["end"]]:
-                return None
-            continue
-        if t.get("type") != "temple":
-            continue
-        r = t.get("region")
-        if not (isinstance(r, list) and len(r) == 4
-                and all(isinstance(v, int) for v in r)):
+        if r.rect is None:
             return None
-        x1, y1, x2, y2 = r
-        if t.get("irregular"):
+        x1, y1, x2, y2 = r.rect
+        if r.extra.get("irregular"):
             # salle de forme libre : remplissage depuis le premier point
             stack, room = [(x1, y1)], set()
             while stack:
@@ -181,8 +177,7 @@ def temple_regions(lvl):
                 stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
             cells |= room
         else:
-            cells |= {(x, y) for x in range(x1, x2 + 1)
-                      for y in range(y1, y2 + 1)}
+            cells |= r.cells(lvl)
     return cells
 
 

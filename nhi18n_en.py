@@ -366,7 +366,6 @@ EN = {
     "- retirer l'option": "- remove the option",
     "montant (up)": "up",
     "descendant (down)": "down",
-    "Entités (%d)": "Entities (%d)",
     "Modifié : %s": "Changed: %s",
     "Objet (tapez pour filtrer ; un symbole seul = classe)":
         "Object (type to filter; a single symbol = class)",
@@ -670,6 +669,52 @@ EN = {
     'Élément de décor': 'Feature',
     'Épitaphe (vide : aléatoire) : ': 'Epitaph (empty: random): ',
     'Terrain de la case': 'Terrain of the cell',
+    # régions
+    'région': 'region',
+    'zone non creusable': 'non-diggable zone',
+    'zone sans passe-muraille': 'non-passwall zone',
+    'zone de téléportation': 'teleport region',
+    "zone d'arrivée": 'arrival region',
+    '(tout le niveau)': '(whole level)',
+    '[code Lua, non modifiable]': '[Lua code, read-only]',
+    "Zone d'une région": 'Region area',
+    'type de salle': 'room type',
+    'éclairée': 'lit',
+    'remplie (1 : peuplée selon le type)':
+        'filled (1: stocked according to type)',
+    'forme irrégulière': 'irregular shape',
+    'reliée aux couloirs': 'joined to corridors',
+    "salle d'arrivée": 'arrival room',
+    'arrivées concernées (both, down, up)':
+        'arrivals concerned (both, down, up)',
+    'coordonnées du niveau entier': 'whole-level coordinates',
+    'type': 'type',
+    'nom (branche, portail)': 'name (branch, portal)',
+    'marge': 'padding',
+    ' Zone de la région : Espace/Entrée sur le coin opposé  Échap: annuler':
+        ' Region area: Space/Enter on the opposite corner  Esc: cancel',
+    'Zone : allez au coin opposé puis Espace (Échap annule).':
+        'Area: go to the opposite corner then Space (Esc cancels).',
+    'Région écrite avec du code Lua : modifiez-la dans le fichier.':
+        'Region written with Lua code: edit it in the file.',
+    'Modifier : %s': 'Edit: %s',
+    'Options : %s': 'Options: %s',
+    'Ajouté : %s': 'Added: %s',
+    'options': 'options',
+    'redessiner la zone (à partir du curseur)':
+        'redraw the area (from the cursor)',
+    'Éclairage de la zone': 'Area lighting',
+    'Entités (%d) et régions (%d)': 'Entities (%d) and regions (%d)',
+    'Étendue': 'Extent',
+    'éclairée (lit)': 'lit',
+    'sombre (unlit)': 'dark (unlit)',
+    "Forme de l'appel": 'Call form',
+    'une zone (à tracer)': 'an area (to draw)',
+    'tout le niveau': 'the whole level',
+    'salle ou zone typée : { region = {...}, type = ... }':
+        'room or typed area: { region = {...}, type = ... }',
+    'éclairage seul : selection.area(...), "lit"':
+        'lighting only: selection.area(...), "lit"',
 }
 
 HELP = """\
@@ -720,14 +765,21 @@ TOOLS (Space or Enter to apply)
 ENTITIES (coordinates relative to the map)
   m  place an entity (stairs, ladder, altar, monster, object, trap,
      door, engraving, gold, grave, drawbridge, feature: fountain,
-     sink…, single-cell terrain: des.terrain)
+     sink…, single-cell terrain: des.terrain) or a region
+     (des.region: typed room or lit area, des.non_diggable,
+     des.non_passwall, des.teleport_region, des.levregion): the region
+     starts at the cursor, Space on the opposite corner
   r  repeat the last entity at the cursor
      Monsters and objects: a form shows their common options
      (Enter changes: default -> yes -> no -> default; Esc ends);
      "inventory" (monster) and "contents" (box, statue…) open the
      list of their objects (Enter/e: edit, d: delete)
   Del / Backspace / z   delete the entities under the cursor
-  i  entity list (Enter: go, e: edit, d: delete)
+  i  entity and region list (Enter: go, e: edit, d: delete;
+     e on a region: options or area to redraw)
+  Regions as background colours: blue for typed rooms (temple…), green
+  for teleport and arrival regions; hidden by default: yellow for areas
+  that are only lit or dark, red for non-diggable or non-passwall zones
   Tab  show / hide the entities
   Random monsters and objects: on a magenta background, with the symbol
   of their class (d, !…) or "?" when everything is random

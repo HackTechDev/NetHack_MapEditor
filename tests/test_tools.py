@@ -201,3 +201,44 @@ class ContextHint(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class Regions(unittest.TestCase):
+    def test_draw_edit_undo(self):
+        ed = editor(["....."] * 4)
+        answers = iter(["table"])
+        ed.pick = lambda *a, **k: next(answers)
+        ed.form = lambda title, fields, values: dict(values, type="temple")
+        ed.cx, ed.cy = 1, 1
+        ed.start_region("region")
+        self.assertEqual(ed.tool, "region")
+        ed.cx, ed.cy = 3, 2
+        ed.apply()
+        self.assertEqual(ed.tool, "pen")
+        r = ed.lvl.regions[0]
+        self.assertEqual((r.rect, r.extra), ((1, 1, 3, 2), {"type": "temple"}))
+        self.assertEqual(ed.lvl.regions_at(2, 2), [r])
+        # redessin de la zone depuis la liste
+        answers = iter(["rect"])
+        ed.cx, ed.cy = 0, 0
+        self.assertTrue(ed.region_action(r, "edit"))
+        ed.cx, ed.cy = 1, 1
+        ed.apply()
+        self.assertEqual(ed.lvl.regions[0].rect, (0, 0, 1, 1))
+        ed.undo()
+        self.assertEqual(ed.lvl.regions[0].rect, (1, 1, 3, 2))
+        ed.region_action(ed.lvl.regions[0], "delete")
+        self.assertEqual(ed.lvl.regions, [])
+        ed.undo()
+        self.assertEqual(len(ed.lvl.regions), 1)
+
+    def test_whole_level_and_escape(self):
+        ed = editor(["..."] * 2)
+        ed.pick = lambda *a, **k: "all"
+        ed.start_region("non_passwall")
+        self.assertEqual(ed.lvl.regions[0].rect, None)
+        self.assertEqual(ed.tool, "pen")
+        ed.pick = lambda *a, **k: "zone"
+        ed.start_region("non_diggable")
+        ed.end_region()
+        self.assertEqual((ed.tool, len(ed.lvl.regions)), ("pen", 1))
