@@ -11,7 +11,9 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 - Édite les niveaux spéciaux de NetHack 5.0 / 3.7, écrits en Lua
   (`dat/*.lua` : `des.map()`, `des.monster()`, `des.stair()`…).
 - Utilisable au clavier (flèches ou `h j k l`) et à la souris (clic,
-  glisser, clic droit, molette).
+  glisser, clic droit, molette), y compris dans les fenêtres : un clic
+  choisit une ligne d'une liste ou d'un formulaire, un second la valide,
+  la molette fait défiler listes et textes, le clic droit annule.
 - Palette des outils et des terrains à droite de la carte quand le
   terminal est assez large ; défilement des cartes plus grandes que
   l'écran ; terminal de 80x24 au minimum.
@@ -212,7 +214,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 83 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 84 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

@@ -121,7 +121,9 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 
 La souris est gérée : clic = déplacer le curseur et appliquer l'outil,
 glisser = peindre (Pinceau) ou tracer (Rectangle, Ligne, Salle…),
-clic droit = pipette.
+clic droit = pipette. Dans les listes et les formulaires, un clic choisit
+une ligne et un second clic la valide, la molette fait défiler (les
+fenêtres de texte aussi), le clic droit annule.
 
 Les listes de monstres et d'objets se filtrent en tapant une partie du nom.
 Une lettre seule (`d`, `D`…) donne un monstre aléatoire de cette classe, un

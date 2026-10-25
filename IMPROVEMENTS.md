@@ -22,7 +22,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 7. Fichiers et formats | 4 / 4 | — |
 | 8. Configuration et confort | 3 / 3 | — |
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
-| 10. Nouvelles idées | 2 / 7 | langues, souris, raccourcis, couverture, comparaison |
+| 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
 
 Prochaine étape conseillée : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent.
@@ -211,8 +211,9 @@ Idées apparues pendant le développement des thèmes précédents.
 - **Autres langues** **[facile]** : le mécanisme de traduction
   (`nhi18n.py`) accepte d'autres catalogues que l'anglais ; il suffirait
   d'un fichier `nhi18n_xx.py` et de l'ajouter au choix de la langue.
-- **Souris dans les fenêtres** **[facile]** : choisir dans les listes et
-  les formulaires d'un clic, faire défiler à la molette.
+- ✅ **Fait** — **Souris dans les fenêtres** **[facile]** : choisir dans les listes et
+  les formulaires d'un clic, faire défiler à la molette. Un second clic
+  sur la ligne choisie la valide, le clic droit annule.
 - **Raccourcis vers les modèles** **[facile]** : associer un modèle
   favori à une touche dans le fichier de configuration.
 - **Couverture des tests** **[facile]** : mesurer la part du code

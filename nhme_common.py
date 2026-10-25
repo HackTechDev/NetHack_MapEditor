@@ -298,7 +298,9 @@ DÉPLACEMENT
   f                      aperçu du retournement aléatoire de NetHack :
                          aucun, horizontal, vertical, les deux
   Souris                 clic = déplacer + appliquer l'outil, glisser = peindre,
-                         clic droit = pipette
+                         clic droit = pipette ; dans les listes : clic =
+                         choisir, second clic = valider, molette = défiler,
+                         clic droit = annuler
 
 TERRAIN (le caractère tapé devient le pinceau, et peint en mode Pinceau)
   .  sol        #  couloir      -  mur horiz.   |  mur vert.   +  porte

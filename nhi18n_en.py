@@ -785,7 +785,9 @@ MOVING
   f                      preview NetHack's random flip:
                          none, horizontal, vertical, both
   Mouse                  click = move + apply the tool, drag = paint,
-                         right click = eyedropper
+                         right click = eyedropper; in lists: click =
+                         select, second click = confirm, wheel = scroll,
+                         right click = cancel
 
 TERRAIN (the typed character becomes the brush, and paints with the Pen)
   .  floor      #  corridor     -  horiz. wall  |  vert. wall  +  door

@@ -72,6 +72,28 @@ class DialogsMixin:
         win.keypad(True)
         return win, h, w
 
+    @staticmethod
+    def dialog_mouse(win, h, w):
+        """Événement souris dans une fenêtre de dialogue : ("line", i) clic
+        gauche sur la ligne intérieure i (0 : celle sous le cadre),
+        ("up",) / ("down",) molette, ("cancel",) clic droit ; None pour le
+        reste (mouvements, clic hors de la fenêtre)."""
+        try:
+            _id, mx, my, _z, b = curses.getmouse()
+        except curses.error:
+            return None
+        if b & curses.BUTTON4_PRESSED:
+            return ("up",)
+        if b & getattr(curses, "BUTTON5_PRESSED", 0):
+            return ("down",)
+        if b & (curses.BUTTON3_PRESSED | curses.BUTTON3_CLICKED):
+            return ("cancel",)
+        by, bx = win.getbegyx()
+        if (b & (curses.BUTTON1_PRESSED | curses.BUTTON1_CLICKED)
+                and by < my < by + h - 1 and bx < mx < bx + w - 1):
+            return ("line", my - by - 1)
+        return None
+
     def pick(self, title, items, initial=None, custom=False, hint=""):
         """Liste filtrable. items : [(libellé, valeur)]. Échap -> Cancel.
 
@@ -140,6 +162,20 @@ class DialogsMixin:
                 sel = 0
             elif k == curses.KEY_RESIZE:
                 self.draw()
+            elif k == curses.KEY_MOUSE:
+                # clic : choisit la ligne, un second clic la valide ;
+                # molette : défile ; clic droit : annule
+                m = self.dialog_mouse(win, h, w)
+                if m == ("cancel",):
+                    curses.curs_set(1)
+                    raise Cancel()
+                if m in (("up",), ("down",)):
+                    sel += 3 if m == ("down",) else -3
+                elif m and m[1] < n and top + m[1] < len(shown):
+                    if top + m[1] == sel:
+                        curses.curs_set(1)
+                        return shown[sel][1]
+                    sel = top + m[1]
             elif isinstance(k, str) and k.isprintable():
                 filt += k
                 sel = 0
@@ -165,6 +201,15 @@ class DialogsMixin:
             win.addnstr(h - 1, max(1, w - len(foot) - 2), foot, w - 3)
             win.refresh()
             k = win.getch()
+            if k == curses.KEY_MOUSE:
+                m = self.dialog_mouse(win, h, w)
+                if m in (("up",), ("down",)):
+                    top += 3 if m == ("down",) else -3
+                    top = max(0, min(max(0, len(lines) - n), top))
+                    continue
+                if m is None:
+                    continue        # mouvement : la fenêtre reste
+                break               # clic : fermer
             if k in (curses.KEY_DOWN, ord("j"), curses.KEY_NPAGE, ord(" ")):
                 step = n if k in (curses.KEY_NPAGE, ord(" ")) else 1
                 top = min(max(0, len(lines) - n), top + step)
@@ -349,6 +394,17 @@ class DialogsMixin:
                     return items[sel][1], "delete"
                 if k in (27, ord("q")):
                     raise Cancel()
+                if k == curses.KEY_MOUSE:
+                    m = self.dialog_mouse(win, h, w)
+                    if m == ("cancel",):
+                        raise Cancel()
+                    if m in (("up",), ("down",)):
+                        sel += 3 if m == ("down",) else -3
+                    elif m and m[1] < n and top + m[1] < len(items):
+                        if top + m[1] == sel:
+                            return items[sel][1], "goto"
+                        sel = top + m[1]
+                    continue
                 if k == curses.KEY_UP:
                     sel -= 1
                 elif k == curses.KEY_DOWN:
