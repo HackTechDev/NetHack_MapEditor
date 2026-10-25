@@ -150,13 +150,14 @@ Il édite :
 
 - `des.level_init()` et `des.level_flags()` ;
 - la **première** carte `des.map()` du fichier ;
-- les entités à **coordonnées fixes** écrites après cette carte (escaliers,
+- les entités à **coordonnées fixes** écrites après cette carte ou dans sa
+  fonction `des.map({ ..., contents = function() ... end })` (escaliers,
   échelles, autels, monstres, objets, pièges, portes, gravures, or,
   tombes, ponts-levis, éléments de décor, terrain d'une case), y compris
   l'inventaire des monstres (`inventory = function() ... end`) et le
   contenu des conteneurs et des statues (`contents = function() ... end`)
   quand ces fonctions ne contiennent que des `des.object()` littéraux ;
-- les régions écrites après cette carte : `des.region()` (salles typées et
+- les régions écrites après cette carte ou dans sa fonction `contents` : `des.region()` (salles typées et
   `selection.area(...)` éclairées ou sombres), `des.non_diggable()`,
   `des.non_passwall()`, `des.teleport_region()`, `des.levregion()`. Une
   région dont l'appel contient du code Lua est affichée mais reste non

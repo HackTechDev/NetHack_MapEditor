@@ -518,10 +518,7 @@ class Level:
                 if not have_flags and self.flags:
                     pre.append(self.flags_lua())
                 if self.map_partial:
-                    s, e = c["str_span"]
-                    m = text[c["start"]:c["end"]]
-                    m = (m[:s - c["start"]] + "[[\n" + self.map_text()
-                         + "\n]]" + m[e - c["start"]:])
+                    m = self._merge_map_call(text, c, by_origin, same)
                 else:
                     m = same(c, self.map_lua())
                 block = "\n".join(pre + [m])
@@ -542,6 +539,30 @@ class Level:
                 if m and (not out[-1] or out[-1].endswith("\n")):
                     pos += m.end()
         out.append(text[pos:])
+        return "".join(out)
+
+    def _merge_map_call(self, text, c, by_origin, same):
+        """Texte de l'appel des.map() gardé tel quel, sauf la carte et les
+        éléments modifiés de sa fonction contents."""
+        subs = [c["str_span"] + ("[[\n" + self.map_text() + "\n]]",)]
+        for ic in c.get("inner", ()):
+            e = by_origin.get(ic["origin"])
+            if e:
+                subs.append((ic["start"], ic["end"], same(ic, e.to_lua())))
+            else:
+                # élément supprimé : la ligne entière disparaît si l'appel
+                # était seul dessus
+                s, t = ic["start"], ic["end"]
+                m1 = re.search(r"\n[ \t]*$", text[c["start"]:s])
+                m2 = re.match(r"[ \t]*\n", text[t:])
+                if m1 and m2:
+                    s, t = s - len(m1.group()) + 1, t + m2.end()
+                subs.append((s, t, ""))
+        out, pos = [], c["start"]
+        for s, t, new in sorted(subs):
+            out += [text[pos:s], new]
+            pos = t
+        out.append(text[pos:c["end"]])
         return "".join(out)
 
 
@@ -1012,6 +1033,36 @@ def parse_level(text):
     calls = scan_des_calls(text)
     kept, warnings = [], []
     map_seen = map_done = False
+    serial = iter(range(10 ** 9))       # n° d'origine des éléments lus
+
+    def take(c, name, args):
+        """Entité ou région à coordonnées fixes ; False si l'appel n'est
+        pas modifiable (NotLiteral)."""
+        try:
+            if name in REGION_KINDS:
+                try:
+                    vals = _parse_args(args, 0, len(args))[0]
+                    r = _region_from_call(name, vals)
+                except NotLiteral:
+                    r = _readonly_region(name, args)
+                    if r:
+                        lvl.regions.append(r)
+                    raise
+                r.origin = c["origin"] = next(serial)
+                lvl.regions.append(r)
+                c["role"] = "region"
+            elif name in ENTITY_KINDS:
+                vals = _parse_args(args, 0, len(args))[0]
+                e = _entity_from_call(name, vals)
+                e.origin = c["origin"] = next(serial)
+                lvl.entities.append(e)
+                c["role"] = "entity"
+            else:
+                return False
+        except NotLiteral:
+            return False
+        return True
+
     for c in calls:
         name, args = c["name"], c["args"]
         try:
@@ -1031,27 +1082,23 @@ def parse_level(text):
                 _read_map(lvl, c, args)
                 map_seen = True
                 c["role"] = "map"
+                # appels de « contents = function() ... end » : mêmes
+                # coordonnées (relatives à la carte) qu'après la carte
+                c["inner"] = []
+                if c.get("body"):
+                    bs, be = c["body"]
+                    for ic in scan_des_calls(text[bs:be]):
+                        ic["start"] += bs
+                        ic["end"] += bs
+                        ic["args"] = [(k, v, s + bs, e + bs)
+                                      for k, v, s, e in ic["args"]]
+                        if take(ic, ic["name"], ic["args"]):
+                            c["inner"].append(ic)
             elif name == "map" and map_seen:
                 map_done = True
                 raise NotLiteral()
-            elif map_seen and not map_done and name in REGION_KINDS:
-                try:
-                    vals = _parse_args(args, 0, len(args))[0]
-                    r = _region_from_call(name, vals)
-                except NotLiteral:
-                    r = _readonly_region(name, args)
-                    if r:
-                        lvl.regions.append(r)
-                    raise
-                r.origin = c["origin"] = len(kept)
-                lvl.regions.append(r)
-                c["role"] = "region"
-            elif map_seen and not map_done and name in ENTITY_KINDS:
-                vals = _parse_args(args, 0, len(args))[0]
-                e = _entity_from_call(name, vals)
-                e.origin = c["origin"] = len(kept)
-                lvl.entities.append(e)
-                c["role"] = "entity"
+            elif map_seen and not map_done and take(c, name, args):
+                pass
             else:
                 raise NotLiteral()
             kept.append(c)
@@ -1068,7 +1115,7 @@ def parse_level(text):
     lvl.source = (text, kept)
     by_origin = {e.origin: e for e in lvl.entities + lvl.regions
                  if not getattr(e, "readonly", False)}
-    for c in kept:
+    for c in kept + [ic for c in kept for ic in c.get("inner", ())]:
         c["gen"] = {"init": lvl.init_lua, "flags": lvl.flags_lua,
                     "map": lvl.map_lua,
                     "entity": lambda: by_origin[c["origin"]].to_lua(),
@@ -1097,6 +1144,7 @@ def _read_map(lvl, call, args):
                 break
         if s is None:
             raise NotLiteral()
+        call["body"] = _function_body(args, "contents")
         try:
             vals = _parse_args(args, 0, len(args))[0]
             table = _to_py(vals[0]) if len(vals) == 1 else None
@@ -1130,6 +1178,35 @@ def _read_map(lvl, call, args):
                                 "lit", "map"}
         if unknown:
             lvl.map_partial = True
+
+
+def _function_body(args, field):
+    """(début, fin) du corps de « field = function(...) ... end » au
+    premier niveau de la table args ; None s'il n'y en a pas."""
+    depth = 0
+    for k, t in enumerate(args):
+        if t[0] == "op" and t[1] in "({[":
+            depth += 1
+        elif t[0] == "op" and t[1] in ")}]":
+            depth -= 1
+        elif (depth == 1 and t[0] == "name" and t[1] == field
+              and k + 2 < len(args) and args[k + 1][1] == "="
+              and args[k + 2][:2] == ("name", "function")):
+            j = k + 3
+            while j < len(args) and args[j][1] != ")":
+                j += 1
+            if j >= len(args):
+                return None
+            start, block = args[j][3], 1
+            for t2 in args[j + 1:]:
+                if t2[0] == "name" and t2[1] in _BLOCK_OPEN:
+                    block += 1
+                elif t2[0] == "name" and t2[1] in _BLOCK_CLOSE:
+                    block -= 1
+                    if block == 0:
+                        return start, t2[2]
+            return None
+    return None
 
 
 def _literal_fields(args):

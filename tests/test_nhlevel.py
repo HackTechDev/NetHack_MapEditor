@@ -160,6 +160,29 @@ class Generation(unittest.TestCase):
         lvl.delete_row(0)
         self.assertNotIn("type = \"temple\"", lvl.to_lua())
 
+    def test_map_contents(self):
+        src = (INIT + 'des.map({ halign = "center", valign = "center", '
+               'map = [[\n....\n....\n]], contents = function(rm)\n'
+               '   des.stair("up", 0, 0)\n'
+               '   des.monster("orc", 1, 1)\n'
+               '   des.non_diggable(selection.area(0,0,3,1))\n'
+               '   if percent(50) then des.object("gem", 2, 1) end\n'
+               '   des.trap()\n'
+               'end });\n')
+        lvl = nhlevel.parse_level(src)[0]
+        self.assertEqual(lvl.to_lua(), src)
+        self.assertEqual([e.kind for e in lvl.entities], ["stair", "monster"])
+        self.assertEqual(lvl.regions[0].rect, (0, 0, 3, 1))
+        lvl.entities[0].x = 3
+        del lvl.entities[1]
+        lvl.grid[1][0] = "#"
+        out = lvl.to_lua()
+        self.assertIn('[[\n....\n#...\n]], contents = function(rm)\n'
+                      '   des.stair("up", 3, 0);\n'
+                      '   des.non_diggable(selection.area(0,0,3,1))\n'
+                      '   if percent(50)', out)
+        self.assertNotIn("orc", out)
+
     def test_new_region_written(self):
         lvl = level(["...."] * 3)
         lvl.regions.append(nhlevel.Region("region", (0, 0, 3, 2),

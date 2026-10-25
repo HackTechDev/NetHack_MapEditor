@@ -123,7 +123,8 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 - Ouverture de n'importe quel niveau de `dat/` contenant un `des.map()` :
   la première carte, `level_init`, `level_flags`, les entités à
-  position fixe et les régions sont éditables ; tout le reste du script est conservé.
+  position fixe et les régions sont éditables, qu'ils suivent la carte
+  ou soient dans sa fonction `contents = function() ... end` ; tout le reste du script est conservé.
 - Aller-retour exact : un fichier ouvert puis enregistré sans
   modification reste identique octet pour octet (vérifié sur les 93
   niveaux de `dat/`).
@@ -193,7 +194,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 78 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 79 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

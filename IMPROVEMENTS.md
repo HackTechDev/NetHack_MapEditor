@@ -13,7 +13,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 
 | Thème | Fait | Reste |
 |---|---|---|
-| 1. Couverture du format Lua | 2 / 5 | plusieurs cartes, `contents`, éléments aléatoires |
+| 1. Couverture du format Lua | 3 / 5 | plusieurs cartes, éléments aléatoires |
 | 2. Affichage | 5 / 5 | — |
 | 3. Outils d'édition | 8 / 9 | générateurs |
 | 4. Entités | 4 / 4 | — |
@@ -48,10 +48,15 @@ reste invisible dans l'éditeur.
   pourrait proposer un onglet ou une liste des cartes, chacune avec ses
   propres entités, et afficher leur position les unes par rapport aux
   autres.
-- **Contenu des fonctions `contents`** **[gros]** : éditer les entités
+- ✅ **Fait** — **Contenu des fonctions `contents`** **[gros]** : éditer les entités
   déclarées dans `des.map({ ..., contents = function() ... end })` et
   `des.room()`, dont les coordonnées sont relatives à la carte ou à la
-  salle.
+  salle. Les entités et régions littérales de la fonction `contents` de
+  la carte sont éditables comme celles qui la suivent (le reste de la
+  fonction est recopié tel quel). `des.room()` reste hors de portée : les
+  niveaux qui l'emploient (oracle, villes des Mines, niveaux de
+  remplissage des quêtes) n'ont pas de `des.map()` et la position des
+  salles est tirée au sort par NetHack, il n'y a donc rien à dessiner.
 - **Éléments aléatoires** **[moyen]** : signaler visuellement dans la
   carte les zones où des `des.monster()` ou `des.object()` sans
   coordonnées tomberont, quand une région ou une sélection est indiquée.
