@@ -213,11 +213,17 @@ elle vaut `(?)` quand la carte est placée au hasard.
   directement. Le PNG est converti avec `rsvg-convert` ou ImageMagick
   (`magick`/`convert`), s'ils sont installés.
 - **Modèles** : `b` ouvre la bibliothèque de modèles. Ce sont des morceaux
-  de carte prêts à coller. Vingt sont livrés :
+  de carte prêts à coller. Quarante sont livrés :
 
   | Salles | Décors et terrain | Pièges et secrets |
   |---|---|---|
-  | temple, boutique, salle du trône, bibliothèque (rouleaux et livres), armurerie (porte verrouillée), cuisine (évier, provisions), tour ronde, prison (cellules à barreaux), escaliers | fontaine décorée, bosquet, pont sur la rivière, île entourée de douves, îlot dans la lave (avec coffre), antre du dragon | coffre-fort, cachette secrète (coffre garni), crypte (sarcophage et morts-vivants), couloir piégé, petit labyrinthe |
+  | temple, boutique, salle du trône, bibliothèque (rouleaux et livres), armurerie (porte verrouillée), cuisine (évier, provisions), tour ronde, prison (cellules à barreaux), escaliers, caserne (soldats endormis), zoo (monstres sur leur or), ruche (reine et gelée royale), cimetière (tombes et morts-vivants), laboratoire d'alchimiste, cabinet du magicien, poste de garde, arène, salle à colonnes, sanctuaire aux fontaines | fontaine décorée, bosquet, pont sur la rivière, île entourée de douves, îlot dans la lave (avec coffre), antre du dragon, lac souterrain (anguilles), marais, jardin, coulée de lave (pont-levis), glacier, ruines, galerie de mine (gnomes et gemmes) | coffre-fort, cachette secrète (coffre garni), crypte (sarcophage et morts-vivants), couloir piégé, petit labyrinthe, chambre au trésor piégée, gouffre (trous), galerie de statues (piège à statue) |
+
+  Les salles typées (caserne, zoo, ruche, cimetière, marais…) sont
+  peuplées par leurs entités ; pour que NetHack les traite comme telles,
+  déclarez aussi la salle avec `des.region({ ..., type = "zoo" })`
+  (touche `m`, puis « région »), comme l'indique la description du
+  modèle.
 
   Le modèle choisi
   va dans le presse-papiers, entités comprises, et l'outil Coller est

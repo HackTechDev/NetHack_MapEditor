@@ -217,12 +217,17 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 - Import d'une carte en texte brut (`o` sur un `.txt`).
 - Export de la carte seule en texte (`.txt`) ou en image (`.svg`, `.png`
   via `rsvg-convert` ou ImageMagick), telle qu'elle est affichée.
-- Bibliothèque de modèles (`b`), vingt livrés avec leurs entités :
+- Bibliothèque de modèles (`b`), quarante livrés avec leurs entités :
   temple, boutique, salle du trône, bibliothèque, armurerie, cuisine,
-  tour ronde, prison, escaliers, fontaine décorée, bosquet, pont sur la
-  rivière, île entourée de douves, îlot dans la lave, antre du dragon,
-  coffre-fort, cachette secrète, crypte, couloir piégé, petit
-  labyrinthe ; enregistrement du presse-papiers comme nouveau modèle.
+  tour ronde, prison, escaliers, caserne, zoo, ruche, cimetière,
+  laboratoire d'alchimiste, cabinet du magicien, poste de garde, arène,
+  salle à colonnes, sanctuaire aux fontaines, fontaine décorée, bosquet,
+  pont sur la rivière, île entourée de douves, îlot dans la lave, antre
+  du dragon, lac souterrain, marais, jardin, coulée de lave (pont-levis),
+  glacier, ruines, galerie de mine, coffre-fort, cachette secrète,
+  crypte, couloir piégé, petit labyrinthe, chambre au trésor piégée,
+  gouffre, galerie de statues ; enregistrement du presse-papiers comme
+  nouveau modèle.
 - Sauvegarde de secours régulière (`.nhme-autosave`), proposée à la
   réouverture après un arrêt brutal.
 - Historique persistant (`.nhme-history`) : écrit à l'enregistrement,

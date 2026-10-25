@@ -366,9 +366,10 @@ pouvez l'indiquer une fois pour toutes dans le fichier de configuration
 
 ## 12. Aller plus loin
 
-**Modèles.** `[b]` ouvre la bibliothèque : une vingtaine de morceaux de
-carte, du temple avec son autel à l'antre du dragon endormi sur son or,
-en passant par la crypte, la prison ou le couloir piégé. Le modèle
+**Modèles.** `[b]` ouvre la bibliothèque : une quarantaine de morceaux
+de carte, du temple avec son autel à l'antre du dragon endormi sur son
+or, en passant par la crypte, la ruche, le cimetière, le lac souterrain
+ou la chambre au trésor piégée. Le modèle
 choisi va dans le presse-papiers et l'outil Coller (`8`) s'active :
 `[X]`, `[Y]`, `[O]` le retournent ou le font pivoter, `[Espace]` le pose
 (coin haut-gauche au curseur). La dernière ligne de la bibliothèque

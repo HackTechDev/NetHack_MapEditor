@@ -68,7 +68,7 @@ class Templates(unittest.TestCase):
     def test_shipped_templates_load(self):
         import nhme_common
         found = nhexport.list_templates(nhme_common.TEMPLATE_DIRS[:1])
-        self.assertGreaterEqual(len(found), 20)
+        self.assertGreaterEqual(len(found), 40)
         for title, desc, path in found:
             g, ents = nhexport.load_template(path)
             self.assertTrue(g and desc, path)
