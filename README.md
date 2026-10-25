@@ -117,6 +117,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `[`, `]` | carte précédente, suivante d'un fichier à plusieurs `des.map()` (Juiblex, Asmodée…) |
 | `N` | liste des cartes du fichier : aller à une carte, en ajouter une à la fin, voir leur place dans le niveau de 80x21 |
 | `p` | propriétés : taille, `level_init`, drapeaux, placement (halign/valign ou x,y), éclairage, place du niveau dans le donjon (`dungeon.lua`, voir plus bas) |
+| `%` | statistiques du niveau : terrain, entités, monstres et objets par classe, pièges, régions, placements aléatoires du script |
 | `v` | vérifier la carte : largeur > 76, entités dans les murs, escaliers en double, connexité… (voir « Vérification ») |
 | `t` | tester : copie la carte dans le répertoire du jeu ; avec tmux, lance NetHack et y charge la carte (voir plus bas) |
 | `u` (ou Ctrl-Z) / `U` (ou Ctrl-R, Ctrl-Y) | annuler / rétablir la dernière commande ; le message nomme la commande (« Annulé : Salle : sol. ») et le curseur revient où elle a eu lieu |

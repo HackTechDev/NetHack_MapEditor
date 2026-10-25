@@ -850,6 +850,21 @@ EN = {
         '! %s: the area (%d,%d)-(%d,%d) of the level lies entirely outside the 80x21 level.',
     "! Boutique (%d,%d)-(%d,%d) : %d porte(s) et %d ouverture(s) dans ses murs ; NetHack n'en fait une boutique qu'avec une seule porte.":
         '! Shop (%d,%d)-(%d,%d): %d door(s) and %d opening(s) in its walls; NetHack only makes it a shop with a single door.',
+    # statistiques
+    'Terrain :': 'Terrain:',
+    'Monstres par classe :': 'Monsters by class:',
+    'Objets par classe :': 'Objects by class:',
+    'Statistiques du niveau': 'Level statistics',
+    'Entités à position fixe : %d': 'Entities at a fixed position: %d',
+    'Pièges :': 'Traps:',
+    'Carte %dx%d': 'Map %dx%d',
+    'Régions : %d': 'Regions: %d',
+    'Placements aléatoires du script : %d':
+        'Random placements of the script: %d',
+    ' (carte %d sur %d)': ' (map %d of %d)',
+    '  salles typées : %s': '  typed rooms: %s',
+    'classe aléatoire': 'random of the class',
+    'dans une zone ou une liste de cases': 'in an area or a list of cells',
 }
 
 HELP = """\
@@ -953,6 +968,8 @@ LEVEL AND FILES
   [ ]  previous / next map of a file with several des.map()
   N  map list: go to a map, add one, see where they lie in the
      80x21 level
+  %  level statistics: terrain, entities, monsters and objects by
+     class, traps, regions, random placements of the script
   v  check the map, including connectivity: down stairs reachable
      from the up stairs (doors without diagonals, secret passages,
      water and lava reported) and closed areas; NetHack rules (door in a

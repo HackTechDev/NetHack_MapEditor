@@ -397,6 +397,8 @@ NIVEAU ET FICHIERS
   [ ]  carte précédente / suivante d'un fichier à plusieurs des.map()
   N  liste des cartes : aller à une carte, en ajouter une, voir leur
      place dans le niveau de 80x21
+  %  statistiques du niveau : terrain, entités, monstres et objets par
+     classe, pièges, régions, placements aléatoires du script
   v  vérifier la carte, dont la connexité : escalier descendant accessible
      depuis le montant (portes sans diagonale, passages secrets, eau et
      lave signalés) et zones fermées ; règles de NetHack (porte dans un

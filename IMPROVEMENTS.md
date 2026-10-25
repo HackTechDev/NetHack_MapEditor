@@ -23,7 +23,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 8. Configuration et confort | 3 / 3 | — |
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
-| 11. Idées supplémentaires | 4 / 12 | voir la liste |
+| 11. Idées supplémentaires | 5 / 12 | voir la liste |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -264,7 +264,7 @@ utiles aux plus accessoires.
   zone inaccessible, boutique (`shop`) sans porte unique.
 - **Règles de Sokoban** **[facile]** : compter rochers et trous, signaler
   un niveau manifestement insoluble.
-- **Statistiques du niveau** **[facile]** : nombre de monstres par
+- ✅ **Fait** — **Statistiques du niveau** **[facile]** : nombre de monstres par
   classe, d'objets et de pièges, placements fixes et aléatoires à part.
 - **Mini-carte** **[facile]** : quand la carte dépasse l'écran, un petit
   aperçu montrant la partie visible.

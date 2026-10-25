@@ -436,3 +436,20 @@ class EntitySelection(unittest.TestCase):
         self.assertIn("hors de la carte", ed.msg)
         self.select("delete", (0, 0), (5, 3))
         self.assertEqual(ed.lvl.entities, [])
+
+
+class Stats(unittest.TestCase):
+    def test_stats_text(self):
+        ed = editor(["--+--", "|...|", "-----"])
+        ed.lvl.entities = [Entity("monster", 1, 1, "jackal"),
+                           Entity("monster", 2, 1, "jackal"),
+                           Entity("monster", 3, 1, "d"),
+                           Entity("object", 2, 1, None),
+                           Entity("trap", 1, 1, "pit")]
+        text = ed.stats_text()
+        self.assertIn("Carte 5x3", text)
+        self.assertRegex(text, r"-  mur horizontal / coin +9 +60 %")
+        self.assertIn("Entités à position fixe : 5", text)
+        self.assertRegex(text, r"d +3  jackal ×2, classe aléatoire")
+        self.assertRegex(text, r"\? +1  aléatoire")
+        self.assertRegex(text, r"pit +1")

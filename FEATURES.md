@@ -184,6 +184,14 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 - Salles à thème : ouverture de `themerms.lua`, édition des salles
   dessinées par `des.map()` et création de nouvelles salles.
 
+## Statistiques (`%`)
+
+- Taille, terrain (nombre de cases et part de chaque terrain), entités à
+  position fixe par genre, monstres et objets par classe avec les noms
+  les plus fréquents, pièges par type, régions par genre et salles
+  typées, placements aléatoires du script (n'importe où ou dans une
+  zone).
+
 ## Vérification (`v`)
 
 - Connexité : chemin de l'escalier montant au descendant, sans diagonale
@@ -234,7 +242,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 95 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 96 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

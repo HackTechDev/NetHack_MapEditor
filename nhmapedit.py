@@ -296,6 +296,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.find_replace()
         elif k == "*":
             self.start_entity_selection()
+        elif k == "%":
+            self.show_stats()
         elif k == "V":
             self.history()
         elif k == "n":

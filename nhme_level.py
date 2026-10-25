@@ -1,5 +1,6 @@
 """Propriétés du niveau, vérification, fichiers et salles à thème."""
 
+import collections
 import os
 import shutil
 import time
@@ -16,6 +17,90 @@ from nhme_common import (
 
 class LevelMixin:
     """Méthodes de l'éditeur (voir nhmapedit.Editor)."""
+
+    # --- statistiques ---------------------------------------------------
+    def stats_text(self):
+        """Texte des statistiques du niveau (touche %)."""
+        lvl = self.lvl
+        lines = [_("Carte %dx%d") % (lvl.w, lvl.h)
+                 + (_(" (carte %d sur %d)") % (lvl.map_index + 1,
+                                               len(lvl.maps))
+                    if len(lvl.maps) > 1 else ""), ""]
+        cells = collections.Counter(c for row in lvl.grid for c in row)
+        total = lvl.w * lvl.h
+        lines.append(_("Terrain :"))
+        for c, n in cells.most_common():
+            lines.append("  %s  %-28s %5d  %3d %%" % (
+                "e" if c == " " else c,
+                nhlevel.TERRAIN_DESC.get(c, "?").split(" (")[0][:28], n,
+                round(100 * n / total)))
+        fixed = collections.Counter(e.kind for e in lvl.entities)
+        lines += ["", _("Entités à position fixe : %d") % len(lvl.entities)]
+        for k in nhlevel.ENTITY_KINDS:
+            if fixed[k]:
+                lines.append("  %-28s %5d" % (nhlevel.ENTITY_LABEL[k],
+                                              fixed[k]))
+        sym = {"monster": {m["name"]: m["sym"] for m in
+                           self.data["monsters"]},
+               "object": {o["name"]: o["sym"] for o in self.data["objects"]}}
+        titles = {"monster": _("Monstres par classe :"),
+                  "object": _("Objets par classe :")}
+        for kind in ("monster", "object"):
+            groups = collections.defaultdict(collections.Counter)
+            for e in lvl.entities:
+                if e.kind != kind:
+                    continue
+                if e.value is None:
+                    groups["?"][_("aléatoire")] += 1
+                elif len(e.value) == 1:
+                    groups[e.value][_("classe aléatoire")] += 1
+                else:
+                    groups[sym[kind].get(e.value, "?")][e.value] += 1
+            if not groups:
+                continue
+            lines += ["", titles[kind]]
+            for s, names in sorted(groups.items(),
+                                   key=lambda kv: -sum(kv[1].values())):
+                detail = ", ".join(
+                    "%s ×%d" % (nm, n) if n > 1 else nm
+                    for nm, n in names.most_common(4))
+                if len(names) > 4:
+                    detail += ", …"
+                lines.append("  %s %4d  %s" % (s, sum(names.values()),
+                                               detail))
+        traps = collections.Counter(
+            _("aléatoire") if e.value is None else e.value
+            for e in lvl.entities if e.kind == "trap")
+        if traps:
+            lines += ["", _("Pièges :")]
+            lines += ["  %-28s %5d" % (t, n) for t, n in traps.most_common()]
+        if lvl.regions:
+            regs = collections.Counter(nhlevel.REGION_LABEL[r.kind]
+                                       for r in lvl.regions)
+            lines += ["", _("Régions : %d") % len(lvl.regions)]
+            lines += ["  %-28s %5d" % (k, n) for k, n in regs.most_common()]
+            types = collections.Counter(
+                r.extra["type"] for r in lvl.regions
+                if isinstance(r.extra.get("type"), str)
+                and r.kind == "region")
+            if types:
+                lines.append(_("  salles typées : %s") % ", ".join(
+                    "%s ×%d" % kv if kv[1] > 1 else kv[0]
+                    for kv in types.most_common()))
+        if lvl.randoms:
+            lines += ["", _("Placements aléatoires du script : %d")
+                      % len(lvl.randoms)]
+            rnd = collections.Counter(
+                (nhlevel.ENTITY_LABEL[r.kind], r.zone[0] == "map")
+                for r in lvl.randoms)
+            for (k, anywhere), n in rnd.most_common():
+                lines.append("  %-28s %5d  %s" % (
+                    k, n, _("n'importe où dans la carte") if anywhere
+                    else _("dans une zone ou une liste de cases")))
+        return "\n".join(lines)
+
+    def show_stats(self):
+        self.message_box(_("Statistiques du niveau"), self.stats_text())
 
     # --- fichiers à plusieurs cartes ------------------------------------
     def map_label(self, i, info):
