@@ -23,9 +23,12 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 8. Configuration et confort | 3 / 3 | — |
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
+| 11. Idées supplémentaires | 0 / 12 | toutes |
 
-Prochaine étape conseillée : l'**intégration continue**, peu coûteuse
-maintenant que les tests existent.
+Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
+maintenant que les tests existent, puis l'**aperçu d'un tirage** et
+**Modifier dans `$EDITOR`** (thème 11), qui rendent visible ou modifiable
+ce qui ne l'est pas encore.
 
 ## 1. Couverture du format Lua des niveaux
 
@@ -222,3 +225,44 @@ Idées apparues pendant le développement des thèmes précédents.
 - **Comparaison de versions** **[moyen]** : afficher les cases qui
   diffèrent entre la carte en cours et le fichier enregistré (ou la
   version d'origine `fichier.lua~`).
+
+## 11. Idées supplémentaires
+
+Idées proposées après la couverture complète du format Lua, des plus
+utiles aux plus accessoires.
+
+- **Aperçu d'un tirage** **[moyen]** : exécuter le script avec la
+  bibliothèque `des` factice de la vérification (`nhcheck_des.lua`) et
+  montrer un exemple du niveau tel que NetHack pourrait le générer :
+  monstres et objets aléatoires placés, `?` résolus. Une touche relance
+  un autre tirage.
+- **Modifier dans `$EDITOR`** **[facile]** : sur un élément non
+  modifiable (région écrite avec du code, placement aléatoire), ouvrir
+  l'appel Lua dans l'éditeur de texte, puis relire le fichier au retour.
+  Une porte de sortie pour tout ce que l'éditeur ne sait pas traiter.
+- **Import des fichiers `.des` de NetHack 3.6** **[moyen]** : lire
+  l'ancien format (`MAP … ENDMAP`, `MONSTER:`, `OBJECT:`, `TRAP:`,
+  `REGION:`…), encore employé par beaucoup de variantes et de cartes de
+  la communauté, et l'enregistrer en Lua.
+- **Sélections littérales** **[moyen]** : afficher et éditer les zones
+  de `des.replace_terrain()` et de `des.terrain(selection.area(...), "L")`,
+  comme les régions.
+- **Murs automatiques** **[moyen]** : un pinceau « mur » qui choisit `-`
+  ou `|` selon les voisins, et une commande qui corrige les murs d'une
+  zone.
+- **Rechercher et remplacer des entités** **[facile]** : changer tous les
+  « orc » en « hill orc », rendre `asleep` tous les monstres d'une zone…
+- **Sélection multiple d'entités** **[moyen]** : déplacer, copier ou
+  supprimer d'un coup les entités d'un rectangle, sans toucher au
+  terrain.
+- **Vérifications supplémentaires** **[facile]** : région ou zone
+  d'arrivée hors du niveau de 80x21, objet ou monstre enfermé dans une
+  zone inaccessible, boutique (`shop`) sans porte unique.
+- **Règles de Sokoban** **[facile]** : compter rochers et trous, signaler
+  un niveau manifestement insoluble.
+- **Statistiques du niveau** **[facile]** : nombre de monstres par
+  classe, d'objets et de pièges, placements fixes et aléatoires à part.
+- **Mini-carte** **[facile]** : quand la carte dépasse l'écran, un petit
+  aperçu montrant la partie visible.
+- **Vue du donjon** **[moyen]** : schéma de `dungeon.lua` (branches,
+  profondeurs, niveaux spéciaux) depuis lequel ouvrir un niveau.
