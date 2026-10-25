@@ -24,6 +24,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
 | 11. Idées supplémentaires | 6 / 12 | tirage, $EDITOR, `.des`, sélections, Sokoban, donjon |
+| 12. Encore d'autres idées | 0 / 14 | toutes |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -270,3 +271,53 @@ utiles aux plus accessoires.
   aperçu montrant la partie visible.
 - **Vue du donjon** **[moyen]** : schéma de `dungeon.lua` (branches,
   profondeurs, niveaux spéciaux) depuis lequel ouvrir un niveau.
+
+## 12. Encore d'autres idées
+
+Idées proposées après la deuxième série d'idées supplémentaires, des
+plus utiles aux plus accessoires.
+
+- **Retour du jeu** **[moyen]** : après un essai avec `t`, récupérer les
+  messages d'erreur de NetHack (journal de `#wizloaddes`) et les afficher
+  dans l'éditeur, en sautant à la ligne fautive.
+- **Assistant de niveau** **[moyen]** : un niveau prêt à essayer en
+  quelques questions (type de niveau, taille, salles, nombre de
+  monstres), construit avec les générateurs existants et retouché
+  ensuite à la main.
+- **Difficulté estimée** **[moyen]** : additionner le niveau des monstres
+  placés (`mlevel`, extrait des sources de NetHack) et indiquer à quelle
+  profondeur le niveau conviendrait, en complément des statistiques.
+- **Équilibre des objets** **[facile]** : signaler les objets puissants
+  posés en clair (baguette de vœu, artefacts) et ceux qu'aucun chemin ne
+  permet d'atteindre.
+- **Mode « partie rapide »** **[moyen]** : lancer NetHack directement
+  sur le niveau, sans menu ni `#wizloaddes`, avec un héros prêt à jouer
+  (option de la branche cybernethack si elle existe, sinon une
+  sauvegarde préparée).
+- **Annotations** **[facile]** : attacher un commentaire Lua à une case
+  ou à une entité (`-- trésor caché ici`), conservé dans le fichier et
+  visible au survol.
+- **Calques de travail** **[moyen]** : dessiner sur une couche brouillon
+  non enregistrée (notes, repères, cases réservées), affichée en
+  surimpression.
+- **Tampons de terrain** **[facile]** : petits motifs prêts à poser, plus
+  légers que les modèles (pilier 2x2, colonnade, fontaine entourée de
+  sol, coin de rivière).
+- **Remplissage par motif** **[facile]** : remplir une zone d'un damier
+  ou de rayures (`.` et `}`, par exemple) plutôt que d'un seul terrain.
+- **Export HTML** **[facile]** : une page autonome avec la carte en
+  couleur et la liste des entités au survol, pour partager un niveau sur
+  un forum ou un wiki.
+- **Gestion d'un dossier de niveaux** **[moyen]** : ouvrir un dossier
+  entier (`dat/` ou un projet), passer d'un fichier à l'autre, et
+  chercher par exemple « quels niveaux contiennent un trône ? ».
+- **Historique persistant** **[moyen]** : garder l'historique des
+  commandes entre deux sessions (`fichier.lua.nhme-history`), pour
+  annuler encore après avoir rouvert le fichier.
+- **Tests de non-régression sur les niveaux** **[facile]** : conserver
+  pour chaque niveau de `dat/` un résumé (entités, régions, placements
+  aléatoires) et vérifier qu'il ne change pas d'une version de l'éditeur
+  à l'autre.
+- **Profilage** **[facile]** : mesurer le temps d'affichage des grandes
+  cartes chargées de régions, et mettre en cache le calque et la
+  mini-carte si nécessaire.
