@@ -24,7 +24,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
 | 11. Idées supplémentaires | 6 / 12 | tirage, $EDITOR, `.des`, sélections, Sokoban, donjon |
-| 12. Encore d'autres idées | 5 / 14 | voir la liste |
+| 12. Encore d'autres idées | 6 / 14 | voir la liste |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -304,7 +304,7 @@ plus utiles aux plus accessoires.
 - ✅ **Fait** — **Calques de travail** **[moyen]** : dessiner sur une couche brouillon
   non enregistrée (notes, repères, cases réservées), affichée en
   surimpression.
-- **Tampons de terrain** **[facile]** : petits motifs prêts à poser, plus
+- ✅ **Fait** — **Tampons de terrain** **[facile]** : petits motifs prêts à poser, plus
   légers que les modèles (pilier 2x2, colonnade, fontaine entourée de
   sol, coin de rivière).
 - **Remplissage par motif** **[facile]** : remplir une zone d'un damier

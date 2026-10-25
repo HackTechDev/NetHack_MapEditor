@@ -531,6 +531,10 @@ class DisplayMixin:
         if self.tool == "entpaste":
             return (_(" Espace: poser les %d entité(s) (coin haut-gauche au "
                       "curseur)  Échap: annuler") % len(self.ent_clip))
+        if self.tool == "stamp":
+            return (_(" Espace: poser le tampon « %s » (centré)  X/Y: miroir  "
+                      "O: rotation  ^: autre tampon  Échap: outil précédent")
+                    % self.stamp[0])
         if self.tool == "paste":
             if not self.clip:
                 return (_(" Presse-papiers vide :  7: copier  D: couper  "

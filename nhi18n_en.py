@@ -955,6 +955,33 @@ EN = {
     'Brouillon effacé.': 'Draft cleared.',
     'Brouillon reporté sur la carte': 'Draft copied onto the map',
     'Brouillon effacé': 'Draft cleared',
+    # tampons de terrain
+    'Tampon': 'Stamp',
+    'pilier': 'pillar',
+    'pilier 2x2': '2x2 pillar',
+    'colonnade (piliers espacés)': 'colonnade (spaced pillars)',
+    'double colonnade': 'double colonnade',
+    'fontaine entourée de sol': 'fountain surrounded by floor',
+    'trône entouré de sol': 'throne surrounded by floor',
+    'bassin rond': 'round pool',
+    "mare d'eau profonde": 'deep water pond',
+    'lac de lave': 'lava lake',
+    'îlot entouré de douves': 'island surrounded by moat',
+    'coin de rivière': 'river bend',
+    'rivière droite': 'straight river',
+    'bosquet': 'grove',
+    "rangée d'arbres": 'row of trees',
+    'porte dans un mur horizontal': 'door in a horizontal wall',
+    'porte dans un mur vertical': 'door in a vertical wall',
+    'niche secrète': 'secret niche',
+    'carrefour de couloirs': 'corridor crossing',
+    ' Espace: poser le tampon « %s » (centré)  X/Y: miroir  O: rotation  ^: autre tampon  Échap: outil précédent':
+        ' Space: lay the "%s" stamp (centred)  X/Y: mirror  O: rotate  ^: other stamp  Esc: previous tool',
+    'Tampons de terrain (x : case laissée telle quelle)':
+        'Terrain stamps (x: cell left unchanged)',
+    'Tampon « %s » : Espace le pose.': 'Stamp "%s": Space lays it.',
+    'Tampon « %s » %s.': 'Stamp "%s" %s.',
+    'Tampon : %s': 'Stamp: %s',
 }
 
 HELP = """\
@@ -1000,6 +1027,11 @@ TOOLS (Space or Enter to apply)
      neighbours) takes the right shape (| in a vertical wall, - elsewhere,
      corners included); also fixes the walls of the whole map or of an
      area
+  ^  terrain stamps: small ready-made patterns (2x2 pillar,
+     colonnade, fountain surrounded by floor, river bend, grove, door
+     in a wall...), centred on the cursor; Space lays the stamp as many
+     times as wanted, X/Y/O mirror or rotate it, Esc goes back to the
+     previous tool
   &  draft: working layer never saved in the file (notes, markers,
      reserved cells), shown black on white over the map; in draft mode
      the drawing tools write on it (e erases, u undoes); it can also be

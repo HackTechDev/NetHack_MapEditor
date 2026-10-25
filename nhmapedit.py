@@ -67,6 +67,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         # coin de la sélection, et originaux à retirer pour un déplacement
         self.ent_clip, self.ent_moved = [], []
         self.minimap = "auto"       # mini-carte : auto, on, off (touche ~)
+        self.stamp = None           # tampon choisi : (nom, grille) (touche ^)
         self.pending_region = None  # région en cours de tracé
         # règles de coordonnées autour de la carte
         self.rulers = self.config.get("rulers", True)
@@ -185,6 +186,9 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             elif self.tool == "entpaste":
                 self.tool = self.sel_prev_tool
                 self.msg = _("Entités laissées en place.")
+            elif self.tool == "stamp":
+                self.tool = self.stamp_prev_tool
+                self.msg = _("Outil : %s.") % TOOL_NAME[self.tool]
         elif k in TOOL_KEY:
             if TOOL_KEY[k] == "scatter":
                 s = self.prompt(_("Densité du semis en %% (1-100) : "),
@@ -307,6 +311,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.annotate()
         elif k == "&":
             self.draft_menu()
+        elif k == "^":
+            self.stamps()
         elif k == "~":
             self.minimap = {"auto": "on", "on": "off",
                             "off": "auto"}[self.minimap]

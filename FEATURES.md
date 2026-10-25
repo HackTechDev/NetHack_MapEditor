@@ -96,6 +96,12 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   (`8`), entités comprises ; miroirs (`X`, `Y`) et rotation d'un quart de
   tour (`O`), avec échange des murs `-` et `|`.
 - Redimensionnement de la carte (propriétés).
+- Tampons de terrain (`^`) : 19 petits motifs (piliers, colonnades,
+  fontaine ou trône entourés de sol, bassin, mare, lac de lave, îlot,
+  rivière droite ou coudée, bosquet, rangée d'arbres, portes dans un
+  mur, niche secrète, carrefour de couloirs, barreaux) ; centrés sur le
+  curseur avec aperçu, cases `x` laissées telles quelles, miroirs et
+  rotation (`X`, `Y`, `O`), symétrie et brouillon respectés.
 - Brouillon (`&`) : calque de travail jamais écrit dans le fichier,
   affiché en noir sur blanc par-dessus la carte (calque « brouillon ») ;
   en mode brouillon, pinceau, formes, remplissage (zone de même terrain
@@ -279,7 +285,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 111 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 112 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

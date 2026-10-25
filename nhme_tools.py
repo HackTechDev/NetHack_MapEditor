@@ -8,8 +8,31 @@ import nhexport
 import nhlevel
 from nhi18n import _
 from nhme_common import (
-    HISTORY_MAX, Cancel, HistoryEntry, SELECT, TEMPLATE_DIRS, TOOL_NAME,
+    HISTORY_MAX, Cancel, HistoryEntry, SELECT, STAMPS, TEMPLATE_DIRS,
+    TOOL_NAME,
     bresenham, ellipse_cells, maze_cells, wall_fixes)
+
+
+def transform_grid(g, how):
+    """Miroir (« x » : gauche/droite, « y » : haut/bas) ou rotation d'un
+    quart de tour dans le sens horaire (« rot ») d'une grille ; renvoie
+    la grille et la fonction qui déplace une position."""
+    h, w = len(g), len(g[0])
+    if how == "x":
+        return [row[::-1] for row in g], lambda x, y: (w - 1 - x, y)
+    if how == "y":
+        return g[::-1], lambda x, y: (x, h - 1 - y)
+    swap = {"-": "|", "|": "-"}
+    g = [[swap.get(g[h - 1 - y][x], g[h - 1 - y][x])
+          for y in range(h)] for x in range(w)]
+    # les coins et jonctions des cartes NetHack s'écrivent « - »
+    for row in g:
+        for x, c in enumerate(row):
+            side = (row[x - 1] if x else " ") + (
+                row[x + 1] if x + 1 < h else " ")
+            if c == "|" and any(n in side for n in "-+S"):
+                row[x] = "-"
+    return g, lambda x, y: (h - 1 - y, x)
 
 
 class ToolsMixin:
@@ -24,6 +47,8 @@ class ToolsMixin:
         if self.tool == "entpaste":
             return {(self.cx + e.x, self.cy + e.y): " "
                     for e in self.ent_clip}
+        if self.tool == "stamp":
+            return self.mirrored(self.stamp_cells())
         if self.anchor is None:
             return {}
         cells = self.shape_cells(self.anchor, (self.cx, self.cy))
@@ -269,6 +294,9 @@ class ToolsMixin:
             self.paste()
         elif t == "entpaste":
             self.place_entities()
+        elif t == "stamp":
+            self.paint(self.stamp_cells(),
+                       label=_("Tampon : %s") % self.stamp[0])
         elif self.anchor is None:
             self.anchor = (self.cx, self.cy)
             self.msg = _("Ancre posée ; déplacez-vous puis Espace (Échap "
@@ -527,30 +555,20 @@ class ToolsMixin:
         """Miroir (« x » : gauche/droite, « y » : haut/bas) ou rotation
         d'un quart de tour dans le sens horaire (« rot ») du
         presse-papiers, entités comprises."""
+        if self.tool == "stamp":
+            name, g = self.stamp
+            self.stamp = (name, transform_grid(g, how)[0])
+            self.msg = _("Tampon « %s » %s.") % (name, {
+                "x": _("retourné gauche/droite"),
+                "y": _("retourné haut/bas"),
+                "rot": _("tourné d'un quart de tour")}[how])
+            return
         if not self.clip:
             self.msg = _("Presse-papiers vide (outil 7 ou D pour en remplir "
                          "un).")
             return
         g, ents = self.clip
-        h, w = len(g), len(g[0])
-        if how == "x":
-            g = [row[::-1] for row in g]
-            pos = lambda x, y: (w - 1 - x, y)
-        elif how == "y":
-            g = g[::-1]
-            pos = lambda x, y: (x, h - 1 - y)
-        else:
-            swap = {"-": "|", "|": "-"}
-            g = [[swap.get(g[h - 1 - y][x], g[h - 1 - y][x])
-                  for y in range(h)] for x in range(w)]
-            # les coins et jonctions des cartes NetHack s'écrivent « - »
-            for row in g:
-                for x, c in enumerate(row):
-                    side = (row[x - 1] if x else " ") + (
-                        row[x + 1] if x + 1 < h else " ")
-                    if c == "|" and any(n in side for n in "-+S"):
-                        row[x] = "-"
-            pos = lambda x, y: (h - 1 - y, x)
+        g, pos = transform_grid(g, how)
         for e in ents:
             e.x, e.y = pos(e.x, e.y)
         self.clip = (g, ents)
@@ -558,6 +576,29 @@ class ToolsMixin:
         self.msg = _("Presse-papiers %s (%dx%d). Outil Coller actif.") % (
             {"x": _("retourné gauche/droite"), "y": _("retourné haut/bas"),
              "rot": _("tourné d'un quart de tour")}[how], len(g[0]), len(g))
+
+    def stamps(self):
+        """Touche ^ : choisir un tampon de terrain, posé ensuite par
+        Espace autant de fois que voulu (centré sur le curseur)."""
+        items = [("%-34s %dx%d" % (name, len(rows[0]), len(rows)), i)
+                 for i, (name, rows) in enumerate(STAMPS)]
+        cur = next((i for i, (n, _r) in enumerate(STAMPS)
+                    if self.stamp and n == self.stamp[0]), 0)
+        i = self.pick(_("Tampons de terrain (x : case laissée telle "
+                        "quelle)"), items, cur)
+        name, rows = STAMPS[i]
+        self.stamp = (name, [list(r) for r in rows])
+        if self.tool != "stamp":
+            self.stamp_prev_tool = self.tool
+        self.tool, self.anchor = "stamp", None
+        self.msg = _("Tampon « %s » : Espace le pose.") % name
+
+    def stamp_cells(self):
+        """Cases du tampon centré sur le curseur, sans les « x »."""
+        g = self.stamp[1]
+        ox, oy = self.cx - len(g[0]) // 2, self.cy - len(g) // 2
+        return {(ox + x, oy + y): c for y, row in enumerate(g)
+                for x, c in enumerate(row) if c != "x"}
 
     def paste(self):
         if not self.clip:

@@ -336,6 +336,35 @@ class Draft(unittest.TestCase):
         self.assertEqual(ed.lvl.draft, {})
 
 
+class Stamps(unittest.TestCase):
+    def test_stamp(self):
+        names = [n for n, _r in nhmapedit.STAMPS]
+        ed = editor(["......."] * 5)
+        ed.pick = lambda *a, **k: names.index("bosquet")
+        ed.cx, ed.cy = 3, 2
+        ed.stamps()
+        self.assertEqual(ed.tool, "stamp")
+        self.assertEqual(set(ed.preview_cells()),
+                         {(3, 1), (2, 2), (3, 2), (4, 2), (3, 3)})
+        ed.apply()                          # les « x » ne changent rien
+        self.assertEqual(ed.lvl.map_text().split("\n")[1:4],
+                         ["...T...", "..TTT..", "...T..."])
+        self.assertEqual(ed.undo_stack[-1].label, "Tampon : bosquet")
+        # rotation du tampon, pas du presse-papiers
+        ed.pick = lambda *a, **k: names.index("porte dans un mur horizontal")
+        ed.stamps()
+        ed.transform_clip("rot")
+        self.assertEqual(ed.stamp[1], [["|"], ["+"], ["|"]])
+        self.assertIsNone(ed.clip)
+        ed.cx, ed.cy = 0, 2
+        ed.apply()
+        self.assertEqual([r[0] for r in ed.lvl.grid], list(".|+|."))
+        # tampon débordant : seules les cases de la carte changent
+        ed.cy = 0
+        ed.apply()
+        self.assertEqual([r[0] for r in ed.lvl.grid], list("+|+|."))
+
+
 class Maze(unittest.TestCase):
     def test_perfect_maze(self):
         import random

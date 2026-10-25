@@ -73,6 +73,8 @@ TOOL_NAME["walls"] = _("Murs à corriger")
 # outils temporaires de la sélection multiple d'entités (touche *)
 TOOL_NAME["entsel"] = _("Sélection d'entités")
 TOOL_NAME["entpaste"] = _("Poser les entités")
+# outil temporaire des tampons de terrain (touche ^)
+TOOL_NAME["stamp"] = _("Tampon")
 TOOL_KEY = {key: t for t, _name, _short, key in TOOLS}
 TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut", "ellipse",
              "fillellipse", "scatter", "replace", "region", "maze", "walls",
@@ -80,6 +82,30 @@ TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut", "ellipse",
 # outils dont l'aperçu montre la zone sans y dessiner le pinceau
 SELECT = {"copy", "cut", "scatter", "replace", "region", "maze", "walls",
           "entsel", "entpaste"}
+
+# Tampons de terrain (touche ^) : petits motifs posés centrés sur le
+# curseur ; « x » laisse la case telle quelle
+STAMPS = [
+    (_("pilier"), ["-"]),
+    (_("pilier 2x2"), ["--", "--"]),
+    (_("colonnade (piliers espacés)"), ["-x-x-x-x-"]),
+    (_("double colonnade"), ["-x-x-x-x-", "xxxxxxxxx", "-x-x-x-x-"]),
+    (_("fontaine entourée de sol"), ["...", ".{.", "..."]),
+    (_("trône entouré de sol"), ["...", ".\\.", "..."]),
+    (_("bassin rond"), ["xPPPx", "PPPPP", "xPPPx"]),
+    (_("mare d'eau profonde"), ["x}}}x", "}}W}}", "x}}}x"]),
+    (_("lac de lave"), ["xLLLx", "LLLLL", "LLLLL", "xLLLx"]),
+    (_("îlot entouré de douves"), ["}}}}}", "}...}", "}...}", "}}}}}"]),
+    (_("coin de rivière"), ["xxx}}", "xx}}}", "x}}}x", "}}}xx", "}}xxx"]),
+    (_("rivière droite"), ["}}}}}}}}", "}}}}}}}}"]),
+    (_("bosquet"), ["xTx", "TTT", "xTx"]),
+    (_("rangée d'arbres"), ["TxTxTxT"]),
+    (_("porte dans un mur horizontal"), ["-+-"]),
+    (_("porte dans un mur vertical"), ["|", "+", "|"]),
+    (_("niche secrète"), ["---", "|.|", "-S-"]),
+    (_("carrefour de couloirs"), ["x#x", "###", "x#x"]),
+    (_("barreaux"), ["FFFFF"]),
+]
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
 FLIP_NAME = {0: _("aucun"), 1: _("vertical"), 2: _("horizontal"),
@@ -339,6 +365,11 @@ OUTILS (Espace ou Entrée pour appliquer)
      ses voisins) prend la forme qui convient (| dans un mur vertical,
      - ailleurs, coins compris) ; corrige aussi les murs de toute la carte
      ou d'une zone
+  ^  tampons de terrain : petits motifs prêts à poser (pilier 2x2,
+     colonnade, fontaine entourée de sol, coin de rivière, bosquet,
+     porte dans un mur…), centrés sur le curseur ; Espace pose le
+     tampon autant de fois que voulu, X/Y/O le retournent ou le
+     tournent, Échap revient à l'outil précédent
   &  brouillon : calque de travail jamais enregistré dans le fichier
      (notes, repères, cases réservées), affiché en noir sur blanc
      par-dessus la carte ; en mode brouillon, les outils de dessin y
