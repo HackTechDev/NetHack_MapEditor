@@ -62,6 +62,16 @@ essayer : salles et couloirs, labyrinthe, caverne ou grande salle, avec
 les escaliers et quelques monstres, objets et pièges. Ce tutoriel part
 plutôt d'une carte vide pour montrer chaque outil.
 
+**Esquisser d'abord ?** `[&]` ouvre le **brouillon**, un calque de
+travail qui n'est jamais enregistré dans le fichier. Choisissez
+« dessiner sur le brouillon » : la barre d'état affiche `[brouillon]` et
+les outils de dessin y écrivent, en noir sur blanc par-dessus la carte.
+Esquissez par exemple l'emplacement des deux salles avec le Rectangle
+(`[3]`), puis `[&]` → « dessiner sur la carte » pour revenir au vrai
+dessin. Le brouillon reste affiché comme repère ; `[&]` → « effacer le
+brouillon » quand il ne sert plus (ou « reporter le brouillon sur la
+carte » pour en garder le tracé).
+
 ## 2. La première salle
 
 L'outil **Salle** trace un rectangle de murs rempli de sol.
@@ -78,6 +88,11 @@ Une erreur ? `[u]` annule, `[U]` rétablit ; le message nomme la commande
 concernée. `[V]` affiche l'**historique** de toutes vos commandes : en
 choisir une ramène la carte à cet état. Pendant le tracé, `[Échap]`
 retire l'ancre sans rien dessiner.
+
+Les murs se dessinent aussi à la main, avec les caractères `-` et `|`.
+`[=]` active le **pinceau mur automatique** : chaque `-` ou `|` posé
+prend la forme qui convient (`|` dans un mur vertical, `-` ailleurs,
+coins compris), et le même menu corrige les murs de toute la carte.
 
 > Avec la souris : cliquez sur un coin et glissez jusqu'au coin opposé.
 
@@ -136,12 +151,40 @@ désactivée » pour en sortir.
 proportion des cases d'une zone : pratique pour des arbres (`T`), des
 rochers, de l'eau éparse. L'éditeur demande la densité en %.
 
-**Variante : le labyrinthe.** L'outil `[Q]` (Labyrinthe) creuse un
-labyrinthe dans la zone tracée, comme `des.mazewalk()`. Il demande le
-style des murs (`-` et `|`, roche, ou le pinceau), le terrain des passages
-et un pourcentage de boucles (0 : un seul chemin entre deux points). Le
-tirage ne vous plaît pas ? `u` l'annule, Espace en refait un sur la même
-zone.
+**Variante : les tampons.** `[^]` ouvre les **tampons de terrain**,
+de petits motifs prêts à poser : pilier 2x2, colonnade, fontaine
+entourée de sol, bassin rond, coin de rivière, bosquet, porte dans un
+mur… L'aperçu suit le curseur, centré sur lui ; `[Espace]` pose le
+tampon, autant de fois que voulu, `[X]`, `[Y]`, `[O]` le retournent ou
+le font pivoter, `[Échap]` revient à l'outil précédent. Les cases `x`
+d'un tampon ne touchent pas la carte : une colonnade ne recouvre pas le
+sol entre ses piliers. Par exemple, une rangée de piliers le long du mur
+nord de la seconde salle : « colonnade », puis `[Espace]` en `(31,3)`
+(facultatif, comme les autres variantes : la carte finale n'en a pas).
+
+**Variante : le motif.** L'outil `[:]` (Remplissage par motif) remplit
+une zone d'un damier, de rayures, de diagonales ou de points espacés,
+avec deux terrains : du sol et de l'eau (`.` et `}`) pour un marécage,
+du sol et de la glace (`.` et `I`) pour un dallage. Il demande le motif,
+les deux terrains et la largeur des bandes. Tracez ensuite un
+rectangle, ou appuyez deux fois sur `[Espace]` sur la même case pour
+remplir toute la zone de même terrain, comme le Remplissage (`[6]`).
+
+**Variante : les générateurs.** L'outil `[Q]` (Générateur) remplit la
+zone tracée d'un de ces trois générateurs :
+
+- un **labyrinthe**, comme `des.mazewalk()` : il demande le style des
+  murs (`-` et `|`, roche, ou le pinceau), le terrain des passages et un
+  pourcentage de boucles (0 : un seul chemin entre deux points) ;
+- une **grotte** comme celles des mines : il demande le pourcentage de
+  roche au départ (plus il est élevé, plus la grotte est étroite) et un
+  bord en murs `-` et `|` ou en roche ;
+- des **salles et couloirs** : il demande le nombre de salles voulu
+  (moins si la zone est petite ; 12x6 au moins), murées et reliées par
+  des couloirs qui entrent par des portes.
+
+Le tirage ne vous plaît pas ? `[u]` l'annule, `[Espace]` en refait un
+sur la même zone.
 
 ## 7. Les escaliers
 
@@ -189,6 +232,22 @@ curseur, `[e]` en modifie une, `[d]` la supprime. Sur la carte,
 `[z]` (ou Suppr) supprime les entités sous le curseur, et `[Tab]` les
 masque pour voir le terrain dessous.
 
+**Annoter.** Retournez sur le coffre, en `(9,6)`, et tapez `["]`.
+L'éditeur demande quoi annoter : la case, ou une des entités qui s'y
+trouvent. Choisissez le coffre et tapez `le trésor de la crypte`. Faites
+de même sur la porte secrète, en `(11,4)` : il n'y a pas d'entité, la
+note va directement à la case ; tapez `passage vers la seconde salle`.
+Les cases annotées passent sur fond cyan et la barre d'état affiche la
+note quand le curseur s'y trouve. Les annotations sont enregistrées dans
+le fichier, en commentaires Lua (voir l'étape 10). Pour en retirer une,
+`["]` puis un texte vide.
+
+**Plusieurs entités à la fois.** `[*]` trace un rectangle de sélection :
+les entités qu'il contient (pas le terrain) peuvent être déplacées,
+copiées, supprimées ou modifiées ensemble. `[/]` cherche et remplace :
+par exemple tous les chacals deviennent des coyotes, ou reçoivent
+l'option `asleep`, en une seule commande.
+
 ## 9. Vérifier
 
 `[v]` lance la vérification. Chaque message commence par sa gravité :
@@ -216,6 +275,23 @@ script complet avec une bibliothèque `des` factice et signale les fautes
 de frappe dans les noms de monstres ou d'objets. Sinon, l'éditeur propose
 une fois de compiler celui des sources de NetHack.
 
+`[%]` affiche les **statistiques** du niveau : part de chaque terrain,
+entités par genre, monstres et objets par classe, et une **difficulté
+estimée** d'après les monstres placés. Pour la crypte :
+
+```
+Difficulté estimée :
+  monstres comptés : 3 (nommés 3, par classe 0, aléatoires 0)
+  le plus dur : jackal (difficulté 1)
+  difficulté moyenne : 1.0
+  somme des niveaux des monstres nommés : 0
+  profondeur conseillée : 1 ou plus (là où NetHack les ferait apparaître)
+```
+
+Trois chacals conviennent au tout premier niveau du donjon. Remplacez-en
+un par un `troll` (`[/]` ou `[i]` puis `[e]`) : la profondeur conseillée
+passe à 9, la difficulté du troll.
+
 ## 10. Enregistrer
 
 `[s]` enregistre dans `crypte.lua`. Ouvrez le fichier dans un éditeur de
@@ -225,6 +301,7 @@ texte : c'est un script Lua ordinaire, comme ceux de `dat/` :
 des.level_init({ style = "solidfill", fg = " " });
 des.level_flags("mazelevel", "noflip");
 
+-- nhme-note 11 4 : passage vers la seconde salle
 des.map([[
 ...
 ]]);
@@ -237,13 +314,24 @@ des.monster({ x = 31, y = 4, id = "jackal", asleep = 1 });
 des.object({ x = 9, y = 6, id = "chest", locked = 1, contents = function()
    des.object("potion of healing");
    des.object("scroll of teleportation");
-end });
+end }); -- le trésor de la crypte
 ```
+
+Les annotations sont là : celles des cases en lignes `-- nhme-note x y :`
+juste avant la carte, celles des entités en fin de ligne. NetHack les
+ignore, comme tout commentaire ; l'éditeur les relit à l'ouverture.
 
 `[w]` enregistre sous un autre nom. Si vous quittez (`[q]`) avec des
 modifications non enregistrées, l'éditeur le demande. Et si le terminal
 se ferme brutalement, une **sauvegarde de secours**
 (`crypte.lua.nhme-autosave`) sera proposée à la réouverture.
+
+L'**historique** survit lui aussi à la fermeture : à chaque
+enregistrement, il est gardé dans `crypte.lua.nhme-history`. Quittez,
+relancez `python3 nhmapedit.py crypte.lua` : le message annonce
+« Historique repris », et `[u]` annule encore les commandes de la séance
+précédente. Si le fichier a été modifié ailleurs entre-temps,
+l'historique ne lui correspond plus et il est oublié.
 
 ## 11. Essayer le niveau dans NetHack
 
@@ -264,6 +352,13 @@ le répertoire du jeu sous le nom `nhme-crypte.lua`, avec le drapeau
 
 Dans le jeu, Ctrl-F révèle toute la carte et Ctrl-T téléporte : pratique
 pour aller voir le coffre et chercher la porte secrète.
+
+**Si NetHack refuse la carte**, par exemple à cause d'un nom de piège
+mal écrit dans un script modifié à la main, revenez dans l'éditeur et
+appuyez sur `[!]` (**retour du jeu**) : il affiche les erreurs Lua
+signalées par NetHack depuis le dernier essai, avec la ligne fautive, et
+place le curseur sur l'élément concerné. Avec tmux, ce retour s'affiche
+tout seul après le chargement.
 
 Si l'éditeur ne trouve pas le répertoire du jeu, il le demande ; vous
 pouvez l'indiquer une fois pour toutes dans le fichier de configuration
@@ -288,6 +383,14 @@ une zone, avec une proportion : par exemple 30 % du sol en eau.
 
 **Insérer une ligne ou une colonne.** `[E]` au curseur ; la carte et les
 entités se décalent.
+
+**Calques.** `[;]` choisit ce qui est affiché : terrain, entités, chaque
+famille de régions, placements aléatoires du script, annotations,
+brouillon ; des préréglages ne montrent que le terrain, que les entités
+ou que les régions.
+
+**Mini-carte.** Quand la carte dépasse la fenêtre, une mini-carte montre
+en haut à droite la partie visible ; `[~]` la force ou la masque.
 
 **Ouvrir un niveau existant.** `[o]` puis le chemin, par exemple
 `../NetHack-5.0.0/dat/medusa-1.lua` (Tab complète les chemins).
