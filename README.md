@@ -112,6 +112,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `/` | rechercher et remplacer des entités : un genre et une valeur (« monstre orc »…), puis remplacer la valeur, poser ou retirer une option (`asleep=1`…), ou supprimer ; une seule annulation |
 | Tab | afficher / masquer les entités (un symbole souligné signale plusieurs entités sur la case ; la barre d'état les liste toutes) |
 | `c` | afficher / masquer les règles de coordonnées (colonnes en haut, lignes à gauche) |
+| `~` | mini-carte : quand la carte dépasse la vue (défaut), toujours ou jamais ; la partie visible y est en clair, le curseur en inverse |
 | `f` | aperçu du retournement aléatoire que NetHack applique aux niveaux sans `noflip` : aucun → horizontal → vertical → les deux (l'édition reste possible, les règles gardent les vraies coordonnées) |
 | `J` | rendu « comme dans le jeu » : murs en traits avec leurs coins et jonctions, sol en points, symboles et couleurs du jeu, portes et couloirs secrets cachés (l'édition reste possible) |
 | `[`, `]` | carte précédente, suivante d'un fichier à plusieurs `des.map()` (Juiblex, Asmodée…) |

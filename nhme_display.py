@@ -1,5 +1,6 @@
 """Affichage : couleurs, carte, règles, panneau et barre d'état."""
 
+import collections
 import curses
 import os
 import tempfile
@@ -56,6 +57,74 @@ class DisplayMixin:
                 self.next_pair += 1
             a = self.pairs.get(key, curses.A_REVERSE)
         return a | (curses.A_BOLD if bold else 0)
+
+    def minimap_size(self, vw, vh):
+        """Taille (largeur, hauteur) de la mini-carte, ou None si elle
+        n'est pas affichée (touche ~ : auto, toujours, jamais)."""
+        lvl = self.lvl
+        if self.minimap == "off" or (self.minimap == "auto"
+                                     and lvl.w <= vw and lvl.h <= vh):
+            return None
+        mw = max(8, min(lvl.w, vw // 3))
+        mh = max(3, min(lvl.h, vh // 3))
+        if vw < mw + 6 or vh < mh + 3:
+            return None             # vue trop petite pour la loger
+        return mw, mh
+
+    def minimap_cells(self, mw, mh, vw, vh):
+        """Lignes de la mini-carte : (caractère, dans la vue, curseur).
+        Chaque case résume un bloc de la carte affichée par son terrain
+        le plus fréquent hors roche."""
+        lvl = self.lvl
+        cur = self.fl(self.cx, self.cy)
+        rows = []
+        for j in range(mh):
+            y0, y1 = j * lvl.h // mh, max(j * lvl.h // mh + 1,
+                                          (j + 1) * lvl.h // mh)
+            row = []
+            for i in range(mw):
+                x0, x1 = i * lvl.w // mw, max(i * lvl.w // mw + 1,
+                                              (i + 1) * lvl.w // mw)
+                count = collections.Counter(
+                    lvl.grid[y][x] for y, x in (
+                        self.fl(dx, dy)[::-1] for dy in range(y0, y1)
+                        for dx in range(x0, x1)))
+                count.pop(" ", None)
+                count.pop("x", None)
+                ch = count.most_common(1)[0][0] if count else " "
+                seen = (x0 < self.ox + vw and x1 > self.ox
+                        and y0 < self.oy + vh and y1 > self.oy)
+                here = x0 <= cur[0] < x1 and y0 <= cur[1] < y1
+                row.append((ch, seen, here))
+            rows.append(row)
+        return rows
+
+    def draw_minimap(self, top, left, vw, vh):
+        size = self.minimap_size(vw, vh)
+        if not size:
+            return
+        mw, mh = size
+        # en haut à droite de la vue, ou en bas si le curseur y est
+        cx, cy = self.fl(self.cx, self.cy)
+        sx, sy = cx - self.ox, cy - self.oy
+        bx = left + vw - mw - 1
+        by = top + 1
+        if sx >= vw - mw - 3 and sy < mh + 2:
+            by = top + vh - mh - 1
+        frame = self.attr("CLR_YELLOW")
+        box_top = by
+        self.put(box_top, bx - 1, "+" + "-" * mw + "+", frame)
+        for j, row in enumerate(self.minimap_cells(mw, mh, vw, vh)):
+            self.put(box_top + 1 + j, bx - 1, "|", frame)
+            for i, (ch, seen, here) in enumerate(row):
+                a = self.attr(TERRAIN_COLOR.get(ch, "CLR_GRAY"))
+                if not seen:
+                    a = curses.A_DIM
+                if here:
+                    a = curses.A_REVERSE
+                self.put(box_top + 1 + j, bx + i, ch, a)
+            self.put(box_top + 1 + j, bx + mw, "|", frame)
+        self.put(box_top + mh + 1, bx - 1, "+" + "-" * mw + "+", frame)
 
     def layers(self):
         """Calques d'affichage (touche ;) : terrain, entités, chaque
@@ -328,6 +397,7 @@ class DisplayMixin:
                     elif (x, y) in rnd_pts:
                         ch, a = "?", self.attr(RANDOM)
                 self.put(top + 1 + sy, left + 1 + sx, ch, a)
+        self.draw_minimap(top, left, vw, vh)
         if side:
             self.draw_side(top, left + vw + 3, maxy)
         self.draw_status(maxy, maxx)

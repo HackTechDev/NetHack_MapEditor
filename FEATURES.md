@@ -31,6 +31,11 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 - Règles de coordonnées en haut et à gauche, colonne et ligne du curseur
   surlignées (`c` pour les masquer).
+- Mini-carte (`~`) en surimpression dans un coin de la vue quand la carte
+  dépasse l'écran (ou toujours, ou jamais) : chaque case résume un bloc
+  par son terrain le plus fréquent, la partie visible est en clair, le
+  reste estompé, le curseur en inverse ; elle passe en bas si le curseur
+  est dessous.
 - Barre d'état : coordonnées relatives à la carte et position réelle
   dans le niveau de 80x21 (calculée d'après `halign`/`valign` ou la
   position fixe), terrain et entités de la case.
@@ -242,7 +247,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 96 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 97 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

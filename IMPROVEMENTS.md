@@ -23,7 +23,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 8. Configuration et confort | 3 / 3 | — |
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
-| 11. Idées supplémentaires | 5 / 12 | voir la liste |
+| 11. Idées supplémentaires | 6 / 12 | tirage, $EDITOR, `.des`, sélections, Sokoban, donjon |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -266,7 +266,7 @@ utiles aux plus accessoires.
   un niveau manifestement insoluble.
 - ✅ **Fait** — **Statistiques du niveau** **[facile]** : nombre de monstres par
   classe, d'objets et de pièges, placements fixes et aléatoires à part.
-- **Mini-carte** **[facile]** : quand la carte dépasse l'écran, un petit
+- ✅ **Fait** — **Mini-carte** **[facile]** : quand la carte dépasse l'écran, un petit
   aperçu montrant la partie visible.
 - **Vue du donjon** **[moyen]** : schéma de `dungeon.lua` (branches,
   profondeurs, niveaux spéciaux) depuis lequel ouvrir un niveau.

@@ -865,6 +865,11 @@ EN = {
     '  salles typées : %s': '  typed rooms: %s',
     'classe aléatoire': 'random of the class',
     'dans une zone ou une liste de cases': 'in an area or a list of cells',
+    # mini-carte
+    'Mini-carte : quand la carte dépasse la vue.':
+        'Minimap: when the map is larger than the view.',
+    'Mini-carte : toujours.': 'Minimap: always.',
+    'Mini-carte : jamais.': 'Minimap: never.',
 }
 
 HELP = """\
@@ -875,6 +880,9 @@ MOVING
   Shift+arrows, PgUp/PgDn, Home/End   move fast
   g                      go to a position (x y)
   c                      show / hide the coordinate rulers
+  ~                      minimap: when the map is larger than the view
+                         (default), always, never; the visible part is
+                         shown plain, the cursor reversed
   f                      preview NetHack's random flip:
                          none, horizontal, vertical, both
   Mouse                  click = move + apply the tool, drag = paint,

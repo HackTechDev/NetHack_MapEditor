@@ -65,6 +65,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         # sélection multiple d'entités (touche *) : copies relatives au
         # coin de la sélection, et originaux à retirer pour un déplacement
         self.ent_clip, self.ent_moved = [], []
+        self.minimap = "auto"       # mini-carte : auto, on, off (touche ~)
         self.pending_region = None  # région en cours de tracé
         # règles de coordonnées autour de la carte
         self.rulers = self.config.get("rulers", True)
@@ -298,6 +299,13 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.start_entity_selection()
         elif k == "%":
             self.show_stats()
+        elif k == "~":
+            self.minimap = {"auto": "on", "on": "off",
+                            "off": "auto"}[self.minimap]
+            self.msg = {"auto": _("Mini-carte : quand la carte dépasse la "
+                                  "vue."),
+                        "on": _("Mini-carte : toujours."),
+                        "off": _("Mini-carte : jamais.")}[self.minimap]
         elif k == "V":
             self.history()
         elif k == "n":

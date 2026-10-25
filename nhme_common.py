@@ -303,6 +303,9 @@ DÉPLACEMENT
   Maj+flèches, PgPréc/PgSuiv, Début/Fin   déplacement rapide
   g                      aller à une position (x y)
   c                      afficher / masquer les règles de coordonnées
+  ~                      mini-carte : quand la carte dépasse la vue
+                         (défaut), toujours, jamais ; la partie visible y
+                         est en clair, le curseur en inverse
   f                      aperçu du retournement aléatoire de NetHack :
                          aucun, horizontal, vertical, les deux
   Souris                 clic = déplacer + appliquer l'outil, glisser = peindre,

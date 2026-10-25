@@ -453,3 +453,21 @@ class Stats(unittest.TestCase):
         self.assertRegex(text, r"d +3  jackal ×2, classe aléatoire")
         self.assertRegex(text, r"\? +1  aléatoire")
         self.assertRegex(text, r"pit +1")
+
+
+class Minimap(unittest.TestCase):
+    def test_minimap(self):
+        ed = editor(["..........    ", "..........    ",
+                     "              ", "         WWWWW"])
+        self.assertIsNone(ed.minimap_size(14, 4))        # tout est visible
+        self.assertIsNone(ed.minimap_size(10, 3))        # vue trop petite
+        ed.minimap = "on"
+        self.assertEqual(ed.minimap_size(30, 12), (10, 4))
+        rows = ed.minimap_cells(7, 2, 6, 2)
+        self.assertEqual("".join(c for c, _s, _h in rows[0]), ".....  ")
+        self.assertEqual("".join(c for c, _s, _h in rows[1]), "    WWW")
+        # la vue (6x2 depuis 0,0) et le curseur (0,0)
+        self.assertEqual([s for _c, s, _h in rows[0]], [True] * 3 + [False] * 4)
+        self.assertEqual([h for _c, _s, h in rows[0]], [True] + [False] * 6)
+        ed.minimap = "off"
+        self.assertIsNone(ed.minimap_size(30, 12))
