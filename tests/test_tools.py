@@ -366,6 +366,36 @@ class Stamps(unittest.TestCase):
         self.assertEqual([r[0] for r in ed.lvl.grid], list("+|+|."))
 
 
+class Pattern(unittest.TestCase):
+    def test_kinds(self):
+        def rows(kind, w, size=(6, 3)):
+            return ["".join("}" if nhmapedit.pattern_second(kind, x, y, w)
+                            else "." for x in range(size[0]))
+                    for y in range(size[1])]
+        self.assertEqual(rows("checker", 1), [".}.}.}", "}.}.}.", ".}.}.}"])
+        self.assertEqual(rows("checker", 2), ["..}}..", "..}}..", "}}..}}"])
+        self.assertEqual(rows("hstripes", 1), ["......", "}}}}}}", "......"])
+        self.assertEqual(rows("vstripes", 2), ["..}}.."] * 3)
+        self.assertEqual(rows("diagonal", 2), ["}..}..", "..}..}", ".}..}."])
+        self.assertEqual(rows("dots", 1), ["}.}.}.", "......", "}.}.}."])
+
+    def test_tool(self):
+        ed = editor(["|......|", "|......|", "--------"])
+        answers = iter(["vstripes", ".", "}"])
+        ed.pick = lambda *a, **k: next(answers)
+        ed.prompt = lambda *a, **k: "1"
+        ed.ask_pattern()
+        self.assertEqual(ed.pattern, ("vstripes", ".", "}", 1))
+        two_points(ed, "pattern", (1, 0), (2, 0))
+        self.assertEqual(ed.lvl.map_text().split("\n")[0], "|}.....|")
+        ed.undo()
+        # deux fois la même case : toute la zone de sol
+        two_points(ed, "pattern", (3, 1), (3, 1))
+        self.assertEqual(ed.lvl.map_text(),
+                         "|}.}.}.|\n|}.}.}.|\n--------")
+        self.assertIn("rayures verticales", ed.undo_stack[-1].label)
+
+
 class PersistentHistory(unittest.TestCase):
     def test_history_survives_reopening(self):
         import pickle

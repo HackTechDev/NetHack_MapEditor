@@ -74,6 +74,11 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   - Remplissage (`6`) ;
   - Ellipse (`9`) et Ellipse pleine (`0`), sans trou en diagonale ;
   - Semis aléatoire (`G`) avec une densité en % ;
+  - Remplissage par motif (`:`) : damier, rayures horizontales ou
+    verticales, diagonales, points espacés, avec deux terrains et une
+    largeur ; dans un rectangle, ou dans la zone de même terrain (deux
+    appuis sur la même case) ; motif calé sur les coordonnées de la
+    carte ;
   - Remplacer un terrain par un autre (`R`), partout ou dans une zone,
     avec une proportion, comme `des.replace_terrain()` ;
   - Labyrinthe (`Q`) dans une zone, creusé comme `des.mazewalk()` mais
@@ -289,7 +294,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 113 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 115 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

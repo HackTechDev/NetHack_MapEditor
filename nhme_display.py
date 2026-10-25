@@ -549,7 +549,9 @@ class DisplayMixin:
         if self.tool in TWO_POINT:
             extra = {"scatter": _("  (densité %d %%)") % self.density,
                      "copy": "  puis 8 colle", "cut": "  puis 8 colle",
-                     "replace": _("  (R : autre remplacement)")}
+                     "replace": _("  (R : autre remplacement)"),
+                     "pattern": _("  (2 fois la même case : zone de même "
+                                  "terrain)")}
             return (_(" Espace: poser l'ancre (1er coin)  caractère: pinceau  "
                       "M: symétrie  u: annuler") + extra.get(self.tool, ""))
         if self.tool == "fill":

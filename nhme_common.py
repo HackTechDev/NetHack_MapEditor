@@ -68,6 +68,7 @@ TOOLS = [
     ("scatter", _("Semis aléatoire"), _("Semis"), "G"),
     ("replace", _("Remplacer du terrain"), _("Remplacer"), "R"),
     ("maze", _("Labyrinthe"), _("Labyrinthe"), "Q"),
+    ("pattern", _("Remplissage par motif"), _("Motif"), ":"),
 ]
 TOOL_NAME = {t: name for t, name, _short, _key in TOOLS}
 # outil temporaire du tracé d'une région (m, puis une région)
@@ -82,7 +83,7 @@ TOOL_NAME["stamp"] = _("Tampon")
 TOOL_KEY = {key: t for t, _name, _short, key in TOOLS}
 TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut", "ellipse",
              "fillellipse", "scatter", "replace", "region", "maze", "walls",
-             "entsel"}
+             "entsel", "pattern"}
 # outils dont l'aperçu montre la zone sans y dessiner le pinceau
 SELECT = {"copy", "cut", "scatter", "replace", "region", "maze", "walls",
           "entsel", "entpaste"}
@@ -110,6 +111,33 @@ STAMPS = [
     (_("carrefour de couloirs"), ["x#x", "###", "x#x"]),
     (_("barreaux"), ["FFFFF"]),
 ]
+
+# Motifs de l'outil Remplissage par motif : identifiant, nom ; le second
+# terrain va sur les cases où pattern_second() est vrai
+PATTERNS = [
+    ("checker", _("damier")),
+    ("hstripes", _("rayures horizontales")),
+    ("vstripes", _("rayures verticales")),
+    ("diagonal", _("diagonales")),
+    ("dots", _("points espacés")),
+]
+
+
+def pattern_second(kind, x, y, w):
+    """Vrai si la case (x, y) du niveau prend le second terrain du motif ;
+    w : largeur des bandes, ou écart des diagonales et des points.
+    Coordonnées de la carte, pas de la zone : deux zones voisines se
+    raccordent."""
+    if kind == "checker":
+        return (x // w + y // w) % 2 == 1
+    if kind == "hstripes":
+        return y // w % 2 == 1
+    if kind == "vstripes":
+        return x // w % 2 == 1
+    if kind == "diagonal":
+        return (x + y) % (w + 1) == 0
+    return x % (w + 1) == 0 and y % (w + 1) == 0
+
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
 FLIP_NAME = {0: _("aucun"), 1: _("vertical"), 2: _("horizontal"),
@@ -365,6 +393,10 @@ OUTILS (Espace ou Entrée pour appliquer)
   Q Labyrinthe dans une zone (comme des.mazewalk, mais tiré une fois pour
     toutes) : murs - et |, roche ou pinceau ; passages en sol ou couloir ;
     boucles en % ; u puis Espace en tire un autre
+  : Remplissage par motif : damier, rayures horizontales ou verticales,
+    diagonales ou points espacés, avec deux terrains (ex. sol et douves)
+    et une largeur ; dans un rectangle tracé, ou, avec deux appuis sur
+    la même case, dans toute la zone de même terrain (comme 6)
   =  murs automatiques : en mode « pinceau mur », tout - ou | posé (et
      ses voisins) prend la forme qui convient (| dans un mur vertical,
      - ailleurs, coins compris) ; corrige aussi les murs de toute la carte

@@ -93,6 +93,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `9`, `0` | outil Ellipse, Ellipse pleine (un cercle est une ellipse tracée dans un carré) |
 | `G` | outil Semis aléatoire : peint au hasard une partie des cases d'une zone, selon une densité en % |
 | `Q` | labyrinthe dans une zone, comme `des.mazewalk()` mais tiré une fois pour toutes : murs `-` et `\|`, roche ou pinceau, passages en sol ou couloir, boucles en % ; `u` puis Espace en tire un autre |
+| `:` | outil Remplissage par motif : damier, rayures horizontales ou verticales, diagonales ou points espacés, avec deux terrains (`.` et `}` par exemple) et une largeur ; dans un rectangle tracé, ou, avec deux appuis sur la même case, dans toute la zone de même terrain (comme `6`) ; le motif suit les coordonnées de la carte, deux zones voisines se raccordent |
 | `=` | murs automatiques : en mode « pinceau mur », tout `-` ou `\|` posé (et ses voisins) prend la forme qui convient (`\|` dans un mur vertical, `-` ailleurs, coins compris) ; corrige aussi les murs de toute la carte ou d'une zone |
 | `R` | remplacer un terrain par un autre, sur toute la carte ou dans une zone, avec une proportion en % (comme `des.replace_terrain()`) |
 | `^` | tampons de terrain : petits motifs prêts à poser, plus légers que les modèles (pilier 2x2, colonnade, fontaine entourée de sol, coin de rivière, bosquet, porte dans un mur…) ; centrés sur le curseur, posés par Espace autant de fois que voulu, retournés ou tournés par `X`, `Y`, `O` ; les cases `x` du tampon ne changent pas la carte |

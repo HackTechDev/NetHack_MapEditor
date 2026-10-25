@@ -985,6 +985,24 @@ EN = {
     # historique persistant
     ' Historique repris : %d commande(s) (u annule, V liste).':
         ' History restored: %d command(s) (u undoes, V lists).',
+    # remplissage par motif
+    'Remplissage par motif': 'Pattern fill',
+    'Motif': 'Pattern',
+    'damier': 'checkerboard',
+    'rayures horizontales': 'horizontal stripes',
+    'rayures verticales': 'vertical stripes',
+    'diagonales': 'diagonals',
+    'points espacés': 'spaced dots',
+    '  (2 fois la même case : zone de même terrain)':
+        '  (same cell twice: area of the same terrain)',
+    'Motif %s : « %s » et « %s »': 'Pattern %s: "%s" and "%s"',
+    'Premier terrain (fond)': 'First terrain (background)',
+    'Second terrain': 'Second terrain',
+    'Écart entre deux diagonales ou deux points':
+        'Gap between two diagonals or two dots',
+    'Largeur des cases ou des bandes': 'Width of the squares or stripes',
+    'Zone remplie par le motif.': 'Area filled with the pattern.',
+    'Rectangle rempli par le motif.': 'Rectangle filled with the pattern.',
 }
 
 HELP = """\
@@ -1026,6 +1044,10 @@ TOOLS (Space or Enter to apply)
   Q Maze in an area (like des.mazewalk, but drawn once and for all):
     - and | walls, rock or brush; passages of floor or corridor;
     loops in %; u then Space draws another one
+  : Pattern fill: checkerboard, horizontal or vertical stripes,
+    diagonals or spaced dots, with two terrains (e.g. floor and moat)
+    and a width; in a traced rectangle or, pressing twice on the same
+    cell, in the whole area of the same terrain (like 6)
   =  automatic walls: in "wall brush" mode, any - or | laid (and its
      neighbours) takes the right shape (| in a vertical wall, - elsewhere,
      corners included); also fixes the walls of the whole map or of an

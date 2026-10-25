@@ -8,8 +8,8 @@ import nhexport
 import nhlevel
 from nhi18n import _
 from nhme_common import (
-    HISTORY_MAX, Cancel, HistoryEntry, SELECT, STAMPS, TEMPLATE_DIRS,
-    TOOL_NAME,
+    HISTORY_MAX, PATTERNS, Cancel, HistoryEntry, SELECT, STAMPS,
+    TEMPLATE_DIRS, TOOL_NAME, pattern_second,
     bresenham, ellipse_cells, maze_cells, wall_fixes)
 
 
@@ -81,6 +81,9 @@ class ToolsMixin:
             for y in range(ly, hy + 1):
                 for x in range(lx, hx + 1):
                     cells[(x, y)] = br
+        elif t == "pattern":
+            cells = self.pattern_cells((x, y) for y in range(ly, hy + 1)
+                                       for x in range(lx, hx + 1))
         elif t == "room":
             for y in range(ly, hy + 1):
                 for x in range(lx, hx + 1):
@@ -321,6 +324,14 @@ class ToolsMixin:
             elif t == "entsel":
                 self.tool = self.sel_prev_tool
                 self.entity_selection(a, b)
+            elif t == "pattern" and a == b:
+                # deux appuis sur la même case : la zone de même terrain
+                self.paint(self.pattern_cells(self.same_terrain(*a)),
+                           sym=False, label=self.pattern_label())
+                self.msg = _("Zone remplie par le motif.")
+            elif t == "pattern":
+                self.paint(self.shape_cells(a, b), label=self.pattern_label())
+                self.msg = _("Rectangle rempli par le motif.")
             elif t == "maze":
                 wall, floor, loops = self.maze_opts
                 cells = maze_cells(min(a[0], b[0]), min(a[1], b[1]),
@@ -338,20 +349,50 @@ class ToolsMixin:
                 self.paint(self.shape_cells(a, b))
                 self.msg = _("%s tracé.") % TOOL_NAME[t]
 
+    def same_terrain(self, x, y):
+        """Cases reliées à (x, y) (4 directions) de même terrain, et
+        celles de ses reflets en mode symétrie."""
+        old = self.lvl.grid[y][x]
+        zone, stack = set(), list(self.mirror_points(x, y))
+        while stack:
+            p = stack.pop()
+            if (p not in zone and 0 <= p[0] < self.lvl.w
+                    and 0 <= p[1] < self.lvl.h
+                    and self.lvl.grid[p[1]][p[0]] == old):
+                zone.add(p)
+                stack += [(p[0] + 1, p[1]), (p[0] - 1, p[1]),
+                          (p[0], p[1] + 1), (p[0], p[1] - 1)]
+        return zone
+
+    def pattern_cells(self, cells):
+        kind, first, second, w = self.pattern
+        return {(x, y): second if pattern_second(kind, x, y, w) else first
+                for x, y in cells}
+
+    def pattern_label(self):
+        kind, first, second, _w = self.pattern
+        return _("Motif %s : « %s » et « %s »") % (
+            dict(PATTERNS)[kind], first, second)
+
+    def ask_pattern(self):
+        """Options de l'outil Remplissage par motif."""
+        kind, first, second, w = self.pattern
+        kind = self.pick(_("Motif"), [(n, k) for k, n in PATTERNS], kind)
+        items = [("%s  %s" % ("e" if c == " " else c, d), c)
+                 for c, d in nhlevel.TERRAIN if c != "x"]
+        first = self.pick(_("Premier terrain (fond)"), items, self.brush)
+        second = self.pick(_("Second terrain"), items, second)
+        label = (_("Écart entre deux diagonales ou deux points")
+                 if kind in ("diagonal", "dots")
+                 else _("Largeur des cases ou des bandes"))
+        w = self.ask_int(label, w, 1, 9)
+        self.pattern = (kind, first, second, w)
+
     def flood_fill(self, x, y, c):
         old = self.lvl.grid[y][x]
         if self.draft_mode:
             # brouillon : la zone de même terrain de la carte
-            zone, stack = set(), list(self.mirror_points(x, y))
-            while stack:
-                p = stack.pop()
-                if (p not in zone and 0 <= p[0] < self.lvl.w
-                        and 0 <= p[1] < self.lvl.h
-                        and self.lvl.grid[p[1]][p[0]] == old):
-                    zone.add(p)
-                    stack += [(p[0] + 1, p[1]), (p[0] - 1, p[1]),
-                              (p[0], p[1] + 1), (p[0], p[1] - 1)]
-            self.paint({p: c for p in zone}, sym=False,
+            self.paint({p: c for p in self.same_terrain(x, y)}, sym=False,
                        label=_("Remplissage"))
             return
         if old == c:

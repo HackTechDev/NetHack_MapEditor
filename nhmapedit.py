@@ -61,6 +61,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.show_regions = {"room", "tele", "rand", "note", "draft"}
         self.show_terrain = True    # calque du terrain (touche ;)
         self.maze_opts = ("-", ".", 0)  # murs, passages, % de boucles
+        # outil Remplissage par motif : motif, 1er et 2e terrain, largeur
+        self.pattern = ("checker", ".", "}", 1)
         self.auto_walls = False     # pinceau mur automatique (touche =)
         self.draft_mode = False     # dessin sur le brouillon (touche &)
         # sélection multiple d'entités (touche *) : copies relatives au
@@ -200,6 +202,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                     return True
             elif TOOL_KEY[k] == "maze":
                 self.ask_maze()
+            elif TOOL_KEY[k] == "pattern":
+                self.ask_pattern()
             elif TOOL_KEY[k] == "replace" and not self.ask_replace():
                 return True         # déjà fait sur toute la carte
             self.tool = TOOL_KEY[k]
