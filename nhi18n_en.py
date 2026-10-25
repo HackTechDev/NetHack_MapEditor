@@ -753,6 +753,25 @@ EN = {
         'Random placement written in the script: edit it in the file.',
     'Entités (%d), régions (%d), au hasard (%d)':
         'Entities (%d), regions (%d), random (%d)',
+    # calques
+    '   [terrain masqué]': '   [terrain hidden]',
+    'régions : salles typées (temple, boutique…)':
+        'regions: typed rooms (temple, shop…)',
+    'régions : zones seulement éclairées ou sombres':
+        'regions: areas that are only lit or dark',
+    'régions : non creusables, sans passe-muraille':
+        'regions: non-diggable, non-passwall',
+    'régions : téléportation et arrivées': 'regions: teleport and arrival',
+    'placements aléatoires du script': 'random placements of the script',
+    '→ tout afficher': '→ show everything',
+    '→ le terrain seul': '→ terrain only',
+    '→ les entités seules': '→ entities only',
+    '→ les régions seules': '→ regions only',
+    '→ affichage par défaut': '→ default display',
+    'Calques (Entrée: cocher/décocher, Échap: terminer)':
+        'Layers (Enter: check/uncheck, Esc: done)',
+    'terrain': 'terrain',
+    'entités (Tab)': 'entities (Tab)',
 }
 
 HELP = """\
@@ -823,6 +842,9 @@ ENTITIES (coordinates relative to the map)
   for teleport and arrival regions; hidden by default: yellow for areas
   that are only lit or dark, red for non-diggable or non-passwall zones
   Tab  show / hide the entities
+  ;  layers: terrain, entities, each region family, random
+     placements; presets "terrain only", "entities only", "regions
+     only"
   Random monsters and objects: on a magenta background, with the symbol
   of their class (d, !…) or "?" when everything is random
   An underlined symbol means several entities on the cell (only the

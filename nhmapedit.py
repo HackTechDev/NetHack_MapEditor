@@ -59,6 +59,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.show_ents = self.config.get("entities", True)
         # calques des régions affichés (familles de region_family())
         self.show_regions = {"room", "tele", "rand"}
+        self.show_terrain = True    # calque du terrain (touche ;)
         self.pending_region = None  # région en cours de tracé
         # règles de coordonnées autour de la carte
         self.rulers = self.config.get("rulers", True)
@@ -273,6 +274,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                                 % len(lvl.maps))
         elif k == "N":
             self.maps_menu()
+        elif k == ";":
+            self.layers()
         elif k == "V":
             self.history()
         elif k == "n":

@@ -8,9 +8,9 @@ import nhexport
 import nhlevel
 from nhi18n import _
 from nhme_common import (
-    ASCII_GLYPH, FLIP_NAME, HI_COLORS, NH_COLORS, OBJ_CLASS_COLOR, RANDOM,
-    REGION_BG, SELECT, SHORT, SYM_NAME, TERRAIN_COLOR, TOOLS, TOOL_NAME,
-    TWO_POINT, game_view, region_family)
+    ASCII_GLYPH, Cancel, FLIP_NAME, HI_COLORS, NH_COLORS, OBJ_CLASS_COLOR,
+    RANDOM, REGION_BG, SELECT, SHORT, SYM_NAME, TERRAIN_COLOR, TOOLS,
+    TOOL_NAME, TWO_POINT, game_view, region_family)
 
 
 class DisplayMixin:
@@ -56,6 +56,52 @@ class DisplayMixin:
                 self.next_pair += 1
             a = self.pairs.get(key, curses.A_REVERSE)
         return a | (curses.A_BOLD if bold else 0)
+
+    def layers(self):
+        """Calques d'affichage (touche ;) : terrain, entités, chaque
+        famille de régions, placements aléatoires ; préréglages pour ne
+        voir que le terrain, que les entités ou que les régions."""
+        fams = [("room", _("régions : salles typées (temple, boutique…)")),
+                ("lit", _("régions : zones seulement éclairées ou sombres")),
+                ("dig", _("régions : non creusables, sans passe-muraille")),
+                ("tele", _("régions : téléportation et arrivées")),
+                ("rand", _("placements aléatoires du script"))]
+        presets = {"all": (True, True, {f for f, _l in fams}),
+                   "terrain": (True, False, set()),
+                   "ents": (False, True, set()),
+                   "regions": (False, False, {"room", "lit", "dig", "tele"}),
+                   "default": (True, True, {"room", "tele", "rand"})}
+        sel = "terrain_l"
+        def box(on):
+            return "[x]" if on else "[ ]"
+
+        while True:
+            items = [(box(self.show_terrain) + " " + _("terrain"),
+                      "terrain_l"),
+                     (box(self.show_ents) + " " + _("entités (Tab)"),
+                      "ents_l")]
+            items += [(box(f in self.show_regions) + " " + label, f)
+                      for f, label in fams]
+            items += [(_("→ tout afficher"), "all"),
+                      (_("→ le terrain seul"), "terrain"),
+                      (_("→ les entités seules"), "ents"),
+                      (_("→ les régions seules"), "regions"),
+                      (_("→ affichage par défaut"), "default")]
+            try:
+                sel = self.pick(_("Calques (Entrée: cocher/décocher, "
+                                  "Échap: terminer)"), items, sel)
+            except Cancel:
+                return
+            if sel in presets:
+                t, e, r = presets[sel]
+                self.show_terrain, self.show_ents = t, e
+                self.show_regions = set(r)
+            elif sel == "terrain_l":
+                self.show_terrain = not self.show_terrain
+            elif sel == "ents_l":
+                self.show_ents = not self.show_ents
+            else:
+                self.show_regions ^= {sel}
 
     def region_overlay(self):
         """Case -> famille de la région affichée dessus (calque)."""
@@ -256,6 +302,8 @@ class DisplayMixin:
                 else:
                     ch = lvl.grid[y][x]
                     clr = TERRAIN_COLOR.get(ch, "CLR_GRAY")
+                if not self.show_terrain:
+                    ch = " "
                 fam = overlay.get((x, y))
                 a = self.attr(clr, fam)
                 if (x, y) in prev:
@@ -362,6 +410,8 @@ class DisplayMixin:
                                abs(self.cy - self.anchor[1]) + 1))
         if not self.show_ents:
             st += _("   [entités masquées]")
+        if not self.show_terrain:
+            st += _("   [terrain masqué]")
         n = sum(rp.zone[0] == "map" for rp in lvl.randoms)
         if n and "rand" in self.show_regions:
             st += _("   [%d au hasard dans la carte]") % n

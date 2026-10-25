@@ -356,6 +356,9 @@ ENTITÉS (coordonnées relatives à la carte)
   seulement éclairées ou sombres, rouge les zones non creusables ou sans
   passe-muraille
   Tab  afficher / masquer les entités
+  ;  calques : terrain, entités, chaque famille de régions, placements
+     aléatoires ; préréglages « le terrain seul », « les entités
+     seules », « les régions seules »
   Monstres et objets aléatoires : sur fond magenta, avec le symbole de leur
   classe (d, !…) ou « ? » quand tout est aléatoire
   Un symbole souligné signale plusieurs entités sur la case (seule la plus

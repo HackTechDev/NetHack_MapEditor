@@ -267,3 +267,19 @@ class Regions(unittest.TestCase):
         ed.start_region("non_diggable")
         ed.end_region()
         self.assertEqual((ed.tool, len(ed.lvl.regions)), ("pen", 1))
+
+
+class Layers(unittest.TestCase):
+    def test_presets_and_toggles(self):
+        ed = editor(["..."])
+        answers = iter(["regions", "tele", "terrain_l"])
+
+        def pick(*a, **k):
+            try:
+                return next(answers)
+            except StopIteration:
+                raise nhmapedit.Cancel()
+        ed.pick = pick
+        ed.layers()
+        self.assertEqual((ed.show_terrain, ed.show_ents, ed.show_regions),
+                         (True, False, {"room", "lit", "dig"}))

@@ -39,6 +39,10 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 - Aperçu des retournements aléatoires de NetHack (`f`) : horizontal,
   vertical ou les deux, avec avertissement si le niveau peut être
   retourné.
+- Calques d'affichage (`;`) : terrain, entités, salles typées, zones
+  éclairées, zones non creusables, téléportation et arrivées,
+  placements aléatoires, chacun à cocher, et préréglages « le terrain
+  seul », « les entités seules », « les régions seules ».
 - Entités masquables (`Tab`) ; symbole souligné quand plusieurs entités
   occupent une case.
 - Monstres et objets aléatoires sur fond magenta, avec le symbole de leur
@@ -208,7 +212,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 82 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 83 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

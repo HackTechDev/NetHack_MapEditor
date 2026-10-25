@@ -22,7 +22,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 7. Fichiers et formats | 4 / 4 | — |
 | 8. Configuration et confort | 3 / 3 | — |
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
-| 10. Nouvelles idées | 1 / 7 | calques, langues, souris, raccourcis, couverture, comparaison |
+| 10. Nouvelles idées | 2 / 7 | langues, souris, raccourcis, couverture, comparaison |
 
 Prochaine étape conseillée : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent.
@@ -203,9 +203,11 @@ Idées apparues pendant le développement des thèmes précédents.
   n'importe quel état ; l'annulation couvre aussi les propriétés du
   niveau, ramène le curseur et rétablit l'état « non modifié ».
 
-- **Calques d'affichage** **[moyen]** : une touche pour n'afficher que le
+- ✅ **Fait** — **Calques d'affichage** **[moyen]** : une touche pour n'afficher que le
   terrain, que les entités ou que les régions (quand elles seront
-  gérées), utile sur les niveaux très chargés.
+  gérées), utile sur les niveaux très chargés. Touche `;` : un calque à
+  cocher par élément (terrain, entités, chaque famille de régions,
+  placements aléatoires) et des préréglages.
 - **Autres langues** **[facile]** : le mécanisme de traduction
   (`nhi18n.py`) accepte d'autres catalogues que l'anglais ; il suffirait
   d'un fichier `nhi18n_xx.py` et de l'ajouter au choix de la langue.

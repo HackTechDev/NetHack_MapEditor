@@ -104,6 +104,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `r` | répéter la dernière entité placée sous le curseur |
 | Suppr, Retour arrière, `z` | supprimer les entités sous le curseur |
 | `i` | liste des entités (Entrée : y aller, `e` : modifier, `d` : supprimer) |
+| `;` | calques d'affichage : terrain, entités, chaque famille de régions, placements aléatoires ; préréglages pour ne voir que le terrain, que les entités ou que les régions |
 | Tab | afficher / masquer les entités (un symbole souligné signale plusieurs entités sur la case ; la barre d'état les liste toutes) |
 | `c` | afficher / masquer les règles de coordonnées (colonnes en haut, lignes à gauche) |
 | `f` | aperçu du retournement aléatoire que NetHack applique aux niveaux sans `noflip` : aucun → horizontal → vertical → les deux (l'édition reste possible, les règles gardent les vraies coordonnées) |
