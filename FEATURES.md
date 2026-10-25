@@ -81,11 +81,15 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
     carte ;
   - Remplacer un terrain par un autre (`R`), partout ou dans une zone,
     avec une proportion, comme `des.replace_terrain()` ;
-  - Labyrinthe (`Q`) dans une zone, creusé comme `des.mazewalk()` mais
-    tiré une fois pour toutes : murs `-` et `|` posés selon leurs
-    voisins, roche ou pinceau courant ; passages en sol ou en couloir ;
-    boucles en % pour moins de culs-de-sac ; `u` puis Espace pour un
-    autre tirage.
+  - Générateur (`Q`) dans une zone, `u` puis Espace pour un autre
+    tirage :
+    - labyrinthe creusé comme `des.mazewalk()` mais tiré une fois pour
+      toutes : murs `-` et `|` posés selon leurs voisins, roche ou
+      pinceau courant ; passages en sol ou en couloir ; boucles en %
+      pour moins de culs-de-sac ;
+    - grotte comme les mines : automate cellulaire, % de roche au
+      départ, seule la plus grande caverne gardée, bord en murs `-` et
+      `|` (forme calculée) ou en roche.
 - Murs automatiques (`=`) : pinceau mur qui donne à chaque `-` ou `|`
   posé, et à ses voisins, la forme qui convient (`|` au milieu d'un mur
   vertical, jonctions comprises, `-` pour les murs horizontaux et les
@@ -294,7 +298,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 115 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 116 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

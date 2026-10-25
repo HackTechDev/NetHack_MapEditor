@@ -5,10 +5,12 @@ import random
 import re
 
 import nhexport
+import nhgen
 import nhlevel
 from nhi18n import _
 from nhme_common import (
-    HISTORY_MAX, PATTERNS, Cancel, HistoryEntry, SELECT, STAMPS,
+    GENERATOR_NAME, GENERATORS, HISTORY_MAX, PATTERNS, Cancel, HistoryEntry,
+    SELECT, STAMPS,
     TEMPLATE_DIRS, TOOL_NAME, pattern_second,
     bresenham, ellipse_cells, maze_cells, wall_fixes)
 
@@ -333,16 +335,7 @@ class ToolsMixin:
                 self.paint(self.shape_cells(a, b), label=self.pattern_label())
                 self.msg = _("Rectangle rempli par le motif.")
             elif t == "maze":
-                wall, floor, loops = self.maze_opts
-                cells = maze_cells(min(a[0], b[0]), min(a[1], b[1]),
-                                   max(a[0], b[0]), max(a[1], b[1]),
-                                   random.Random(), wall, floor, loops)
-                if not any(c == floor for c in cells.values()):
-                    self.msg = _("Zone trop petite : 3x3 au moins.")
-                    return
-                self.paint(cells, label=_("Labyrinthe"))
-                self.msg = _("Labyrinthe tracé (u puis Espace : un autre "
-                             "tirage).")
+                self.generate(a, b, random.Random())
             elif t in SELECT:
                 self.copy(a, b, cut=t == "cut")
             else:
@@ -444,6 +437,48 @@ class ToolsMixin:
             return
         self.paint(changes, sym=False, label=_("Murs corrigés"))
         self.msg = _("%d mur(s) corrigé(s).") % len(changes)
+
+    def generate(self, a, b, rng):
+        """Outil Q : le générateur choisi remplit la zone tracée."""
+        lx, hx = sorted((a[0], b[0]))
+        ly, hy = sorted((a[1], b[1]))
+        w, h = hx - lx + 1, hy - ly + 1
+        kind = self.gen_kind
+        if kind == "maze":
+            wall, floor, loops = self.maze_opts
+            cells = maze_cells(lx, ly, hx, hy, rng, wall, floor, loops)
+            ok, small = any(c == floor for c in cells.values()), "3x3"
+        else:
+            fill, walls = self.cave_opts
+            g = nhgen.cave_zone(w, h, rng, fill, walls)
+            cells = {(lx + x, ly + y): c for y, row in enumerate(g)
+                     for x, c in enumerate(row)}
+            ok, small = any(c == "." for c in cells.values()), "5x4"
+        if not ok:
+            self.msg = _("Zone trop petite : %s au moins.") % small
+            return
+        name = GENERATOR_NAME[kind]
+        self.paint(cells, label=name)
+        self.msg = _("%s tracé(e) (u puis Espace : un autre tirage).") % name
+
+    def ask_generator(self):
+        """Choix du générateur de l'outil Q, puis ses options."""
+        self.gen_kind = self.pick(_("Générer dans une zone"),
+                                  [(n, k) for k, n in GENERATORS],
+                                  self.gen_kind)
+        if self.gen_kind == "maze":
+            self.ask_maze()
+        else:
+            self.ask_cave()
+
+    def ask_cave(self):
+        fill, walls = self.cave_opts
+        fill = self.ask_int(_("Roche au départ en % (plus : grotte plus "
+                              "étroite)"), fill, 30, 60)
+        walls = self.pick(_("Bord de la grotte"), [
+            (_("murs - et | (comme les cartes des mines)"), True),
+            (_("roche"), False)], walls)
+        self.cave_opts = (fill, walls)
 
     def ask_maze(self):
         """Options du labyrinthe : murs, passages, boucles."""

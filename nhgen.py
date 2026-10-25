@@ -7,7 +7,7 @@ le même niveau (tests)."""
 
 import collections
 
-from nhme_common import maze_cells
+from nhme_common import maze_cells, wall_fixes
 
 ROCK, FLOOR, CORR, DOOR = " ", ".", "#", "+"
 
@@ -165,6 +165,26 @@ def cave(w, h, rng, fill=45, steps=5):
     keep = max(zones(g), key=len, default=set())
     return [[FLOOR if (x, y) in keep else ROCK for x in range(w)]
             for y in range(h)]
+
+
+def cave_zone(w, h, rng, fill=45, walls=True):
+    """Grotte pour une zone de w x h : sol de la caverne, roche autour ;
+    avec walls, la roche qui touche le sol (8 directions) devient un mur
+    - ou | selon sa forme, comme les cartes des mines."""
+    g = cave(w, h, rng, fill)
+    if walls:
+        floor = {(x, y) for y in range(h) for x in range(w)
+                 if g[y][x] == FLOOR}
+        for y in range(h):
+            for x in range(w):
+                if g[y][x] == ROCK and any(
+                        (x + dx, y + dy) in floor
+                        for dx in (-1, 0, 1) for dy in (-1, 0, 1)):
+                    g[y][x] = "-"
+        for (x, y), c in wall_fixes(g, [(x, y) for y in range(h)
+                                        for x in range(w)]).items():
+            g[y][x] = c
+    return g
 
 
 def zones(grid, ok=lambda c: c not in " -|"):

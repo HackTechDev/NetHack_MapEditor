@@ -60,7 +60,9 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         # calques des régions affichés (familles de region_family())
         self.show_regions = {"room", "tele", "rand", "note", "draft"}
         self.show_terrain = True    # calque du terrain (touche ;)
+        self.gen_kind = "maze"      # générateur de l'outil Q
         self.maze_opts = ("-", ".", 0)  # murs, passages, % de boucles
+        self.cave_opts = (45, True)  # % de roche au départ, murs autour
         # outil Remplissage par motif : motif, 1er et 2e terrain, largeur
         self.pattern = ("checker", ".", "}", 1)
         self.auto_walls = False     # pinceau mur automatique (touche =)
@@ -201,7 +203,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                     self.msg = _("Densité invalide.")
                     return True
             elif TOOL_KEY[k] == "maze":
-                self.ask_maze()
+                self.ask_generator()
             elif TOOL_KEY[k] == "pattern":
                 self.ask_pattern()
             elif TOOL_KEY[k] == "replace" and not self.ask_replace():

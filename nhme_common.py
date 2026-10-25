@@ -67,7 +67,7 @@ TOOLS = [
     ("cut", _("Couper (déplacer) zone"), _("Couper"), "D"),
     ("scatter", _("Semis aléatoire"), _("Semis"), "G"),
     ("replace", _("Remplacer du terrain"), _("Remplacer"), "R"),
-    ("maze", _("Labyrinthe"), _("Labyrinthe"), "Q"),
+    ("maze", _("Générateur"), _("Générer"), "Q"),
     ("pattern", _("Remplissage par motif"), _("Motif"), ":"),
 ]
 TOOL_NAME = {t: name for t, name, _short, _key in TOOLS}
@@ -138,6 +138,13 @@ def pattern_second(kind, x, y, w):
         return (x + y) % (w + 1) == 0
     return x % (w + 1) == 0 and y % (w + 1) == 0
 
+
+# Générateurs de l'outil Q, dans une zone tracée
+GENERATORS = [
+    ("maze", _("labyrinthe (comme des.mazewalk)")),
+    ("cave", _("grotte (comme les mines)")),
+]
+GENERATOR_NAME = {"maze": _("Labyrinthe"), "cave": _("Grotte")}
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
 FLIP_NAME = {0: _("aucun"), 1: _("vertical"), 2: _("horizontal"),
@@ -390,9 +397,12 @@ OUTILS (Espace ou Entrée pour appliquer)
     selon une densité en % demandée au choix de l'outil
   R Remplacer un terrain par un autre, sur toute la carte ou dans une zone,
     avec une proportion en % (comme des.replace_terrain)
-  Q Labyrinthe dans une zone (comme des.mazewalk, mais tiré une fois pour
-    toutes) : murs - et |, roche ou pinceau ; passages en sol ou couloir ;
-    boucles en % ; u puis Espace en tire un autre
+  Q Générateur dans une zone (u puis Espace : un autre tirage) :
+    labyrinthe (comme des.mazewalk, mais tiré une fois pour toutes) :
+    murs - et |, roche ou pinceau ; passages en sol ou couloir ;
+    boucles en % ;
+    grotte (comme les mines) : automate cellulaire, % de roche au
+    départ, bord en murs - et | ou en roche ; d'un seul tenant
   : Remplissage par motif : damier, rayures horizontales ou verticales,
     diagonales ou points espacés, avec deux terrains (ex. sol et douves)
     et une largeur ; dans un rectangle tracé, ou, avec deux appuis sur

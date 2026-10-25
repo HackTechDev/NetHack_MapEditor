@@ -784,9 +784,6 @@ EN = {
         'rock (like the Gehennom mazes)',
     'couloir (#)': 'corridor (#)',
     'le pinceau courant : %s': 'the current brush: %s',
-    'Labyrinthe tracé (u puis Espace : un autre tirage).':
-        'Maze drawn (u then Space: another draw).',
-    'Zone trop petite : 3x3 au moins.': 'Area too small: 3x3 at least.',
     # murs automatiques
     'Murs à corriger': 'Walls to fix',
     '   [murs auto]': '   [auto walls]',
@@ -1003,6 +1000,21 @@ EN = {
     'Largeur des cases ou des bandes': 'Width of the squares or stripes',
     'Zone remplie par le motif.': 'Area filled with the pattern.',
     'Rectangle rempli par le motif.': 'Rectangle filled with the pattern.',
+    # générateurs dans une zone
+    'Grotte': 'Cave',
+    'Générateur': 'Generator',
+    'Générer': 'Generate',
+    'labyrinthe (comme des.mazewalk)': 'maze (like des.mazewalk)',
+    'grotte (comme les mines)': 'cave (like the mines)',
+    '%s tracé(e) (u puis Espace : un autre tirage).':
+        '%s drawn (u then Space: another draw).',
+    'Générer dans une zone': 'Generate in an area',
+    'Roche au départ en % (plus : grotte plus étroite)':
+        'Initial rock in % (more: narrower cave)',
+    'Bord de la grotte': 'Cave border',
+    'Zone trop petite : %s au moins.': 'Area too small: at least %s.',
+    'murs - et | (comme les cartes des mines)':
+        '- and | walls (like the mines maps)',
 }
 
 HELP = """\
@@ -1041,9 +1053,12 @@ TOOLS (Space or Enter to apply)
     with a density in % asked when choosing the tool
   R Replace one terrain with another, on the whole map or in an area,
     with a share in % (like des.replace_terrain)
-  Q Maze in an area (like des.mazewalk, but drawn once and for all):
+  Q Generator in an area (u then Space: another draw):
+    maze (like des.mazewalk, but drawn once and for all):
     - and | walls, rock or brush; passages of floor or corridor;
-    loops in %; u then Space draws another one
+    loops in %;
+    cave (like the mines): cellular automaton, initial rock in %,
+    border of - and | walls or of rock; all in one piece
   : Pattern fill: checkerboard, horizontal or vertical stripes,
     diagonals or spaced dots, with two terrains (e.g. floor and moat)
     and a width; in a traced rectangle or, pressing twice on the same

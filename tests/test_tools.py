@@ -5,6 +5,7 @@ import unittest
 
 from tests.util import grid, level
 
+import nhgen
 import nhmapedit
 from nhlevel import Entity
 
@@ -468,6 +469,40 @@ class Maze(unittest.TestCase):
         self.assertEqual(ed.undo_stack[-1].label, "Labyrinthe")
         two_points(ed, "maze", (0, 0), (1, 1))
         self.assertIn("3x3", ed.msg)
+
+    def test_cave(self):
+        import random
+        ed = editor(["T" * 40] * 14)
+        answers = iter(["cave", True])
+        ed.pick = lambda *a, **k: next(answers)
+        ed.prompt = lambda *a, **k: "45"
+        ed.ask_generator()
+        self.assertEqual((ed.gen_kind, ed.cave_opts), ("cave", (45, True)))
+        for seed in range(5):
+            ed.generate((3, 2), (34, 11), random.Random(seed))
+            g = grid(ed.lvl)
+            # hors de la zone : rien ne change
+            self.assertEqual(g[1], "T" * 40)
+            self.assertTrue(all(r[:3] == "TTT" and r[35:] == "TTTTT"
+                                for r in g))
+            zone = [r[3:35] for r in g[2:12]]
+            self.assertLessEqual(set("".join(zone)), set(" .-|"))
+            floor = {(x, y) for y, r in enumerate(zone)
+                     for x, c in enumerate(r) if c == "."}
+            self.assertGreater(len(floor), 30)
+            self.assertEqual(len(nhgen.zones(zone)), 1)      # d'un seul tenant
+            # le sol ne touche jamais la roche : des murs l'entourent
+            for x, y in floor:
+                for dx in (-1, 0, 1):
+                    for dy in (-1, 0, 1):
+                        self.assertNotEqual(zone[y + dy][x + dx], " ")
+            ed.undo()
+        ed.cave_opts = (45, False)
+        ed.generate((3, 2), (34, 11), random.Random(0))
+        self.assertNotIn("-", "".join(grid(ed.lvl)))
+        self.assertEqual(ed.undo_stack[-1].label, "Grotte")
+        ed.generate((0, 0), (3, 2), random.Random(0))
+        self.assertIn("5x4", ed.msg)
 
 
 class Walls(unittest.TestCase):
