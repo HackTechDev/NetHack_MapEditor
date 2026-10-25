@@ -93,6 +93,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `9`, `0` | outil Ellipse, Ellipse pleine (un cercle est une ellipse tracée dans un carré) |
 | `G` | outil Semis aléatoire : peint au hasard une partie des cases d'une zone, selon une densité en % |
 | `Q` | labyrinthe dans une zone, comme `des.mazewalk()` mais tiré une fois pour toutes : murs `-` et `\|`, roche ou pinceau, passages en sol ou couloir, boucles en % ; `u` puis Espace en tire un autre |
+| `=` | murs automatiques : en mode « pinceau mur », tout `-` ou `\|` posé (et ses voisins) prend la forme qui convient (`\|` dans un mur vertical, `-` ailleurs, coins compris) ; corrige aussi les murs de toute la carte ou d'une zone |
 | `R` | remplacer un terrain par un autre, sur toute la carte ou dans une zone, avec une proportion en % (comme `des.replace_terrain()`) |
 | `M` | symétrie : aucune → gauche/droite → haut/bas → les deux ; pinceau, formes, remplissage, semis et remplacement sont reproduits en miroir autour du centre de la carte (axes marqués `*` sur le cadre ; le collage et les entités ne sont pas reflétés) |
 | `E` | insérer une ligne ou une colonne au curseur, ou la supprimer ; la carte et les entités sont décalées |

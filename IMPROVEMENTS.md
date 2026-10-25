@@ -23,7 +23,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 8. Configuration et confort | 3 / 3 | — |
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
-| 11. Idées supplémentaires | 0 / 12 | toutes |
+| 11. Idées supplémentaires | 1 / 12 | voir la liste |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -251,7 +251,7 @@ utiles aux plus accessoires.
 - **Sélections littérales** **[moyen]** : afficher et éditer les zones
   de `des.replace_terrain()` et de `des.terrain(selection.area(...), "L")`,
   comme les régions.
-- **Murs automatiques** **[moyen]** : un pinceau « mur » qui choisit `-`
+- ✅ **Fait** — **Murs automatiques** **[moyen]** : un pinceau « mur » qui choisit `-`
   ou `|` selon les voisins, et une commande qui corrige les murs d'une
   zone.
 - **Rechercher et remplacer des entités** **[facile]** : changer tous les

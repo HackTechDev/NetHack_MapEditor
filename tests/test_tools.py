@@ -319,3 +319,38 @@ class Maze(unittest.TestCase):
         self.assertEqual(ed.undo_stack[-1].label, "Labyrinthe")
         two_points(ed, "maze", (0, 0), (1, 1))
         self.assertIn("3x3", ed.msg)
+
+
+class Walls(unittest.TestCase):
+    def test_auto_walls_brush(self):
+        ed = editor(["     "] * 4)
+        ed.auto_walls = True
+        ed.brush = "|"
+        two_points(ed, "rect", (0, 0), (4, 3), "|")
+        self.assertEqual(grid(ed.lvl), ["-----", "|   |", "|   |", "-----"])
+        # mur intérieur : jonctions en | sur les murs verticaux
+        two_points(ed, "line", (0, 2), (4, 2), "-")
+        self.assertEqual(grid(ed.lvl), ["-----", "|   |", "|---|", "-----"])
+        # effacer un mur corrige ses voisins
+        ed.brush, ed.tool = " ", "pen"
+        ed.cx, ed.cy = 0, 1
+        ed.apply()
+        self.assertEqual(grid(ed.lvl), ["-----", "    |", "----|", "-----"])
+
+    def test_fix_walls(self):
+        ed = editor(["|||||", "-...-", "-.+.-", "|||||"])
+        ed.pick = lambda *a, **k: "map"
+        ed.walls_menu()
+        self.assertEqual(grid(ed.lvl), ["-----", "|...|", "|.+.|", "-----"])
+        self.assertEqual(ed.undo_stack[-1].label, "Murs corrigés")
+        ed.walls_menu()
+        self.assertEqual(ed.msg, "Murs déjà corrects.")
+        # dans une zone seulement
+        ed = editor(["|||", "|||"])
+        ed.pick = lambda *a, **k: "zone"
+        ed.walls_menu()
+        self.assertEqual(ed.tool, "walls")
+        ed.cx = 1
+        ed.apply()
+        self.assertEqual(grid(ed.lvl), ["--|", "|||"])
+        self.assertEqual(ed.tool, "pen")

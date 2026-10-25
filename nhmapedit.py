@@ -61,6 +61,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.show_regions = {"room", "tele", "rand"}
         self.show_terrain = True    # calque du terrain (touche ;)
         self.maze_opts = ("-", ".", 0)  # murs, passages, % de boucles
+        self.auto_walls = False     # pinceau mur automatique (touche =)
         self.pending_region = None  # région en cours de tracé
         # règles de coordonnées autour de la carte
         self.rulers = self.config.get("rulers", True)
@@ -168,6 +169,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                 self.msg = _("Tracé annulé.")
                 if self.tool == "region":
                     self.end_region()
+                elif self.tool == "walls":
+                    self.tool = self.walls_prev_tool
             elif self.tool == "paste":
                 self.tool = "pen"
                 self.msg = _("Outil Pinceau.")
@@ -279,6 +282,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.maps_menu()
         elif k == ";":
             self.layers()
+        elif k == "=":
+            self.walls_menu()
         elif k == "V":
             self.history()
         elif k == "n":

@@ -412,6 +412,8 @@ class DisplayMixin:
             st += _("   [entités masquées]")
         if not self.show_terrain:
             st += _("   [terrain masqué]")
+        if self.auto_walls:
+            st += _("   [murs auto]")
         n = sum(rp.zone[0] == "map" for rp in lvl.randoms)
         if n and "rand" in self.show_regions:
             st += _("   [%d au hasard dans la carte]") % n

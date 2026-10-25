@@ -76,6 +76,11 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
     voisins, roche ou pinceau courant ; passages en sol ou en couloir ;
     boucles en % pour moins de culs-de-sac ; `u` puis Espace pour un
     autre tirage.
+- Murs automatiques (`=`) : pinceau mur qui donne à chaque `-` ou `|`
+  posé, et à ses voisins, la forme qui convient (`|` au milieu d'un mur
+  vertical, jonctions comprises, `-` pour les murs horizontaux et les
+  coins), portes comprises dans les murs ; correction des murs de toute
+  la carte ou d'une zone.
 - Outils à deux points : ancre puis tracé, aperçu en direct ; Échap
   annule.
 - Mode symétrie (`M`) : gauche/droite, haut/bas ou les deux, autour du
@@ -219,7 +224,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 86 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 88 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

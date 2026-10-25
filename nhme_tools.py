@@ -9,7 +9,7 @@ import nhlevel
 from nhi18n import _
 from nhme_common import (
     HISTORY_MAX, Cancel, HistoryEntry, SELECT, TEMPLATE_DIRS, TOOL_NAME,
-    bresenham, ellipse_cells, maze_cells)
+    bresenham, ellipse_cells, maze_cells, wall_fixes)
 
 
 class ToolsMixin:
@@ -24,7 +24,7 @@ class ToolsMixin:
         if self.anchor is None:
             return {}
         cells = self.shape_cells(self.anchor, (self.cx, self.cy))
-        if self.tool in ("copy", "cut", "region"):
+        if self.tool in ("copy", "cut", "region", "walls"):
             return cells
         return self.mirrored(cells)
 
@@ -37,7 +37,7 @@ class ToolsMixin:
         if t == "line":
             for x, y in bresenham(x0, y0, x1, y1):
                 cells[(x, y)] = br
-        elif t in ("rect", "copy", "cut", "maze"):
+        elif t in ("rect", "copy", "cut", "maze", "walls"):
             for x in range(lx, hx + 1):
                 cells[(x, ly)] = cells[(x, hy)] = br
             for y in range(ly, hy + 1):
@@ -195,6 +195,11 @@ class ToolsMixin:
                 self.stroke_saved = self.stroke
             for (x, y), c in cells.items():
                 self.lvl.set(x, y, c)
+            if self.auto_walls:
+                near = {(x + dx, y + dy) for x, y in cells
+                        for dx in (-1, 0, 1) for dy in (-1, 0, 1)}
+                for (x, y), c in wall_fixes(self.lvl.grid, near).items():
+                    self.lvl.set(x, y, c)
 
     def apply(self):
         t = self.tool
@@ -222,6 +227,9 @@ class ToolsMixin:
                 self.replace_terrain(a, b)
             elif t == "region":
                 self.finish_region(a, b)
+            elif t == "walls":
+                self.tool = self.walls_prev_tool
+                self.fix_walls(a, b)
             elif t == "maze":
                 wall, floor, loops = self.maze_opts
                 cells = maze_cells(min(a[0], b[0]), min(a[1], b[1]),
@@ -257,6 +265,39 @@ class ToolsMixin:
                 n += 1
                 stack += [(x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)]
         self.msg = _("%d cases remplies.") % n
+
+    def walls_menu(self):
+        """Touche = : pinceau mur automatique, correction des murs."""
+        what = self.pick(_("Murs automatiques"), [
+            (_("désactiver le pinceau mur automatique") if self.auto_walls
+             else _("activer le pinceau mur automatique"), "toggle"),
+            (_("corriger les murs de toute la carte"), "map"),
+            (_("corriger les murs d'une zone (à tracer)"), "zone")])
+        if what == "toggle":
+            self.auto_walls = not self.auto_walls
+            self.msg = (_("Murs automatiques : - et | prennent la forme qui "
+                          "convient.") if self.auto_walls
+                        else _("Murs automatiques désactivés."))
+        elif what == "map":
+            self.fix_walls((0, 0), (self.lvl.w - 1, self.lvl.h - 1))
+        else:
+            if self.tool != "walls":
+                self.walls_prev_tool = self.tool
+            self.tool = "walls"
+            self.anchor = (self.cx, self.cy)
+            self.msg = _("Zone : allez au coin opposé puis Espace (Échap "
+                         "annule).")
+
+    def fix_walls(self, a, b):
+        lx, hx = sorted((a[0], b[0]))
+        ly, hy = sorted((a[1], b[1]))
+        changes = wall_fixes(self.lvl.grid, [
+            (x, y) for y in range(ly, hy + 1) for x in range(lx, hx + 1)])
+        if not changes:
+            self.msg = _("Murs déjà corrects.")
+            return
+        self.paint(changes, sym=False, label=_("Murs corrigés"))
+        self.msg = _("%d mur(s) corrigé(s).") % len(changes)
 
     def ask_maze(self):
         """Options du labyrinthe : murs, passages, boucles."""

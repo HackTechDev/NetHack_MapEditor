@@ -787,6 +787,22 @@ EN = {
     'Labyrinthe tracé (u puis Espace : un autre tirage).':
         'Maze drawn (u then Space: another draw).',
     'Zone trop petite : 3x3 au moins.': 'Area too small: 3x3 at least.',
+    # murs automatiques
+    'Murs à corriger': 'Walls to fix',
+    '   [murs auto]': '   [auto walls]',
+    'Murs automatiques': 'Automatic walls',
+    'Murs déjà corrects.': 'Walls already correct.',
+    '%d mur(s) corrigé(s).': '%d wall(s) fixed.',
+    'Murs automatiques : - et | prennent la forme qui convient.':
+        'Automatic walls: - and | take the right shape.',
+    'Murs automatiques désactivés.': 'Automatic walls off.',
+    'Murs corrigés': 'Walls fixed',
+    'corriger les murs de toute la carte': 'fix the walls of the whole map',
+    "corriger les murs d'une zone (à tracer)":
+        'fix the walls of an area (to draw)',
+    'désactiver le pinceau mur automatique':
+        'turn the automatic wall brush off',
+    'activer le pinceau mur automatique': 'turn the automatic wall brush on',
 }
 
 HELP = """\
@@ -825,6 +841,10 @@ TOOLS (Space or Enter to apply)
   Q Maze in an area (like des.mazewalk, but drawn once and for all):
     - and | walls, rock or brush; passages of floor or corridor;
     loops in %; u then Space draws another one
+  =  automatic walls: in "wall brush" mode, any - or | laid (and its
+     neighbours) takes the right shape (| in a vertical wall, - elsewhere,
+     corners included); also fixes the walls of the whole map or of an
+     area
   M  symmetry: none, left/right, top/bottom, both; everything that
      paints (pen, shapes, fill, scatter, replace) is mirrored around
      the center of the map (axes marked "*" on the frame)

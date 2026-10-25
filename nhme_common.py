@@ -68,11 +68,13 @@ TOOLS = [
 TOOL_NAME = {t: name for t, name, _short, _key in TOOLS}
 # outil temporaire du tracé d'une région (m, puis une région)
 TOOL_NAME["region"] = _("Zone d'une région")
+# outil temporaire de la correction des murs d'une zone (touche =)
+TOOL_NAME["walls"] = _("Murs à corriger")
 TOOL_KEY = {key: t for t, _name, _short, key in TOOLS}
 TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut", "ellipse",
-             "fillellipse", "scatter", "replace", "region", "maze"}
+             "fillellipse", "scatter", "replace", "region", "maze", "walls"}
 # outils dont l'aperçu montre la zone sans y dessiner le pinceau
-SELECT = {"copy", "cut", "scatter", "replace", "region", "maze"}
+SELECT = {"copy", "cut", "scatter", "replace", "region", "maze", "walls"}
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
 FLIP_NAME = {0: _("aucun"), 1: _("vertical"), 2: _("horizontal"),
@@ -324,6 +326,10 @@ OUTILS (Espace ou Entrée pour appliquer)
   Q Labyrinthe dans une zone (comme des.mazewalk, mais tiré une fois pour
     toutes) : murs - et |, roche ou pinceau ; passages en sol ou couloir ;
     boucles en % ; u puis Espace en tire un autre
+  =  murs automatiques : en mode « pinceau mur », tout - ou | posé (et
+     ses voisins) prend la forme qui convient (| dans un mur vertical,
+     - ailleurs, coins compris) ; corrige aussi les murs de toute la carte
+     ou d'une zone
   M  symétrie : aucune, gauche/droite, haut/bas, les deux ; tout ce qui
      peint (pinceau, formes, remplissage, semis, remplacement) est reproduit
      en miroir autour du centre de la carte (axes marqués « * » sur le cadre)
@@ -475,6 +481,38 @@ def ellipse_cells(lx, ly, hx, hy, filled):
     return {(x, y) for x, y in inside
             if any((x + dx, y + dy) not in inside
                    for dx in (-1, 0, 1) for dy in (-1, 0, 1))}
+
+
+WALL_SOLID = set("-|+S")     # ce qui prolonge un mur (portes comprises)
+
+
+def wall_char(grid, x, y):
+    """- ou | selon les voisins de la case (x, y) : | au milieu d'un mur
+    vertical (jonctions comprises), - pour les murs horizontaux, les
+    coins et les murs isolés."""
+    h, w = len(grid), len(grid[0])
+
+    def solid(px, py):
+        return 0 <= px < w and 0 <= py < h and grid[py][px] in WALL_SOLID
+    vert = solid(x, y - 1), solid(x, y + 1)
+    if all(vert) or (any(vert) and not (solid(x - 1, y)
+                                        or solid(x + 1, y))):
+        return "|"
+    return "-"
+
+
+def wall_fixes(grid, cells):
+    """Corrections {(x, y): - ou |} des murs parmi cells. Une passe
+    suffit : la forme d'un mur ne dépend que de la présence de murs
+    voisins, pas de leur forme."""
+    h, w = len(grid), len(grid[0])
+    out = {}
+    for x, y in cells:
+        if 0 <= x < w and 0 <= y < h and grid[y][x] in "-|":
+            c = wall_char(grid, x, y)
+            if c != grid[y][x]:
+                out[(x, y)] = c
+    return out
 
 
 def maze_cells(lx, ly, hx, hy, rng, wall="-", floor=".", loops=0):
