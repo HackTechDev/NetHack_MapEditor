@@ -89,6 +89,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                                   if f and os.path.isfile(f)), "")
         self.game_where = ""
         self.launch = None          # réponse à « lancer le jeu ? »
+        self.last_test = None       # dernier essai (touche !, retour du jeu)
         self.lua_refused = False    # compilation de Lua refusée
         self.autosave_delay = self.config.get("autosave", AUTOSAVE_DELAY)
         self.autosave_time = time.time()
@@ -299,6 +300,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.start_entity_selection()
         elif k == "%":
             self.show_stats()
+        elif k == "!":
+            self.game_feedback()
         elif k == "~":
             self.minimap = {"auto": "on", "on": "off",
                             "off": "auto"}[self.minimap]

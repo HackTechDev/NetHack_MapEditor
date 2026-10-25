@@ -14,8 +14,133 @@ from nhme_common import (
     Cancel, GAME_OPTIONS, GAME_SESSION, HACKDIRS, TEST_PREFIX)
 
 
+# Erreurs Lua de NetHack, écrites par impossible() dans le paniclog (en
+# anglais, suivies de la pile d'appels) et à l'écran (traduites) :
+#   Lua error: 7:nom.lua [string "(nom.lua)"]:7: attempt to call a nil…
+#   luaL_loadbuffer: Error loading (nom.lua): [string "(nom.lua)"]:7: …
+#   Lua error: 5:nom.lua Unknown trap type (line 7 [string "(nom.lua)"])
+LUA_POS = re.compile(r'\[string\s+"\(?([^"()]+?)\)?"\]:(\d+):\s*(.*)')
+NHL_POS = re.compile(r'(?:Lua error|Erreur Lua)\s*:\s*\d+:\S+\s+(.*?)\s*'
+                     r'\(line (\d+) \[string\s+"\(?([^"()]+?)\)?"\]\)')
+
+
+def game_errors(text, name):
+    """Erreurs Lua du fichier name.lua dans text (lignes du paniclog ou
+    écran du jeu recollé) : liste de (ligne, message) sans doublon."""
+    out = []
+    for raw in text.splitlines():
+        if raw[:1].isspace():
+            continue                # pile d'appels du paniclog
+        m = NHL_POS.search(raw)
+        if m and m.group(3) == name + ".lua":
+            err = (int(m.group(2)), m.group(1).strip())
+        else:
+            m = LUA_POS.search(raw)
+            if not (m and m.group(1) == name + ".lua"):
+                continue
+            err = (int(m.group(2)), m.group(3).strip())
+        if err not in out:
+            out.append(err)
+    return out
+
+
+def screen_messages(screen):
+    """Texte de la fenêtre des messages d'un écran de NetHack capturé
+    par tmux, recollé en une ligne : le jeu coupe les messages longs à
+    la largeur de son cadre (« │…│ ») et ajoute « >> » (--More--)."""
+    parts = []
+    for line in screen.splitlines():
+        if line.startswith("│"):
+            seg = line[1:].split("│", 1)[0].rstrip()
+            parts.append(re.sub(r"\s*>>\s*$", "", seg).strip())
+        elif parts and line.startswith("└"):
+            break                   # fin de la fenêtre des messages
+    return " ".join(p for p in parts if p)
+
+
 class GameMixin:
     """Méthodes de l'éditeur (voir nhmapedit.Editor)."""
+
+    # --- retour du jeu --------------------------------------------------
+    def paniclog_path(self):
+        return os.path.join(self.hackdir, "paniclog") if self.hackdir \
+            else None
+
+    def note_test(self, name, text):
+        """Mémorise l'essai en cours : nom, texte copié et taille actuelle
+        du paniclog (on ne lira que ce que le jeu y ajoutera)."""
+        p = self.paniclog_path()
+        try:
+            size = os.path.getsize(p)
+        except (OSError, TypeError):
+            size = 0
+        self.last_test = {"name": name, "text": text, "size": size}
+
+    def game_feedback(self, auto=False):
+        """Touche ! (et après chaque chargement par tmux) : messages
+        d'erreur de NetHack sur la dernière copie de test, avec la ligne
+        Lua fautive ; le curseur va à l'élément de cette ligne."""
+        t = self.last_test
+        if not t:
+            self.msg = _("Pas encore d'essai dans le jeu (touche t).")
+            return []
+        found = ""
+        try:
+            with open(self.paniclog_path(), encoding="utf-8",
+                      errors="replace") as f:
+                f.seek(t["size"])
+                found = f.read()
+        except (OSError, TypeError):
+            pass
+        errors = game_errors(found, t["name"])
+        if not errors and self.game_alive():
+            # paniclog absent ou désactivé : l'écran du jeu
+            screen = self.tmux("capture-pane", "-p", "-J", "-t",
+                               self.game_pane) or ""
+            errors = game_errors(screen_messages(screen), t["name"])
+        if not errors:
+            if not auto:
+                self.msg = _("NetHack n'a signalé aucune erreur sur %s.lua "
+                             "depuis le dernier essai.") % t["name"]
+            return []
+        lines = t["text"].split("\n")
+        report = [_("NetHack signale %d erreur(s) dans %s.lua :")
+                  % (len(errors), t["name"]), ""]
+        target = None
+        for n, msg in errors:
+            report.append(_("ligne %d : %s") % (n, msg))
+            if 0 < n <= len(lines):
+                report.append("    " + lines[n - 1].strip()[:70])
+                where = self.element_at_line(lines[n - 1])
+                if where and target is None:
+                    target = where
+            report.append("")
+        if target:
+            self.cx, self.cy = target[1]
+            report.append(_("Le curseur est placé sur : %s.") % target[0])
+        self.message_box(_("Retour du jeu"), "\n".join(report))
+        self.msg = _("Erreur NetHack ligne %d : %s") % errors[0]
+        return errors
+
+    def element_at_line(self, line):
+        """(description, (x, y)) de l'entité ou de la région écrite sur
+        cette ligne Lua de la copie de test ; None si aucune."""
+        m = re.search(r"des\.(\w+)\s*\(", line)
+        if not m:
+            return None
+        kind = m.group(1)
+        nums = [int(n) for n in re.findall(r"-?\d+", line[m.end():])]
+        pairs = set(zip(nums, nums[1:]))
+        for e in self.lvl.entities:
+            if e.kind == kind and (e.x, e.y) in pairs:
+                return e.describe(), (e.x, e.y)
+        for r in self.lvl.regions:
+            if r.kind == kind and r.rect and r.rect[:2] in pairs:
+                cells = r.cells(self.lvl)
+                if cells:
+                    return r.describe(), min(cells, key=lambda p: (p[1],
+                                                                   p[0]))
+        return None
 
     def edit_dungeon(self):
         """Ajoute, modifie ou supprime un niveau spécial de dungeon.lua."""
@@ -202,8 +327,10 @@ class GameMixin:
         if not {"noflip", "noflipx", "noflipy"} & set(flags):
             self.lvl.flags = flags + ["noflip"]
         try:
+            text = self.lvl.to_lua(base)
+            self.note_test(name, text)
             with open(dest, "w", encoding="utf-8") as f:
-                f.write(self.lvl.to_lua(base))
+                f.write(text)
         except OSError as e:
             self.msg = _("Erreur d'écriture : %s") % e
             return
@@ -232,6 +359,8 @@ class GameMixin:
             _("Après une modification, appuyez de nouveau sur t puis"),
             _("refaites #wizloaddes : inutile de relancer le jeu."),
             _("Ctrl-F révèle toute la carte, Ctrl-T téléporte."),
+            _("En cas d'erreur, ! affiche les messages de NetHack et"),
+            _("place le curseur sur l'élément de la ligne fautive."),
             _("(La copie de test a le drapeau noflip : sinon NetHack"),
             _("retourne la carte au hasard à chaque chargement.)"),
             "",
@@ -384,8 +513,10 @@ class GameMixin:
         """Envoie #wizloaddes au jeu ; Échap ferme d'abord un éventuel
         message ou menu en attente."""
         p = self.game_pane
-        self.tmux("send-keys", "-t", p, "Escape")
-        time.sleep(0.3)
+        # après une erreur, le jeu attend plusieurs --More--
+        for _i in range(3):
+            self.tmux("send-keys", "-t", p, "Escape")
+            time.sleep(0.25)
         self.tmux("send-keys", "-t", p, "-l", "#")
         time.sleep(0.2)
         self.tmux("send-keys", "-t", p, "-l", "wizloaddes")
@@ -395,3 +526,6 @@ class GameMixin:
         self.tmux("send-keys", "-t", p, "Enter")
         self.msg = (_("Carte chargée dans NetHack (%s, %s) ; t la recharge "
                       "après une modification.") % (name, self.game_where))
+        # le jeu écrit ses erreurs Lua aussitôt : on les relève
+        time.sleep(0.8)
+        self.game_feedback(auto=True)

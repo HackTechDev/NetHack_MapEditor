@@ -226,6 +226,12 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   `#wizloaddes` ; rechargement à chaque nouvel appui sur `t` ; jamais de
   second jeu si une partie est en cours.
 - Sans tmux : instructions pas à pas.
+- Retour du jeu (`!`, automatique avec tmux) : les erreurs Lua que
+  NetHack écrit dans son `paniclog` (ou à l'écran, dans le panneau tmux)
+  depuis le dernier essai sont relevées, avec leur numéro de ligne et la
+  ligne fautive de la copie de test ; le curseur va sur l'entité ou la
+  région de cette ligne. Formats vérifiés dans NetHack 5.0 : erreur de
+  syntaxe, erreur d'exécution, appel `des.*` invalide.
 - Ajout du niveau au donjon (`p` → Donjon) : édition de
   `dat/dungeon.lua` (profondeur, tirage, probabilité, variantes,
   alignement, drapeaux, bones, `chainlevel`), modification et retrait des
@@ -247,7 +253,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 97 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 100 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

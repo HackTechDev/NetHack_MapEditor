@@ -870,6 +870,21 @@ EN = {
         'Minimap: when the map is larger than the view.',
     'Mini-carte : toujours.': 'Minimap: always.',
     'Mini-carte : jamais.': 'Minimap: never.',
+    # retour du jeu
+    "Pas encore d'essai dans le jeu (touche t).":
+        'No test in the game yet (key t).',
+    'Retour du jeu': 'Game feedback',
+    'Erreur NetHack ligne %d : %s': 'NetHack error line %d: %s',
+    'NetHack signale %d erreur(s) dans %s.lua :':
+        'NetHack reports %d error(s) in %s.lua:',
+    "NetHack n'a signalé aucune erreur sur %s.lua depuis le dernier essai.":
+        'NetHack reported no error on %s.lua since the last test.',
+    'ligne %d : %s': 'line %d: %s',
+    'Le curseur est placé sur : %s.': 'The cursor is placed on: %s.',
+    "En cas d'erreur, ! affiche les messages de NetHack et":
+        'In case of error, ! shows the NetHack messages and',
+    "place le curseur sur l'élément de la ligne fautive.":
+        'places the cursor on the element of the faulty line.',
 }
 
 HELP = """\
@@ -989,6 +1004,9 @@ LEVEL AND FILES
      #wizloaddes in wizard mode (nethack -D); with tmux, the editor
      starts the game (pane, window or tmux session) and loads the map
      itself, then reloads it each time t is pressed again
+  !  game feedback: Lua errors reported by NetHack (paniclog, game
+     screen) since the last test, with the faulty line; the cursor goes
+     to the element concerned (automatic with tmux)
   u / Ctrl-Z  undo      U / Ctrl-R / Ctrl-Y  redo
   V  command history: every change is named there ("Room: floor",
      "Add: stairs up"…); Enter brings the map back to the chosen state,

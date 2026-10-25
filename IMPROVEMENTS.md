@@ -24,7 +24,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
 | 11. Idées supplémentaires | 6 / 12 | tirage, $EDITOR, `.des`, sélections, Sokoban, donjon |
-| 12. Encore d'autres idées | 0 / 14 | toutes |
+| 12. Encore d'autres idées | 1 / 14 | voir la liste |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -277,7 +277,7 @@ utiles aux plus accessoires.
 Idées proposées après la deuxième série d'idées supplémentaires, des
 plus utiles aux plus accessoires.
 
-- **Retour du jeu** **[moyen]** : après un essai avec `t`, récupérer les
+- ✅ **Fait** — **Retour du jeu** **[moyen]** : après un essai avec `t`, récupérer les
   messages d'erreur de NetHack (journal de `#wizloaddes`) et les afficher
   dans l'éditeur, en sautant à la ligne fautive.
 - **Assistant de niveau** **[moyen]** : un niveau prêt à essayer en

@@ -413,6 +413,9 @@ NIVEAU ET FICHIERS
      #wizloaddes en mode wizard (nethack -D) ; avec tmux, l'éditeur
      lance le jeu (panneau, fenêtre ou session tmux) et y charge la carte
      lui-même, puis la recharge à chaque nouvel appui sur t
+  !  retour du jeu : erreurs Lua signalées par NetHack (paniclog, écran
+     du jeu) depuis le dernier essai, avec la ligne fautive ; le curseur
+     va sur l'élément concerné (automatique avec tmux)
   u / Ctrl-Z  annuler      U / Ctrl-R / Ctrl-Y  rétablir
   V  historique des commandes : chaque modification y est nommée (« Salle :
      sol », « Ajout : escalier up »…) ; Entrée ramène la carte à l'état

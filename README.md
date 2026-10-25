@@ -121,6 +121,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `%` | statistiques du niveau : terrain, entités, monstres et objets par classe, pièges, régions, placements aléatoires du script |
 | `v` | vérifier la carte : largeur > 76, entités dans les murs, escaliers en double, connexité… (voir « Vérification ») |
 | `t` | tester : copie la carte dans le répertoire du jeu ; avec tmux, lance NetHack et y charge la carte (voir plus bas) |
+| `!` | retour du jeu : erreurs Lua signalées par NetHack sur le dernier essai, avec la ligne fautive ; le curseur va sur l'élément concerné (automatique avec tmux) |
 | `u` (ou Ctrl-Z) / `U` (ou Ctrl-R, Ctrl-Y) | annuler / rétablir la dernière commande ; le message nomme la commande (« Annulé : Salle : sol. ») et le curseur revient où elle a eu lieu |
 | `V` | historique des commandes : la liste nommée de toutes les modifications (dessin, entités, propriétés…), les annulées comprises ; Entrée ramène la carte à l'état choisi, en avant ou en arrière ; le titre perd `[modifié]` quand on revient à l'état enregistré |
 | `n`, `o`, `s`, `w` | nouveau, ouvrir, enregistrer, enregistrer sous (Tab complète les chemins) ; `o` sur un `.txt` importe une carte en texte brut, `w` vers un `.txt`, `.svg` ou `.png` l'exporte en texte ou en image (voir « Import et export ») |
@@ -319,6 +320,16 @@ si une partie de NetHack est déjà en cours.
 
 Après une modification, appuyez de nouveau sur `t` et refaites
 `#wizloaddes`, sans relancer le jeu.
+
+### Retour du jeu
+
+Si NetHack refuse la carte (erreur de syntaxe, type de piège inconnu,
+appel Lua invalide…), il l'écrit dans son fichier `paniclog` et à
+l'écran. Avec tmux, l'éditeur relève ces messages juste après le
+chargement ; sans tmux, appuyez sur `!` après l'essai. Une fenêtre donne
+chaque erreur avec son numéro de ligne et la ligne Lua de la copie de
+test, et le curseur va sur l'entité ou la région écrite sur cette ligne.
+Seuls les messages apparus depuis le dernier `t` sont pris en compte.
 
 Le répertoire du jeu est cherché dans le fichier de configuration (clé
 `repertoire`), dans `$NHMAPEDIT_HACKDIR`, puis
