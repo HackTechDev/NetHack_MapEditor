@@ -124,7 +124,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `!` | retour du jeu : erreurs Lua signalées par NetHack sur le dernier essai, avec la ligne fautive ; le curseur va sur l'élément concerné (automatique avec tmux) |
 | `u` (ou Ctrl-Z) / `U` (ou Ctrl-R, Ctrl-Y) | annuler / rétablir la dernière commande ; le message nomme la commande (« Annulé : Salle : sol. ») et le curseur revient où elle a eu lieu |
 | `V` | historique des commandes : la liste nommée de toutes les modifications (dessin, entités, propriétés…), les annulées comprises ; Entrée ramène la carte à l'état choisi, en avant ou en arrière ; le titre perd `[modifié]` quand on revient à l'état enregistré |
-| `n`, `o`, `s`, `w` | nouveau, ouvrir, enregistrer, enregistrer sous (Tab complète les chemins) ; `o` sur un `.txt` importe une carte en texte brut, `w` vers un `.txt`, `.svg` ou `.png` l'exporte en texte ou en image (voir « Import et export ») |
+| `n`, `o`, `s`, `w` | nouveau (avec un assistant qui génère un niveau complet prêt à essayer : salles et couloirs, labyrinthe, caverne ou grande salle, escaliers, monstres, objets, pièges), ouvrir, enregistrer, enregistrer sous (Tab complète les chemins) ; `o` sur un `.txt` importe une carte en texte brut, `w` vers un `.txt`, `.svg` ou `.png` l'exporte en texte ou en image (voir « Import et export ») |
 | `q` | quitter |
 
 La souris est gérée : clic = déplacer le curseur et appliquer l'outil,
@@ -459,6 +459,8 @@ au démarrage, sans empêcher l'éditeur de s'ouvrir.
 - `nhexport.py` : import et export (texte brut, SVG, PNG), modèles ;
   `modeles/` : les modèles livrés.
 - `nhcheck.py` : les vérifications (connexité, règles, Lua) ;
+- `nhgen.py` : les générateurs de l'assistant de niveau (salles et
+  couloirs, labyrinthe, caverne, grande salle, peuplement) ;
   `nhcheck_des.lua` est la bibliothèque `des` factice de la vérification
   Lua.
 - `nhi18n.py` : choix de la langue et fonction `_()` ; `nhi18n_en.py` :

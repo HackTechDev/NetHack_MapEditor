@@ -156,6 +156,14 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   remplissage, options), drapeaux de `des.level_flags()` à cocher,
   placement de la carte (`halign`/`valign` ou position fixe), éclairage.
 - Nouvelle carte (`n`) : roche, sol ou salle entourée de murs.
+- Assistant de niveau (`n` → assistant) : un niveau complet prêt à
+  essayer en quelques questions — salles murées reliées par des couloirs
+  (portes au milieu des murs, jamais côte à côte, quelques boucles),
+  labyrinthe, caverne de type Mines (automate cellulaire, une seule
+  zone) ou grande salle avec piliers, fontaines, arbres et bassins ;
+  escalier montant et descendant aux deux bouts du chemin le plus long ;
+  monstres, objets et pièges aléatoires sur des cases libres ;
+  éclairage ; le niveau passe la vérification de connexité.
 
 ## Fichiers
 
@@ -253,7 +261,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 100 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 105 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

@@ -24,7 +24,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
 | 11. Idées supplémentaires | 6 / 12 | tirage, $EDITOR, `.des`, sélections, Sokoban, donjon |
-| 12. Encore d'autres idées | 1 / 14 | voir la liste |
+| 12. Encore d'autres idées | 2 / 14 | voir la liste |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -112,9 +112,13 @@ mais invisible dans l'éditeur.
   `des.mazewalk()`, dans une zone tracée (outil `Q`) : murs `-` et `|`,
   roche ou pinceau, passages en sol ou en couloir, boucles en %.
 - **Générateurs : grottes** **[moyen]** : grottes de type « mines »
-  (automate cellulaire), dans une zone.
+  (automate cellulaire), dans une zone. Le générateur existe pour une
+  carte entière dans l'assistant de niveau (`nhgen.cave`) ; reste à en
+  faire un outil sur une zone.
 - **Générateurs : salles et couloirs** **[moyen]** : placement
-  automatique de salles reliées par des couloirs.
+  automatique de salles reliées par des couloirs. Même chose : fait pour
+  une carte entière dans l'assistant (`nhgen.rooms_and_corridors`), pas
+  encore sur une zone.
 
 ## 4. Entités
 
@@ -280,7 +284,7 @@ plus utiles aux plus accessoires.
 - ✅ **Fait** — **Retour du jeu** **[moyen]** : après un essai avec `t`, récupérer les
   messages d'erreur de NetHack (journal de `#wizloaddes`) et les afficher
   dans l'éditeur, en sautant à la ligne fautive.
-- **Assistant de niveau** **[moyen]** : un niveau prêt à essayer en
+- ✅ **Fait** — **Assistant de niveau** **[moyen]** : un niveau prêt à essayer en
   quelques questions (type de niveau, taille, salles, nombre de
   monstres), construit avec les générateurs existants et retouché
   ensuite à la main.

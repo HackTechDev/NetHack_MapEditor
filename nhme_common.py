@@ -421,6 +421,9 @@ NIVEAU ET FICHIERS
      sol », « Ajout : escalier up »…) ; Entrée ramène la carte à l'état
      choisi, en avant comme en arrière (300 commandes au plus)
   n  nouveau      o  ouvrir      s  enregistrer      w  enregistrer sous
+     n propose un assistant : niveau complet prêt à essayer (salles et
+     couloirs, labyrinthe, caverne ou grande salle, escaliers aux deux
+     bouts, monstres, objets et pièges aléatoires)
      o sur un .txt : importe une carte en texte brut ;
      w vers un .txt : exporte la carte seule ; vers un .svg ou un .png :
      l'exporte en image, telle qu'elle est affichée (J, Tab)

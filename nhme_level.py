@@ -2,15 +2,17 @@
 
 import collections
 import os
+import random
 import shutil
 import time
 
 import nhcheck
 import nhexport
+import nhgen
 import nhlevel
 from nhi18n import _
 import nhtheme
-from nhlevel import Level
+from nhlevel import Entity, Level
 from nhme_common import (
     AUTOSAVE_SUFFIX, CACHE_DIR, Cancel, EXPORTS)
 
@@ -643,6 +645,66 @@ class LevelMixin:
             return True
         raise Cancel()
 
+    def ask_int(self, label, default, lo, hi):
+        s = self.prompt("%s (%d-%d) : " % (label, lo, hi), str(default))
+        try:
+            return max(lo, min(hi, int(s)))
+        except ValueError:
+            return default
+
+    def level_wizard(self, w, h, rng=None):
+        """Assistant : un niveau complet en quelques questions, construit
+        par nhgen ; None si la carte est trop petite."""
+        if w < 12 or h < 6:
+            self.msg = _("Assistant : 12x6 au moins.")
+            return None
+        rng = rng or random.Random()
+        kind = self.pick(_("Assistant : genre de niveau"), [
+            (_("salles reliées par des couloirs"), "rooms"),
+            (_("labyrinthe (comme Géhenne)"), "maze"),
+            (_("caverne (comme les Mines)"), "cave"),
+            (_("grande salle (piliers, fontaines, arbres…)"), "big")])
+        area = w * h
+        if kind == "rooms":
+            n = self.ask_int(_("Nombre de salles"), max(2, area // 180), 2, 12)
+            grid, rooms = nhgen.rooms_and_corridors(w, h, n, rng)
+            what = _("%d salles") % len(rooms)
+        elif kind == "maze":
+            loops = self.ask_int(_("Boucles en % (0 : labyrinthe parfait)"),
+                                 10, 0, 100)
+            grid = nhgen.maze(w, h, rng, "-", loops)
+            what = _("labyrinthe")
+        elif kind == "cave":
+            fill = self.ask_int(_("Roche au départ en % (plus : caverne plus "
+                                  "étroite)"), 45, 30, 60)
+            grid = nhgen.cave(w, h, rng, fill)
+            what = _("caverne")
+        else:
+            n = self.ask_int(_("Éléments de décor"), max(4, area // 120),
+                             0, 60)
+            grid = nhgen.big_room(w, h, rng, n)
+            what = _("grande salle")
+        floor = sum(row.count(".") for row in grid)
+        mons = self.ask_int(_("Monstres (aléatoires)"),
+                            max(2, floor // 60), 0, 60)
+        objs = self.ask_int(_("Objets (aléatoires)"), max(2, floor // 80),
+                            0, 60)
+        traps = self.ask_int(_("Pièges (aléatoires)"), max(1, floor // 150),
+                             0, 30)
+        lit = self.pick(_("Éclairage"), [(_("éclairé"), True),
+                                         (_("sombre"), False)],
+                        kind in ("rooms", "big"))
+        lvl = Level(w, h)
+        lvl.grid = grid
+        lvl.lit = lit
+        lvl.flags = ["mazelevel"] if kind == "maze" else []
+        for k, x, y, v in nhgen.populate(grid, rng, mons, objs, traps):
+            lvl.entities.append(Entity(k, x, y, v))
+        self.wizard_summary = _("Assistant : %s, %d monstre(s), %d objet(s), "
+                                "%d piège(s), escaliers aux deux bouts.") % (
+            what, mons, objs, traps)
+        return lvl
+
     def new_level(self):
         self.check_unsaved()
         s = self.prompt(_("Nouvelle carte « largeur hauteur » : "), "75 19")
@@ -653,8 +715,14 @@ class LevelMixin:
             return
         fill = self.pick(_("Remplir avec"), [
             (_("roche (espace)"), " "), (_("sol de salle (.)"), "."),
-            (_("salle entourée de murs"), "room")])
-        self.lvl = Level(min(w, nhlevel.MAX_W), min(h, nhlevel.MAX_H))
+            (_("salle entourée de murs"), "room"),
+            (_("assistant : niveau complet prêt à essayer…"), "wizard")])
+        w, h = max(1, min(w, nhlevel.MAX_W)), max(1, min(h, nhlevel.MAX_H))
+        if fill == "wizard":
+            lvl = self.level_wizard(w, h)
+            if lvl is None:
+                return
+        self.lvl = lvl if fill == "wizard" else Level(w, h)
         if fill == ".":
             self.lvl.grid = [["."] * self.lvl.w for _ in range(self.lvl.h)]
         elif fill == "room":
@@ -669,3 +737,5 @@ class LevelMixin:
         self.mark_saved()
         self.cx = self.cy = self.ox = self.oy = 0
         self.msg = _("Nouvelle carte %dx%d.") % (self.lvl.w, self.lvl.h)
+        if fill == "wizard":
+            self.msg = self.wizard_summary + _(" t pour l'essayer.")

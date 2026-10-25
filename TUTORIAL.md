@@ -57,6 +57,11 @@ Maj+flèches. `[g]` va directement à une position : tapez `12 4` puis
 Entrée. Les coordonnées affichées sont **relatives à la carte**, comme
 dans les scripts de NetHack : la case en haut à gauche est `(0,0)`.
 
+**Pressé ?** `[n]` puis « assistant » génère un niveau complet prêt à
+essayer : salles et couloirs, labyrinthe, caverne ou grande salle, avec
+les escaliers et quelques monstres, objets et pièges. Ce tutoriel part
+plutôt d'une carte vide pour montrer chaque outil.
+
 ## 2. La première salle
 
 L'outil **Salle** trace un rectangle de murs rempli de sol.

@@ -885,6 +885,34 @@ EN = {
         'In case of error, ! shows the NetHack messages and',
     "place le curseur sur l'élément de la ligne fautive.":
         'places the cursor on the element of the faulty line.',
+    # assistant de niveau
+    'Assistant : 12x6 au moins.': 'Wizard: 12x6 at least.',
+    'Assistant : genre de niveau': 'Wizard: kind of level',
+    'Monstres (aléatoires)': 'Monsters (random)',
+    'Objets (aléatoires)': 'Objects (random)',
+    'Pièges (aléatoires)': 'Traps (random)',
+    'Éclairage': 'Lighting',
+    'Assistant : %s, %d monstre(s), %d objet(s), %d piège(s), escaliers aux deux bouts.':
+        'Wizard: %s, %d monster(s), %d object(s), %d trap(s), stairs at both ends.',
+    'Nombre de salles': 'Number of rooms',
+    '%d salles': '%d rooms',
+    'labyrinthe': 'maze',
+    " t pour l'essayer.": ' t to try it.',
+    'salles reliées par des couloirs': 'rooms joined by corridors',
+    'labyrinthe (comme Géhenne)': 'maze (like Gehennom)',
+    'caverne (comme les Mines)': 'cave (like the Mines)',
+    'grande salle (piliers, fontaines, arbres…)':
+        'big room (pillars, fountains, trees…)',
+    'Boucles en % (0 : labyrinthe parfait)': 'Loops in % (0: perfect maze)',
+    'caverne': 'cave',
+    'grande salle': 'big room',
+    'éclairé': 'lit',
+    'sombre': 'dark',
+    'assistant : niveau complet prêt à essayer…':
+        'wizard: complete level ready to try…',
+    'Roche au départ en % (plus : caverne plus étroite)':
+        'Initial rock in % (more: narrower cave)',
+    'Éléments de décor': 'Decor features',
 }
 
 HELP = """\
@@ -1012,6 +1040,9 @@ LEVEL AND FILES
      "Add: stairs up"…); Enter brings the map back to the chosen state,
      forward or backward (300 commands at most)
   n  new       o  open      s  save      w  save as
+     n offers a wizard: complete level ready to try (rooms and
+     corridors, maze, cave or big room, stairs at both ends, random
+     monsters, objects and traps)
      o on a .txt: imports a plain text map;
      w to a .txt: exports the map alone; to a .svg or a .png: exports
      it as an image, as displayed (J, Tab)
