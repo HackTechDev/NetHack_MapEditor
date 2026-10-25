@@ -33,6 +33,10 @@ TEMPLATE_DIRS = [os.path.join(HERE, "modeles"),
 # fichier, et dossier des cartes sans nom
 AUTOSAVE_DELAY = 60
 AUTOSAVE_SUFFIX = ".nhme-autosave"
+# Historique persistant : écrit à l'enregistrement, repris à l'ouverture
+# si le fichier n'a pas changé entre-temps
+HISTORY_SUFFIX = ".nhme-history"
+HISTORY_VERSION = 1
 CACHE_DIR = os.path.join(os.environ.get("XDG_CACHE_HOME")
                          or os.path.expanduser("~/.cache"), "nhmapedit")
 # Historique des commandes (annuler / rétablir) : nom de la commande,
@@ -481,6 +485,11 @@ salle), t explique comment la voir en jeu avec THEMERM.
 Sauvegarde de secours : une carte modifiée est copiée au plus chaque
 minute dans fichier.lua.nhme-autosave, proposé à la réouverture après un
 arrêt brutal, supprimé à l'enregistrement.
+
+Historique persistant : à l'enregistrement, l'historique des commandes
+est gardé dans fichier.lua.nhme-history ; à la réouverture, u annule
+encore les commandes de la session précédente (si le fichier n'a pas
+été modifié ailleurs entre-temps, sinon l'historique est oublié).
 
 Configuration : ~/.config/nhmapedit/config (ou $NHMAPEDIT_CONFIG), au
 format INI : répertoire du jeu, taille par défaut, couleurs des terrains,

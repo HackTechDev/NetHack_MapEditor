@@ -235,6 +235,14 @@ elle vaut `(?)` quand la carte est placée au hasard.
   brutalement, la réouverture du fichier propose de la récupérer : la
   carte reprend son état, à enregistrer avec `s`. Les salles à thème
   n'en ont pas.
+- **Historique persistant** : à chaque enregistrement, l'historique des
+  commandes (annuler, rétablir, `V`) est gardé à côté du fichier
+  (`carte.lua.nhme-history`). À la réouverture, le message l'annonce et
+  `u` annule encore les commandes de la session précédente. Si le
+  fichier a été modifié ailleurs entre-temps, l'historique ne lui
+  correspond plus : il est oublié et supprimé. Seules les classes du
+  modèle de niveau sont relues, un fichier d'historique piégé est
+  refusé. Les salles à thème n'en ont pas.
 
 ## Vérification
 

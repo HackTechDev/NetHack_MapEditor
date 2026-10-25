@@ -1,7 +1,10 @@
 """Propriétés du niveau, vérification, fichiers et salles à thème."""
 
 import collections
+import hashlib
+import io
 import os
+import pickle
 import random
 import re
 import shutil
@@ -15,7 +18,24 @@ from nhi18n import _
 import nhtheme
 from nhlevel import Entity, Level
 from nhme_common import (
-    AUTOSAVE_SUFFIX, CACHE_DIR, Cancel, EXPORTS)
+    AUTOSAVE_SUFFIX, CACHE_DIR, Cancel, EXPORTS, HISTORY_SUFFIX,
+    HISTORY_VERSION, HistoryEntry)
+
+
+class HistoryUnpickler(pickle.Unpickler):
+    """Ne recrée que les classes du modèle de niveau : un fichier
+    d'historique piégé ne peut pas exécuter de code."""
+    ALLOWED = {"Level", "Entity", "Region", "RandomPlacement", "Contents",
+               "LuaTable", "SelArea"}
+
+    def find_class(self, module, name):
+        if module == "nhlevel" and name in self.ALLOWED:
+            return getattr(nhlevel, name)
+        raise pickle.UnpicklingError("%s.%s" % (module, name))
+
+
+def text_hash(text):
+    return hashlib.sha256(text.encode("utf-8")).hexdigest()
 
 
 class LevelMixin:
@@ -483,7 +503,61 @@ class LevelMixin:
             self.msg = _("Erreur à l'ouverture : %s") % e
             return False
         self.set_level(lvl, path)
+        self.load_history(text)
         self.offer_autosave()
+        return True
+
+    # -- historique persistant ------------------------------------------
+    def history_path(self):
+        return self.path + HISTORY_SUFFIX
+
+    def save_history(self, text):
+        """Garde l'historique des commandes à côté du fichier enregistré
+        (fichier.lua.nhme-history), avec l'empreinte de son texte."""
+        if not self.undo_stack and not self.redo_stack:
+            self.drop_history()
+            return
+        data = {"version": HISTORY_VERSION, "hash": text_hash(text),
+                "lvl": self.lvl, "serial": self.serial,
+                "undo": [tuple(e) for e in self.undo_stack],
+                "redo": [tuple(e) for e in self.redo_stack]}
+        try:
+            with open(self.history_path(), "wb") as f:
+                pickle.dump(data, f, protocol=4)
+        except (OSError, pickle.PicklingError, TypeError):
+            pass                    # l'historique n'est qu'un confort
+
+    def drop_history(self):
+        try:
+            os.remove(self.history_path())
+        except OSError:
+            pass
+
+    def load_history(self, text):
+        """Reprend l'historique enregistré si le fichier est celui qu'il
+        décrit ; sinon (fichier modifié ailleurs) l'oublie."""
+        path = self.history_path()
+        if not os.path.exists(path):
+            return False
+        try:
+            with open(path, "rb") as f:
+                data = HistoryUnpickler(io.BytesIO(f.read())).load()
+            if (data.get("version") != HISTORY_VERSION
+                    or data["hash"] != text_hash(text)):
+                raise ValueError("périmé")
+            undo = [HistoryEntry(*e) for e in data["undo"]]
+            redo = [HistoryEntry(*e) for e in data["redo"]]
+            lvl, serial = data["lvl"], int(data["serial"])
+            if not isinstance(lvl, nhlevel.Level):
+                raise ValueError("niveau")
+        except Exception:           # illisible, périmé, d'une autre version
+            self.drop_history()
+            return False
+        self.lvl, self.serial = lvl, serial
+        self.undo_stack[:], self.redo_stack[:] = undo, redo
+        self.mark_saved()
+        self.msg += _(" Historique repris : %d commande(s) (u annule, V "
+                      "liste).") % len(undo)
         return True
 
     def import_text(self, path):
@@ -589,6 +663,7 @@ class LevelMixin:
         self.lvl.theme = None       # « enregistrer sous » : niveau à part
         self.mark_saved()
         self.drop_autosave()
+        self.save_history(text)
         self.msg = _("Enregistré : %s") % path
         return True
 

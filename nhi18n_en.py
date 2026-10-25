@@ -982,6 +982,9 @@ EN = {
     'Tampon « %s » : Espace le pose.': 'Stamp "%s": Space lays it.',
     'Tampon « %s » %s.': 'Stamp "%s" %s.',
     'Tampon : %s': 'Stamp: %s',
+    # historique persistant
+    ' Historique repris : %d commande(s) (u annule, V liste).':
+        ' History restored: %d command(s) (u undoes, V lists).',
 }
 
 HELP = """\
@@ -1141,6 +1144,11 @@ room), t explains how to see it in the game with THEMERM.
 Backup: a modified map is copied at most every minute to
 file.lua.nhme-autosave, offered when reopening after a crash, and
 deleted on save.
+
+Persistent history: on save, the command history is kept in
+file.lua.nhme-history; after reopening, u still undoes the commands of
+the previous session (unless the file was changed elsewhere in the
+meantime, in which case the history is dropped).
 
 Configuration: ~/.config/nhmapedit/config (or $NHMAPEDIT_CONFIG), in
 INI format: game directory, default size, terrain colors, key

@@ -212,6 +212,10 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   labyrinthe ; enregistrement du presse-papiers comme nouveau modèle.
 - Sauvegarde de secours régulière (`.nhme-autosave`), proposée à la
   réouverture après un arrêt brutal.
+- Historique persistant (`.nhme-history`) : écrit à l'enregistrement,
+  repris à la réouverture si le fichier n'a pas changé (empreinte
+  SHA-256) ; annuler, rétablir et `V` couvrent la session précédente ;
+  relecture limitée aux classes du modèle de niveau.
 - Salles à thème : ouverture de `themerms.lua`, édition des salles
   dessinées par `des.map()` et création de nouvelles salles.
 
@@ -285,7 +289,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 112 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 113 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

@@ -5,5 +5,6 @@ __pycache__/
 # cartes d'essai
 essais/
 *.nhme-autosave
+*.nhme-history
 # notes personnelles, hors du dépôt
 claude_task.md

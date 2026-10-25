@@ -24,7 +24,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
 | 11. Idées supplémentaires | 6 / 12 | tirage, $EDITOR, `.des`, sélections, Sokoban, donjon |
-| 12. Encore d'autres idées | 6 / 14 | voir la liste |
+| 12. Encore d'autres idées | 7 / 14 | voir la liste |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -315,7 +315,7 @@ plus utiles aux plus accessoires.
 - **Gestion d'un dossier de niveaux** **[moyen]** : ouvrir un dossier
   entier (`dat/` ou un projet), passer d'un fichier à l'autre, et
   chercher par exemple « quels niveaux contiennent un trône ? ».
-- **Historique persistant** **[moyen]** : garder l'historique des
+- ✅ **Fait** — **Historique persistant** **[moyen]** : garder l'historique des
   commandes entre deux sessions (`fichier.lua.nhme-history`), pour
   annuler encore après avoir rouvert le fichier.
 - **Tests de non-régression sur les niveaux** **[facile]** : conserver

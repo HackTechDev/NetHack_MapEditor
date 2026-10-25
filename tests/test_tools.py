@@ -1,5 +1,6 @@
 """Outils de dessin de l'éditeur, sans écran (Editor(None))."""
 
+import os
 import unittest
 
 from tests.util import grid, level
@@ -363,6 +364,44 @@ class Stamps(unittest.TestCase):
         ed.cy = 0
         ed.apply()
         self.assertEqual([r[0] for r in ed.lvl.grid], list("+|+|."))
+
+
+class PersistentHistory(unittest.TestCase):
+    def test_history_survives_reopening(self):
+        import pickle
+        import tempfile
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "essai.lua")
+            ed = editor(["....", "...."])
+            ed.path = path
+            two_points(ed, "rect", (0, 0), (1, 1), brush="T")
+            ed.lvl.notes[(3, 1)] = "note"
+            ed.save()
+            self.assertTrue(os.path.exists(path + ".nhme-history"))
+            # réouverture : on peut annuler le rectangle
+            ed2 = nhmapedit.Editor(None, path)
+            self.assertIn("Historique repris : 1", ed2.msg)
+            self.assertFalse(ed2.modified)
+            self.assertEqual(ed2.lvl.map_text(), "TT..\nTT..")
+            ed2.undo()
+            self.assertTrue(ed2.modified)
+            self.assertEqual(ed2.lvl.map_text(), "....\n....")
+            ed2.redo()
+            self.assertFalse(ed2.modified)
+            # fichier modifié ailleurs : l'historique est oublié
+            with open(path, "a", encoding="utf-8") as f:
+                f.write("-- retouche\n")
+            ed3 = nhmapedit.Editor(None, path)
+            self.assertEqual(ed3.undo_stack, [])
+            self.assertFalse(os.path.exists(path + ".nhme-history"))
+            # fichier d'historique piégé : refusé, rien n'est exécuté
+            ed3.lvl.set(0, 0, "{")
+            ed3.checkpoint("x")
+            ed3.save()
+            with open(path + ".nhme-history", "wb") as f:
+                pickle.dump({"version": 1, "lvl": os.system}, f)
+            ed4 = nhmapedit.Editor(None, path)
+            self.assertEqual(ed4.undo_stack, [])
 
 
 class Maze(unittest.TestCase):
