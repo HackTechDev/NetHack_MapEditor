@@ -32,7 +32,8 @@ Résumé ci-dessous ; la liste complète est dans [FEATURES.md](FEATURES.md).
   ellipse, remplissage, semis aléatoire, remplacement, symétrie,
   copier/couper/coller avec miroirs et rotation, annulation illimitée ;
 - entités : escaliers, échelles, autels, monstres et objets (avec leurs
-  options, inventaires et contenus), pièges, portes, gravures ;
+  options, inventaires et contenus), pièges, portes, gravures, or,
+  tombes, ponts-levis, éléments de décor, terrain d'une case ;
 - ouverture des niveaux de `dat/` sans rien perdre du script Lua, et des
   salles à thème de `themerms.lua` ;
 - rendu « comme dans le jeu », aperçu des retournements aléatoires ;
@@ -94,7 +95,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | Espace / Entrée | appliquer l'outil (outils à deux points : ancre puis tracé ; Échap annule) |
 | `d` | crayon baissé : peint en se déplaçant (tout le trait s'annule en une fois) |
 | `a` | avance automatique après chaque caractère tapé (pratique pour « taper » une carte) |
-| `m` | placer une entité : escalier, échelle, autel, monstre, objet, piège, porte, gravure |
+| `m` | placer une entité : escalier, échelle, autel, monstre, objet, piège, porte, gravure, or (`des.gold`), tombe (`des.grave`), pont-levis (`des.drawbridge`), élément de décor (`des.feature` : fontaine, évier, bassin, trône, arbre), terrain d'une case (`des.terrain`) |
 | `r` | répéter la dernière entité placée sous le curseur |
 | Suppr, Retour arrière, `z` | supprimer les entités sous le curseur |
 | `i` | liste des entités (Entrée : y aller, `e` : modifier, `d` : supprimer) |
@@ -147,7 +148,8 @@ Il édite :
 - `des.level_init()` et `des.level_flags()` ;
 - la **première** carte `des.map()` du fichier ;
 - les entités à **coordonnées fixes** écrites après cette carte (escaliers,
-  échelles, autels, monstres, objets, pièges, portes, gravures), y compris
+  échelles, autels, monstres, objets, pièges, portes, gravures, or,
+  tombes, ponts-levis, éléments de décor, terrain d'une case), y compris
   l'inventaire des monstres (`inventory = function() ... end`) et le
   contenu des conteneurs et des statues (`contents = function() ... end`)
   quand ces fonctions ne contiennent que des `des.object()` littéraux.

@@ -13,7 +13,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 
 | Thème | Fait | Reste |
 |---|---|---|
-| 1. Couverture du format Lua | 0 / 5 | régions, entités manquantes, plusieurs cartes, `contents`, éléments aléatoires |
+| 1. Couverture du format Lua | 1 / 5 | régions, plusieurs cartes, `contents`, éléments aléatoires |
 | 2. Affichage | 5 / 5 | — |
 | 3. Outils d'édition | 8 / 9 | générateurs |
 | 4. Entités | 4 / 4 | — |
@@ -40,7 +40,7 @@ reste invisible dans l'éditeur.
   `des.levregion()`. On les montrerait sous forme de rectangles en
   surimpression, avec une touche pour passer d'un calque à l'autre. Ce
   sont des éléments clés de presque tous les niveaux de `dat/`.
-- **Entités manquantes** **[facile]** : `des.gold()`, `des.grave()`,
+- ✅ **Fait** — **Entités manquantes** **[facile]** : `des.gold()`, `des.grave()`,
   `des.drawbridge()`, `des.feature()` (avec ses options `looted`,
   `swarm`…) et `des.terrain()` sur une seule case.
 - **Plusieurs cartes par fichier** **[gros]** : beaucoup de niveaux

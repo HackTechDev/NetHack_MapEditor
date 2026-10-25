@@ -80,6 +80,22 @@ class Rules(unittest.TestCase):
         lvl = nhlevel.parse_level(src)[0]
         self.assertFalse(any("temple" in m for m in self.messages(lvl)))
 
+    def test_terrain_entity_opens_a_path(self):
+        lvl = with_stairs(["..|.."], (0, 0), (4, 0))
+        self.assertTrue(any(m.startswith("! Connexité")
+                            for m in nhcheck.check(lvl)))
+        lvl.entities.append(Entity("terrain", 2, 0, "."))
+        self.assertFalse(any(m.startswith("! Connexité")
+                             for m in nhcheck.check(lvl)))
+        self.assertEqual(self.messages(lvl), [])
+
+    def test_drawbridge_needs_water(self):
+        lvl = level(["|}.", "|.."])
+        lvl.entities = [Entity("drawbridge", 1, 0, "west")]
+        self.assertEqual(self.messages(lvl), [])
+        lvl.entities[0].y = 1
+        self.assertTrue(any("Pont-levis" in m for m in self.messages(lvl)))
+
     def test_entity_outside_map(self):
         lvl = level(["..."])
         lvl.entities = [Entity("stair", 5, 0, "up")]

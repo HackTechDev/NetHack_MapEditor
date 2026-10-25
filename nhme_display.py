@@ -70,6 +70,16 @@ class DisplayMixin:
             return ch, "CLR_BROWN"
         if k == "engraving":
             return "~", "CLR_BROWN"
+        if k == "gold":
+            return "$", "CLR_YELLOW"
+        if k == "grave":
+            return "|", "CLR_WHITE"
+        if k == "drawbridge":
+            return "#", "CLR_BROWN"
+        if k in ("feature", "terrain"):
+            # le terrain qu'ils posent, dans sa couleur
+            ch = nhlevel.FEATURES.get(v, "?") if k == "feature" else (v or "?")
+            return ch, TERRAIN_COLOR.get(ch, "CLR_GRAY")
         return "?", "CLR_WHITE"
 
     def top_entity(self, x, y, index=None):
@@ -77,8 +87,9 @@ class DisplayMixin:
                 else self.lvl.entities_at(x, y))
         if not ents:
             return None
-        prio = ["monster", "object", "trap", "stair", "ladder", "altar",
-                "engraving", "door"]
+        prio = ["monster", "object", "gold", "trap", "stair", "ladder",
+                "altar", "grave", "engraving", "drawbridge", "feature",
+                "terrain", "door"]
         return min(ents, key=lambda e: prio.index(e.kind))
 
     def layout(self):

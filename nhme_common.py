@@ -290,7 +290,9 @@ OUTILS (Espace ou Entrée pour appliquer)
 
 ENTITÉS (coordonnées relatives à la carte)
   m  placer une entité (escalier, échelle, autel, monstre, objet, piège,
-     porte, gravure)        r  répéter la dernière entité au curseur
+     porte, gravure, or, tombe, pont-levis, élément de décor : fontaine,
+     évier…, terrain d'une case : des.terrain)
+  r  répéter la dernière entité au curseur
      Monstres et objets : un formulaire présente leurs options courantes
      (Entrée modifie : défaut -> oui -> non -> défaut ; Échap termine) ;
      « inventaire » (monstre) et « contenu » (coffre, statue…) ouvrent la

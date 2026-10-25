@@ -655,6 +655,21 @@ EN = {
     "Ajout : %s": "Add: %s",
     "Suppression : %s": "Delete: %s",
     "Modification : %s": "Edit: %s",
+    # entités supplémentaires
+    "! Pont-levis en (%d,%d) sur '%s' : il doit être posé sur l'eau ou la lave devant le mur, sinon NetHack ne le crée pas.":
+        "! Drawbridge at (%d,%d) on '%s': it must stand on the water or lava in front of the wall, otherwise NetHack does not create it.",
+    'or': 'gold',
+    'tombe': 'grave',
+    'pont-levis': 'drawbridge',
+    'élément de décor': 'feature',
+    'terrain (une case)': 'terrain (one cell)',
+    'Montant (vide : aléatoire) : ': 'Amount (empty: random): ',
+    "Côté du mur où le pont s'abaisse":
+        'Side of the wall where the bridge lowers',
+    'État du pont-levis': 'Drawbridge state',
+    'Élément de décor': 'Feature',
+    'Épitaphe (vide : aléatoire) : ': 'Epitaph (empty: random): ',
+    'Terrain de la case': 'Terrain of the cell',
 }
 
 HELP = """\
@@ -704,7 +719,9 @@ TOOLS (Space or Enter to apply)
 
 ENTITIES (coordinates relative to the map)
   m  place an entity (stairs, ladder, altar, monster, object, trap,
-     door, engraving)        r  repeat the last entity at the cursor
+     door, engraving, gold, grave, drawbridge, feature: fountain,
+     sink…, single-cell terrain: des.terrain)
+  r  repeat the last entity at the cursor
      Monsters and objects: a form shows their common options
      (Enter changes: default -> yes -> no -> default; Esc ends);
      "inventory" (monster) and "contents" (box, statue…) open the

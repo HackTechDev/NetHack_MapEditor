@@ -79,7 +79,11 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 ## Entités
 
 - Escaliers et échelles (montants, descendants), autels (alignement,
-  type), monstres, objets, pièges, portes (état), gravures (type, texte).
+  type), monstres, objets, pièges, portes (état), gravures (type, texte),
+  or (`des.gold`, montant), tombes (`des.grave`, épitaphe), ponts-levis
+  (`des.drawbridge`, côté et état), éléments de décor (`des.feature` :
+  fontaine, évier, bassin, trône, arbre) et terrain d'une case
+  (`des.terrain`), pris en compte par la vérification de connexité.
 - Placement (`m`), répétition de la dernière entité (`r`), suppression
   (`z`, Suppr), liste avec aller, modifier, supprimer (`i`).
 - Listes de monstres, d'objets et de pièges extraites des sources de

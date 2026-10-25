@@ -99,6 +99,31 @@ class Generation(unittest.TestCase):
         self.assertEqual(lvl.to_lua(), src.replace(
             'des.object("dagger", 1, 0)', 'des.object("long sword", 1, 0);'))
 
+    def test_more_entities(self):
+        calls = ['des.gold(100, 1, 1);', 'des.gold({ x = 2, y = 1 });',
+                 'des.grave(0, 0, "Ci-gît");',
+                 'des.drawbridge({ x = 2, y = 0, dir = "east", '
+                 'state = "closed" });',
+                 'des.feature("fountain", 3, 0);',
+                 'des.terrain(2, 1, "L");',
+                 'des.terrain({ x = 0, y = 1, typ = "W", lit = 1 });']
+        src = INIT + 'des.map([[\n....\n....\n]]);\n' + "\n".join(
+            calls) + "\n"
+        lvl = nhlevel.parse_level(src)[0]
+        self.assertEqual([e.kind for e in lvl.entities], [
+            "gold", "gold", "grave", "drawbridge", "feature", "terrain",
+            "terrain"])
+        self.assertEqual(lvl.to_lua(), src)
+        self.assertEqual([e.to_lua() for e in lvl.entities], calls)
+        # autres formes acceptées par NetHack
+        for call, kind, xy, value in [
+                ('des.gold(7, {3, 1})', "gold", (3, 1), 7),
+                ('des.feature("sink", {0, 1})', "feature", (0, 1), "sink"),
+                ('des.terrain({3, 1}, "-")', "terrain", (3, 1), "-")]:
+            e = nhlevel.parse_level(INIT + 'des.map([[\n....\n]]);\n'
+                                    + call)[0].entities[0]
+            self.assertEqual((e.kind, (e.x, e.y), e.value), (kind, xy, value))
+
     @unittest.skipUnless(luac(), "luac absent (NHMAPEDIT_LUAC)")
     def test_luac_accepts_output(self):
         with tempfile.NamedTemporaryFile("w", suffix=".lua",

@@ -116,6 +116,33 @@ class EntitiesMixin:
             value = self.prompt(_("Texte gravé : "), value or "Elbereth")
             extra.pop("type", None)
             extra = dict(type=etype, **extra)
+        elif kind == "gold":
+            s = self.prompt(_("Montant (vide : aléatoire) : "),
+                            "" if value is None else str(value)).strip()
+            try:
+                value = int(s) if s else None
+            except ValueError:
+                value = None
+        elif kind == "grave":
+            value = self.prompt(_("Épitaphe (vide : aléatoire) : "),
+                                value or "").strip() or None
+        elif kind == "drawbridge":
+            value = self.pick(_("Côté du mur où le pont s'abaisse"),
+                              [(d, d) for d in nhlevel.DRAWBRIDGE_DIRS],
+                              value or "random")
+            extra["state"] = self.pick(
+                _("État du pont-levis"),
+                [(s, s) for s in nhlevel.DRAWBRIDGE_STATES],
+                extra.get("state", "random"))
+        elif kind == "feature":
+            value = self.pick(_("Élément de décor"),
+                              [("%s  %s" % (c, f), f)
+                               for f, c in nhlevel.FEATURES.items()], value)
+        elif kind == "terrain":
+            value = self.pick(_("Terrain de la case"),
+                              [("%s  %s" % ("e" if c == " " else c, d), c)
+                               for c, d in nhlevel.TERRAIN if c != "x"],
+                              value)
         return value, extra
 
     def place_entity(self):

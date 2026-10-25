@@ -4,6 +4,7 @@ Chaque fonction renvoie une liste de messages ; le premier caractère
 indique la gravité : « ! » erreur, « ? » à vérifier, « - » remarque.
 """
 
+import copy
 import glob
 import os
 import shutil
@@ -239,6 +240,13 @@ def rules(lvl, monsters=None, objects=None):
             # sur un mur, des.door() le remplace par la porte
             if t not in "+S-|":
                 out.append(_("? Porte en (%d,%d) sur '%s'.") % (e.x, e.y, t))
+        elif e.kind in ("terrain", "feature"):
+            pass                # remplacent le terrain de la case
+        elif e.kind == "drawbridge":
+            if t not in LIQUID:
+                out.append(_("! Pont-levis en (%d,%d) sur '%s' : il doit "
+                             "être posé sur l'eau ou la lave devant le mur, "
+                             "sinon NetHack ne le crée pas.") % (e.x, e.y, t))
         elif t in " -|STZFB":
             out.append(_("! %s en (%d,%d) sur du terrain solide '%s'.") % (
                 e.describe(), e.x, e.y, t))
@@ -279,9 +287,23 @@ def rules(lvl, monsters=None, objects=None):
     return out
 
 
+def applied(lvl):
+    """Copie du niveau dont la grille reçoit le terrain posé par les
+    entités des.terrain() et des.feature() (pour la connexité)."""
+    out = copy.copy(lvl)
+    out.grid = [row[:] for row in lvl.grid]
+    for e in lvl.entities:
+        if 0 <= e.x < lvl.w and 0 <= e.y < lvl.h:
+            if e.kind == "terrain" and e.value in nhlevel.TERRAIN_CHARS:
+                out.grid[e.y][e.x] = e.value
+            elif e.kind == "feature" and e.value in nhlevel.FEATURES:
+                out.grid[e.y][e.x] = nhlevel.FEATURES[e.value]
+    return out
+
+
 def check(lvl, monsters=None, objects=None):
     """Toutes les vérifications ; ["Aucun problème détecté."] sinon."""
-    out = rules(lvl, monsters, objects) + connectivity(lvl)
+    out = rules(lvl, monsters, objects) + connectivity(applied(lvl))
     return out or [_("Aucun problème détecté.")]
 
 

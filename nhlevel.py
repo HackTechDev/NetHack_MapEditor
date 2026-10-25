@@ -56,16 +56,21 @@ LEVEL_FLAGS = [
 ]
 
 ENTITY_KINDS = ["stair", "ladder", "altar", "monster", "object", "trap",
-                "door", "engraving"]
+                "door", "engraving", "gold", "grave", "drawbridge",
+                "feature", "terrain"]
 ENTITY_LABEL = {
     "stair": _("escalier"), "ladder": _("échelle"), "altar": _("autel"),
     "monster": _("monstre"), "object": _("objet"), "trap": _("piège"),
-    "door": _("porte"), "engraving": _("gravure"),
+    "door": _("porte"), "engraving": _("gravure"), "gold": _("or"),
+    "grave": _("tombe"), "drawbridge": _("pont-levis"),
+    "feature": _("élément de décor"), "terrain": _("terrain (une case)"),
 }
 # Nom du paramètre principal de chaque entité dans la table Lua
 MAIN_KEY = {
     "stair": "dir", "ladder": "dir", "altar": "align", "monster": "id",
     "object": "id", "trap": "type", "door": "state", "engraving": "text",
+    "gold": "amount", "grave": "text", "drawbridge": "dir",
+    "feature": "type", "terrain": "typ",
 }
 DOOR_STATES = ["random", "open", "closed", "locked", "nodoor", "broken",
                "secret"]
@@ -75,6 +80,11 @@ ALTAR_TYPES = ["altar", "shrine", "sanctum"]
 HALIGNS = ["center", "left", "half-left", "half-right", "right", "none"]
 VALIGNS = ["center", "top", "bottom", "none"]
 ENGRAVING_TYPES = ["dust", "engrave", "burn", "mark", "blood"]
+DRAWBRIDGE_DIRS = ["north", "south", "east", "west", "random"]
+DRAWBRIDGE_STATES = ["open", "closed", "random"]
+# des.feature() : type -> caractère de carte équivalent (affichage)
+FEATURES = {"fountain": "{", "sink": "K", "pool": "P", "throne": "\\",
+            "tree": "T"}
 
 
 class Entity:
@@ -130,6 +140,12 @@ class Entity:
             return "des.trap(%s, %d, %d);" % (lua_value(v), x, y)
         if k == "door" and not e and v:
             return "des.door(%s, %d, %d);" % (lua_value(v), x, y)
+        if k == "gold" and not e and isinstance(v, int):
+            return "des.gold(%d, %d, %d);" % (v, x, y)
+        if k in ("grave", "terrain") and not e and isinstance(v, str):
+            return "des.%s(%d, %d, %s);" % (k, x, y, lua_value(v))
+        if k == "feature" and not e and v:
+            return "des.feature(%s, %d, %d);" % (lua_value(v), x, y)
         t = {"x": x, "y": y}
         if v is not None:
             key = MAIN_KEY[k]
@@ -770,6 +786,16 @@ def _entity_from_call(name, args):
         xy = vals[0]
         extra = {"type": vals[1]}
         value = vals[2]
+    elif (name in ("grave", "terrain") and len(vals) == 3
+          and isinstance(vals[2], str)):
+        xy, value = vals[:2], vals[2]       # des.grave(x, y, "texte")
+    elif (name == "terrain" and len(vals) == 2 and isinstance(vals[0], list)
+          and isinstance(vals[1], str)):
+        xy, value = vals[0], vals[1]        # des.terrain({x, y}, "L")
+    elif name == "gold" and vals and isinstance(vals[0], int):
+        value, rest = vals[0], vals[1:]     # des.gold(montant, x, y)
+        xy = rest if len(rest) == 2 else (
+            rest[0] if len(rest) == 1 else None)
     elif vals and isinstance(vals[0], str):
         value = vals[0]
         rest = vals[1:]
