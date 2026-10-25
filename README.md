@@ -108,6 +108,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | Suppr, Retour arrière, `z` | supprimer les entités sous le curseur |
 | `i` | liste des entités (Entrée : y aller, `e` : modifier, `d` : supprimer) |
 | `;` | calques d'affichage : terrain, entités, chaque famille de régions, placements aléatoires ; préréglages pour ne voir que le terrain, que les entités ou que les régions |
+| `*` | sélection multiple d'entités : tracer un rectangle, puis déplacer, copier, supprimer ou rechercher-remplacer les entités qu'il contient, sans toucher au terrain (Espace pose les entités déplacées ou copiées) |
 | `/` | rechercher et remplacer des entités : un genre et une valeur (« monstre orc »…), puis remplacer la valeur, poser ou retirer une option (`asleep=1`…), ou supprimer ; une seule annulation |
 | Tab | afficher / masquer les entités (un symbole souligné signale plusieurs entités sur la case ; la barre d'état les liste toutes) |
 | `c` | afficher / masquer les règles de coordonnées (colonnes en haut, lignes à gauche) |

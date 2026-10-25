@@ -331,6 +331,71 @@ class EntitiesMixin:
                 e.value, e.extra = value, extra
                 self.msg = _("Modifié : %s") % e.describe()
 
+    # --- sélection multiple ---------------------------------------------
+    def start_entity_selection(self):
+        if self.tool not in ("entsel", "entpaste"):
+            self.sel_prev_tool = self.tool
+        self.tool = "entsel"
+        self.anchor = (self.cx, self.cy)
+        self.msg = _("Sélection : allez au coin opposé puis Espace (Échap "
+                     "annule).")
+
+    def entity_selection(self, a, b):
+        """Actions sur les entités du rectangle a-b."""
+        lx, hx = sorted((a[0], b[0]))
+        ly, hy = sorted((a[1], b[1]))
+        sel = [e for e in self.lvl.entities
+               if lx <= e.x <= hx and ly <= e.y <= hy]
+        if not sel:
+            self.msg = _("Aucune entité dans la sélection.")
+            return
+        action = self.pick(_("%d entité(s) sélectionnée(s)") % len(sel), [
+            (_("déplacer (Espace pour poser)"), "move"),
+            (_("copier (Espace pour poser, autant de fois que voulu)"),
+             "copy"),
+            (_("supprimer"), "delete"),
+            (_("rechercher et remplacer dans la sélection…"), "find")])
+        if action == "delete":
+            self.checkpoint(_("Suppression de %d entité(s)") % len(sel))
+            for e in sel:
+                self.lvl.entities.remove(e)
+            self.msg = _("%d entité(s) supprimée(s).") % len(sel)
+        elif action == "find":
+            self.find_replace(sel)
+        else:
+            self.ent_clip = []
+            for e in sel:
+                c = e.copy()
+                c.origin, c.x, c.y = None, e.x - lx, e.y - ly
+                self.ent_clip.append(c)
+            self.ent_moved = sel if action == "move" else []
+            self.cx, self.cy = lx, ly
+            self.tool = "entpaste"
+            self.msg = _("Déplacez les entités puis Espace (Échap annule).")
+
+    def place_entities(self):
+        moved = self.ent_moved
+        self.checkpoint((_("Déplacement de %d entité(s)") if moved
+                         else _("Copie de %d entité(s)")) % len(self.ent_clip))
+        for e in moved:
+            if e in self.lvl.entities:
+                self.lvl.entities.remove(e)
+        n = 0
+        for e in self.ent_clip:
+            c = e.copy()
+            c.x += self.cx
+            c.y += self.cy
+            if c.x < self.lvl.w and c.y < self.lvl.h:
+                self.lvl.entities.append(c)
+                n += 1
+        self.msg = _("%d entité(s) posée(s).") % n
+        if n < len(self.ent_clip):
+            self.msg += _(" %d hors de la carte, abandonnée(s).") % (
+                len(self.ent_clip) - n)
+        if moved:
+            self.ent_moved = []
+            self.tool = self.sel_prev_tool
+
     # --- régions --------------------------------------------------------
     def region_action(self, r, action):
         """Action de la liste sur une région ; True pour fermer la liste."""

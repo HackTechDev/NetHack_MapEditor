@@ -279,6 +279,9 @@ class DisplayMixin:
         if self.tool == "paste" and self.clip:
             for e in self.clip[1]:
                 prev_ents[(self.cx + e.x, self.cy + e.y)] = e
+        if self.tool == "entpaste":
+            for e in self.ent_clip:
+                prev_ents[(self.cx + e.x, self.cy + e.y)] = e
         if self.game:
             grid = [row[:] for row in lvl.grid]
             if self.tool not in SELECT:
@@ -436,6 +439,9 @@ class DisplayMixin:
         if self.anchor:
             return _(" Espace/Entrée: tracer jusqu'au curseur  "
                      "flèches/souris: 2e point  Échap: annuler l'ancre")
+        if self.tool == "entpaste":
+            return (_(" Espace: poser les %d entité(s) (coin haut-gauche au "
+                      "curseur)  Échap: annuler") % len(self.ent_clip))
         if self.tool == "paste":
             if not self.clip:
                 return (_(" Presse-papiers vide :  7: copier  D: couper  "

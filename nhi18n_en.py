@@ -820,6 +820,29 @@ EN = {
     '(toutes les valeurs) (%d)': '(all values) (%d)',
     'Retrait de %s : %s (%d)': 'Removal of %s: %s (%d)',
     'Suppression : %s (%d)': 'Deletion: %s (%d)',
+    # sélection multiple
+    'Entités laissées en place.': 'Entities left in place.',
+    "Sélection d'entités": 'Entity selection',
+    'Poser les entités': 'Lay the entities',
+    ' Espace: poser les %d entité(s) (coin haut-gauche au curseur)  Échap: annuler':
+        ' Space: lay the %d entity(ies) (top-left corner at the cursor)  Esc: cancel',
+    'Sélection : allez au coin opposé puis Espace (Échap annule).':
+        'Selection: go to the opposite corner then Space (Esc cancels).',
+    'Aucune entité dans la sélection.': 'No entity in the selection.',
+    '%d entité(s) posée(s).': '%d entity(ies) laid.',
+    '%d entité(s) sélectionnée(s)': '%d entity(ies) selected',
+    'Déplacez les entités puis Espace (Échap annule).':
+        'Move the entities then Space (Esc cancels).',
+    ' %d hors de la carte, abandonnée(s).': ' %d outside the map, dropped.',
+    'déplacer (Espace pour poser)': 'move (Space to lay)',
+    'copier (Espace pour poser, autant de fois que voulu)':
+        'copy (Space to lay, as many times as wanted)',
+    'supprimer': 'delete',
+    'rechercher et remplacer dans la sélection…':
+        'find and replace in the selection…',
+    'Suppression de %d entité(s)': 'Deletion of %d entity(ies)',
+    'Déplacement de %d entité(s)': 'Move of %d entity(ies)',
+    'Copie de %d entité(s)': 'Copy of %d entity(ies)',
 }
 
 HELP = """\
@@ -892,6 +915,10 @@ ENTITIES (coordinates relative to the map)
      "inventory" (monster) and "contents" (box, statue…) open the
      list of their objects (Enter/e: edit, d: delete)
   Del / Backspace / z   delete the entities under the cursor
+  *  multiple selection: draw a rectangle, then move, copy, delete or
+     edit (find and replace) the entities inside it, without touching
+     the terrain; move and copy make them follow the cursor, Space lays
+     them down (Esc cancels)
   i  list of entities, regions and random placements of the script
      (Enter: go, e: edit, d: delete; e on a region: options or area
      to redraw)

@@ -62,6 +62,9 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.show_terrain = True    # calque du terrain (touche ;)
         self.maze_opts = ("-", ".", 0)  # murs, passages, % de boucles
         self.auto_walls = False     # pinceau mur automatique (touche =)
+        # sélection multiple d'entités (touche *) : copies relatives au
+        # coin de la sélection, et originaux à retirer pour un déplacement
+        self.ent_clip, self.ent_moved = [], []
         self.pending_region = None  # région en cours de tracé
         # règles de coordonnées autour de la carte
         self.rulers = self.config.get("rulers", True)
@@ -171,9 +174,14 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
                     self.end_region()
                 elif self.tool == "walls":
                     self.tool = self.walls_prev_tool
+                elif self.tool == "entsel":
+                    self.tool = self.sel_prev_tool
             elif self.tool == "paste":
                 self.tool = "pen"
                 self.msg = _("Outil Pinceau.")
+            elif self.tool == "entpaste":
+                self.tool = self.sel_prev_tool
+                self.msg = _("Entités laissées en place.")
         elif k in TOOL_KEY:
             if TOOL_KEY[k] == "scatter":
                 s = self.prompt(_("Densité du semis en %% (1-100) : "),
@@ -286,6 +294,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.walls_menu()
         elif k == "/":
             self.find_replace()
+        elif k == "*":
+            self.start_entity_selection()
         elif k == "V":
             self.history()
         elif k == "n":

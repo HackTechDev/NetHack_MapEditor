@@ -129,6 +129,10 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   lettre ou un symbole seul donne un monstre ou un objet aléatoire de
   cette classe ; formes féminines, noms sans préfixe et descriptions
   reconnus.
+- Sélection multiple (`*`) : rectangle tracé à deux points, puis
+  déplacement, copie (posée autant de fois que voulu), suppression ou
+  rechercher-remplacer des entités qu'il contient, sans toucher au
+  terrain ; aperçu des entités sous le curseur avant de les poser.
 - Rechercher et remplacer (`/`) : choix d'un genre d'entité et d'une
   valeur parmi celles du niveau, avec leur nombre, puis remplacement de
   la valeur, pose ou retrait d'une option, ou suppression, en une seule
@@ -228,7 +232,7 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 
 ## Qualité
 
-- 90 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 92 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

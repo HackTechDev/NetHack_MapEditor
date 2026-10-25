@@ -391,3 +391,48 @@ class FindReplace(unittest.TestCase):
         self.answer("object", "None", "delete")
         ed.find_replace()
         self.assertEqual(len(ed.lvl.entities), 3)
+
+
+class EntitySelection(unittest.TestCase):
+    def setUp(self):
+        self.ed = ed = editor(["......"] * 4)
+        ed.lvl.entities = [Entity("monster", 0, 0, "orc"),
+                           Entity("object", 1, 1, "dagger"),
+                           Entity("trap", 5, 3, "pit")]
+        ed.lvl.grid[0][0] = "#"
+
+    def select(self, action, a=(0, 0), b=(1, 1)):
+        ed = self.ed
+        ed.pick = lambda *a, **k: action
+        ed.cx, ed.cy = a
+        ed.start_entity_selection()
+        ed.cx, ed.cy = b
+        ed.apply()
+
+    def test_move(self):
+        ed = self.ed
+        self.select("move")
+        self.assertEqual(ed.tool, "entpaste")
+        self.assertEqual(set(ed.preview_cells()), {(0, 0), (1, 1)})
+        ed.cx, ed.cy = 3, 2
+        ed.apply()
+        self.assertEqual(ed.tool, "pen")
+        self.assertEqual(sorted((e.kind, e.x, e.y) for e in ed.lvl.entities),
+                         [("monster", 3, 2), ("object", 4, 3),
+                          ("trap", 5, 3)])
+        self.assertEqual(ed.lvl.grid[0][0], "#")      # terrain intact
+        ed.undo()
+        self.assertEqual(sorted((e.x, e.y) for e in ed.lvl.entities),
+                         [(0, 0), (1, 1), (5, 3)])
+
+    def test_copy_twice_and_delete(self):
+        ed = self.ed
+        self.select("copy")
+        for x in (2, 5):
+            ed.cx, ed.cy = x, 0
+            ed.apply()
+        self.assertEqual(ed.tool, "entpaste")
+        self.assertEqual(len(ed.lvl.entities), 3 + 2 + 1)   # 1 hors carte
+        self.assertIn("hors de la carte", ed.msg)
+        self.select("delete", (0, 0), (5, 3))
+        self.assertEqual(ed.lvl.entities, [])

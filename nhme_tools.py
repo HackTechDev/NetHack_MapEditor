@@ -21,10 +21,13 @@ class ToolsMixin:
             g = self.clip[0]
             return {(self.cx + x, self.cy + y): g[y][x]
                     for y in range(len(g)) for x in range(len(g[0]))}
+        if self.tool == "entpaste":
+            return {(self.cx + e.x, self.cy + e.y): " "
+                    for e in self.ent_clip}
         if self.anchor is None:
             return {}
         cells = self.shape_cells(self.anchor, (self.cx, self.cy))
-        if self.tool in ("copy", "cut", "region", "walls"):
+        if self.tool in ("copy", "cut", "region", "walls", "entsel"):
             return cells
         return self.mirrored(cells)
 
@@ -37,7 +40,7 @@ class ToolsMixin:
         if t == "line":
             for x, y in bresenham(x0, y0, x1, y1):
                 cells[(x, y)] = br
-        elif t in ("rect", "copy", "cut", "maze", "walls"):
+        elif t in ("rect", "copy", "cut", "maze", "walls", "entsel"):
             for x in range(lx, hx + 1):
                 cells[(x, ly)] = cells[(x, hy)] = br
             for y in range(ly, hy + 1):
@@ -209,6 +212,8 @@ class ToolsMixin:
             self.flood_fill(self.cx, self.cy, self.brush)
         elif t == "paste":
             self.paste()
+        elif t == "entpaste":
+            self.place_entities()
         elif self.anchor is None:
             self.anchor = (self.cx, self.cy)
             self.msg = _("Ancre posée ; déplacez-vous puis Espace (Échap "
@@ -230,6 +235,9 @@ class ToolsMixin:
             elif t == "walls":
                 self.tool = self.walls_prev_tool
                 self.fix_walls(a, b)
+            elif t == "entsel":
+                self.tool = self.sel_prev_tool
+                self.entity_selection(a, b)
             elif t == "maze":
                 wall, floor, loops = self.maze_opts
                 cells = maze_cells(min(a[0], b[0]), min(a[1], b[1]),

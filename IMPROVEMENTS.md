@@ -23,7 +23,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 8. Configuration et confort | 3 / 3 | — |
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
-| 11. Idées supplémentaires | 2 / 12 | voir la liste |
+| 11. Idées supplémentaires | 3 / 12 | voir la liste |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -256,7 +256,7 @@ utiles aux plus accessoires.
   zone.
 - ✅ **Fait** — **Rechercher et remplacer des entités** **[facile]** : changer tous les
   « orc » en « hill orc », rendre `asleep` tous les monstres d'une zone…
-- **Sélection multiple d'entités** **[moyen]** : déplacer, copier ou
+- ✅ **Fait** — **Sélection multiple d'entités** **[moyen]** : déplacer, copier ou
   supprimer d'un coup les entités d'un rectangle, sans toucher au
   terrain.
 - **Vérifications supplémentaires** **[facile]** : région ou zone

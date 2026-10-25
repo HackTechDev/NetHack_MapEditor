@@ -70,11 +70,16 @@ TOOL_NAME = {t: name for t, name, _short, _key in TOOLS}
 TOOL_NAME["region"] = _("Zone d'une région")
 # outil temporaire de la correction des murs d'une zone (touche =)
 TOOL_NAME["walls"] = _("Murs à corriger")
+# outils temporaires de la sélection multiple d'entités (touche *)
+TOOL_NAME["entsel"] = _("Sélection d'entités")
+TOOL_NAME["entpaste"] = _("Poser les entités")
 TOOL_KEY = {key: t for t, _name, _short, key in TOOLS}
 TWO_POINT = {"line", "rect", "fillrect", "room", "copy", "cut", "ellipse",
-             "fillellipse", "scatter", "replace", "region", "maze", "walls"}
+             "fillellipse", "scatter", "replace", "region", "maze", "walls",
+             "entsel"}
 # outils dont l'aperçu montre la zone sans y dessiner le pinceau
-SELECT = {"copy", "cut", "scatter", "replace", "region", "maze", "walls"}
+SELECT = {"copy", "cut", "scatter", "replace", "region", "maze", "walls",
+          "entsel", "entpaste"}
 
 # Retournements (bits de flip_level() : 1 = haut/bas, 2 = gauche/droite)
 FLIP_NAME = {0: _("aucun"), 1: _("vertical"), 2: _("horizontal"),
@@ -360,6 +365,10 @@ ENTITÉS (coordonnées relatives à la carte)
      « inventaire » (monstre) et « contenu » (coffre, statue…) ouvrent la
      liste de leurs objets (Entrée/e : modifier, d : supprimer)
   Suppr / Retour arrière / z   supprimer les entités sous le curseur
+  *  sélection multiple : tracer un rectangle, puis déplacer, copier,
+     supprimer ou modifier (rechercher et remplacer) les entités qu'il
+     contient, sans toucher au terrain ; déplacer et copier les font
+     suivre le curseur, Espace les pose (Échap annule)
   i  liste des entités, des régions et des placements aléatoires du
      script (Entrée: aller, e: modifier, d: supprimer ; e sur une
      région : options ou zone à redessiner)
