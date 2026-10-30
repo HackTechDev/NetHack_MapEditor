@@ -9,8 +9,8 @@ import nhgen
 import nhlevel
 from nhi18n import _
 from nhme_common import (
-    GENERATOR_NAME, GENERATORS, HISTORY_MAX, PATTERNS, Cancel, HistoryEntry,
-    SELECT, STAMPS,
+    GENERATOR_MENU, GENERATOR_NAME, GENERATORS, HISTORY_MAX, PATTERNS,
+    Cancel, HistoryEntry, SELECT, STAMPS,
     TEMPLATE_DIRS, TOOL_NAME, pattern_second,
     bresenham, ellipse_cells, maze_cells, wall_fixes)
 
@@ -473,7 +473,9 @@ class ToolsMixin:
     def ask_generator(self):
         """Choix du générateur de l'outil Q, puis ses options."""
         self.gen_kind = self.pick(_("Générer dans une zone"),
-                                  [(n, k) for k, n in GENERATORS],
+                                  [(n, k, {"key": GENERATOR_MENU[k][0],
+                                           "desc": GENERATOR_MENU[k][1]})
+                                   for k, n in GENERATORS],
                                   self.gen_kind)
         if self.gen_kind == "maze":
             self.ask_maze()

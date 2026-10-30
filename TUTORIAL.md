@@ -193,8 +193,10 @@ font pas partie du dessin `des.map` mais sont écrites après lui, avec
 leurs coordonnées.
 
 1. Placez le curseur en `(3,3)`, dans la première salle.
-2. `[m]` ouvre la liste des entités. Choisissez **Escalier** (flèches
-   puis Entrée, ou tapez les premières lettres pour filtrer).
+2. `[m]` ouvre la liste des entités. Choisissez **Escalier** : flèches
+   puis Entrée, ou directement sa touche `[e]` affichée entre crochets,
+   ou son numéro. Les menus ressemblent à celui du lanceur NetHack :
+   groupes, touches, description de la ligne choisie en bas.
 3. Choisissez **montant (up)**. Le symbole `<` apparaît.
 4. En `(35,9)`, `[m]`, **Escalier**, **descendant (down)** : `>`.
 

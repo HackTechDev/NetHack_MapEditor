@@ -19,7 +19,7 @@ import nhtheme
 from nhlevel import Entity, Level
 from nhme_common import (
     AUTOSAVE_SUFFIX, CACHE_DIR, Cancel, EXPORTS, HISTORY_SUFFIX,
-    HISTORY_VERSION, HistoryEntry)
+    Group, HISTORY_VERSION, HistoryEntry)
 
 
 class HistoryUnpickler(pickle.Unpickler):
@@ -327,21 +327,42 @@ class LevelMixin:
             if lvl.map_partial:
                 place += _(" (fixé par le script)")
             items = [
-                (_("Taille de la carte : %dx%d") % (lvl.w, lvl.h), "size"),
-                (_("level_init : %s") % nhlevel.lua_value(lvl.init), "init"),
-                (_("Drapeaux : %s") % (", ".join(lvl.flags) or _("(aucun)")),
-                 "flags"),
-                (_("Placement : %s") % place, "place"),
+                Group(_("Carte")),
+                (_("Taille de la carte : %dx%d") % (lvl.w, lvl.h), "size",
+                 {"key": "t", "desc": _("Largeur et hauteur de la carte "
+                                        "des.map (la carte est rognée ou "
+                                        "complétée de roche).")}),
+                (_("Placement : %s") % place, "place",
+                 {"key": "a", "desc": _("Où NetHack pose la carte dans le "
+                                        "niveau de 80x21 : alignement ou "
+                                        "position fixe.")}),
                 (_("Carte éclairée (lit) : %s")
-                 % (_("oui") if lvl.lit else _("non")), "lit"),
-                (_("Donjon : placer le niveau dans dungeon.lua…"), "dungeon"),
+                 % (_("oui") if lvl.lit else _("non")), "lit",
+                 {"key": "e", "desc": _("Option lit de des.map : la carte "
+                                        "est éclairée à l'arrivée.")}),
+                Group(_("Niveau")),
+                (_("level_init : %s") % nhlevel.lua_value(lvl.init), "init",
+                 {"key": "i", "desc": _("Remplissage du niveau autour de la "
+                                        "carte (des.level_init) : roche, "
+                                        "mines, labyrinthe…")}),
+                (_("Drapeaux : %s") % (", ".join(lvl.flags) or _("(aucun)")),
+                 "flags",
+                 {"key": "d", "desc": _("des.level_flags : noteleport, "
+                                        "hardfloor, noflip, mazelevel…")}),
+                Group(_("Jeu")),
+                (_("Donjon : placer le niveau dans dungeon.lua…"), "dungeon",
+                 {"key": "j", "desc": _("Ajoute le niveau à dat/dungeon.lua "
+                                        "(profondeur, probabilité…), ou "
+                                        "modifie et retire les niveaux "
+                                        "spéciaux du donjon.")}),
             ]
+            values = [it[1] for it in items if not isinstance(it, Group)]
             try:
                 what = self.pick(_("Propriétés du niveau"), items,
-                                 items[sel][1])
+                                 values[sel])
             except Cancel:
                 return
-            sel = [v for _, v in items].index(what)
+            sel = values.index(what)
             try:
                 if what == "size":
                     self.ask_size()
@@ -410,8 +431,9 @@ class LevelMixin:
             items += [("[x] %s" % f, f) for f in flags
                       if f not in nhlevel.LEVEL_FLAGS]
             try:
-                f = self.pick(_("Drapeaux (Entrée: cocher/décocher, "
-                                "Échap: terminer)"), items, items[sel][1])
+                f = self.pick(_("Drapeaux"), items, items[sel][1],
+                              hint=_("↑/↓ naviguer · Entrée cocher/décocher"
+                                     " · numéro · Échap terminer"))
             except Cancel:
                 break
             sel = [v for _, v in items].index(f)
@@ -802,10 +824,19 @@ class LevelMixin:
             return None
         rng = rng or random.Random()
         kind = self.pick(_("Assistant : genre de niveau"), [
-            (_("salles reliées par des couloirs"), "rooms"),
-            (_("labyrinthe (comme Géhenne)"), "maze"),
-            (_("caverne (comme les Mines)"), "cave"),
-            (_("grande salle (piliers, fontaines, arbres…)"), "big")])
+            (_("salles reliées par des couloirs"), "rooms",
+             {"key": "s", "desc": _("Salles murées reliées par des couloirs "
+                                    "qui entrent par des portes, comme un "
+                                    "niveau ordinaire.")}),
+            (_("labyrinthe (comme Géhenne)"), "maze",
+             {"key": "l", "desc": _("Couloirs d'une case entre des murs ; "
+                                    "des boucles évitent les culs-de-sac.")}),
+            (_("caverne (comme les Mines)"), "cave",
+             {"key": "c", "desc": _("Grotte irrégulière creusée par "
+                                    "automate cellulaire.")}),
+            (_("grande salle (piliers, fontaines, arbres…)"), "big",
+             {"key": "g", "desc": _("Une seule grande salle semée "
+                                    "d'éléments de décor.")})])
         area = w * h
         if kind == "rooms":
             n = self.ask_int(_("Nombre de salles"), max(2, area // 180), 2, 12)

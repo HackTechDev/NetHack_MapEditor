@@ -133,6 +133,7 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             or self.config.get("game_lang") or nhgamenames.game_language(),
             self.data.get("trap_names"))
         nhlevel.GAME_NAME = self.names.name
+        self._styles = None             # le thème suit la version du jeu
         # palette du rendu jeu (J) : néon du thème cyberpunk, puis les
         # options glyph du .nethackrc du joueur
         pal = (os.environ.get("NHMAPEDIT_PALETTE")

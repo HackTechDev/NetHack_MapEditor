@@ -7,6 +7,7 @@ import tempfile
 
 import nhexport
 import nhlevel
+import nhme_theme
 import nhpalette
 from nhi18n import _
 from nhme_common import (
@@ -38,6 +39,21 @@ class DisplayMixin:
         # calque des régions : une couleur de fond par famille, paires
         # (texte, fond) créées à la demande à partir de 10
         self.next_pair = 10
+
+    def ui_theme(self):
+        """Thème de l'interface (nhme_theme) : NHMAPEDIT_THEME, la clé
+        theme de la configuration, sinon selon la version du jeu."""
+        choice = (os.environ.get("NHMAPEDIT_THEME")
+                  or self.config.get("theme", "auto"))
+        return nhme_theme.theme_name(choice, self.game_theme())
+
+    def style(self, elem):
+        """Attribut curses d'un élément de l'interface (titre, groupe,
+        numero, touche, selection, description, aide…)."""
+        if getattr(self, "_styles", None) is None:
+            self._styles = nhme_theme.curses_styles(
+                self.ui_theme(), getattr(self, "pairs", {}))
+        return self._styles.get(elem, 0)
 
     def attr(self, clr, family=None):
         """Attribut curses d'une couleur NetHack ; family : fond du
@@ -172,8 +188,9 @@ class DisplayMixin:
                       (_("→ les régions seules"), "regions"),
                       (_("→ affichage par défaut"), "default")]
             try:
-                sel = self.pick(_("Calques (Entrée: cocher/décocher, "
-                                  "Échap: terminer)"), items, sel)
+                sel = self.pick(_("Calques"), items, sel,
+                                hint=_("↑/↓ naviguer · Entrée cocher/décocher"
+                                       " · numéro · Échap terminer"))
             except Cancel:
                 return
             if sel in presets:
@@ -345,8 +362,9 @@ class DisplayMixin:
         name = os.path.basename(self.path) if self.path else _("(sans nom)")
         if lvl.theme:
             name += _(" : salle « %s »") % lvl.theme["name"]
-        head = " nhmapedit — %s%s   %dx%d" % (
-            name, _(" [modifié]") if self.modified else "", lvl.w, lvl.h)
+        head = " %s — %s%s   %dx%d" % (
+            nhme_theme.HEADER.get(self.ui_theme(), "nhmapedit"), name,
+            _(" [modifié]") if self.modified else "", lvl.w, lvl.h)
         if len(lvl.maps) > 1:
             head += _("   carte %d/%d ([ ] N)") % (lvl.map_index + 1,
                                                   len(lvl.maps))
@@ -355,11 +373,11 @@ class DisplayMixin:
         if lvl.allowed_flips() and not lvl.theme:
             head += _("  (retournable : %s, f pour voir)") % FLIP_NAME[
                 lvl.allowed_flips()]
-        self.put(0, 0, head.ljust(maxx), curses.A_REVERSE)
-        # cadre
-        frame = self.attr("CLR_BLACK")
+        self.put(0, 0, head.ljust(maxx), self.style("entete"))
+        # cadre, de la couleur des séparateurs des menus
+        frame = self.style("separateur")
         if self.rulers:
-            self.draw_rulers(top, left, vw, vh, frame)
+            self.draw_rulers(top, left, vw, vh, self.style("numero"))
         lch = "<" if self.ox > 0 else "+"
         rch = ">" if self.ox + vw < lvl.w else "+"
         self.put(top, left, lch + "-" * vw + rch, frame)
@@ -474,14 +492,23 @@ class DisplayMixin:
                      hi if y == self.cy else a)
 
     def draw_side(self, y, x, maxy):
-        self.put(y, x, _("Outils"), curses.A_BOLD)
+        """Panneau des outils et des terrains, avec les titres de groupe
+        et les touches des menus."""
+        gw = 26
+        self.put(y, x, nhme_theme.group_line(_("Outils"), gw, self.unicode),
+                 self.style("groupe"))
         rows = (len(TOOLS) + 1) // 2
         for i, (t, _name, short, key) in enumerate(TOOLS):
-            a = curses.A_REVERSE if t == self.tool else 0
-            self.put(y + 1 + i % rows, x + i // rows * 13,
-                     "%s %s" % (key, short), a)
+            yy, xx = y + 1 + i % rows, x + i // rows * 13
+            if t == self.tool:
+                self.put(yy, xx, ("%s %s" % (key, short)).ljust(12),
+                         self.style("selection"))
+            else:
+                self.put(yy, xx, key, self.style("touche"))
+                self.put(yy, xx + 1, " " + short)
         y += rows + 2
-        self.put(y, x, _("Terrain"), curses.A_BOLD)
+        self.put(y, x, nhme_theme.group_line(_("Terrain"), gw, self.unicode),
+                 self.style("groupe"))
         y += 1
         cols = 2
         rows = (len(nhlevel.TERRAIN) + cols - 1) // cols
@@ -548,10 +575,27 @@ class DisplayMixin:
             st += _("   [aperçu retourné : %s]") % FLIP_NAME[self.flip]
         if self.sym:
             st += _("   [symétrie : %s]") % SYM_NAME[self.sym]
-        self.put(maxy - 3, 0, st[:maxx - 1], curses.A_BOLD)
-        self.put(maxy - 2, 0, self.msg[:maxx - 1], self.attr("CLR_YELLOW"))
-        self.put(maxy - 1, 0, self.context_hint()[:maxx - 1].ljust(
-            maxx - 1), curses.A_REVERSE)
+        self.put(maxy - 3, 0, st[:maxx - 1], self.style("etat"))
+        self.put(maxy - 2, 0, self.msg[:maxx - 1], self.style("message"))
+        self.draw_hint(maxy - 1, maxx, self.context_hint())
+
+    def draw_hint(self, y, maxx, hint):
+        """Ligne d'aide du bas, comme celle du lanceur : les touches de
+        la couleur des touches des menus, séparées par « · »."""
+        x = 1
+        for i, part in enumerate(nhme_theme.dotted(hint).split(" · ")):
+            if i:
+                self.put(y, x, " · ", self.style("aide"))
+                x += 3
+            key, sep, rest = part.partition(":")
+            if sep and len(key) <= 12 and not key.endswith(" "):
+                self.put(y, x, key[:maxx - 1 - x], self.style("touche"))
+                x += len(key)
+                part = sep + rest
+            self.put(y, x, part[:max(0, maxx - 1 - x)], self.style("aide"))
+            x += len(part)
+            if x >= maxx - 1:
+                break
 
     def context_hint(self):
         """Barre du bas : les touches utiles dans la situation actuelle."""

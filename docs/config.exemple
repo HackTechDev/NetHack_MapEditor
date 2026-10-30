@@ -30,6 +30,9 @@
 #sauvegarde = 60
 # Langue de l'interface : auto (selon LANG), fr ou en
 #langue = auto
+# Thème des menus, comme le lanceur NetHack : auto (cyber pour la
+# version cyberpunk du jeu, sinon classique), classique, cyber ou sobre
+#theme = auto
 
 [couleurs]
 # Couleur d'un terrain : black, red, green, brown, blue, magenta, cyan,

@@ -263,19 +263,13 @@ EN = {
     "table themerooms non terminée": "unterminated themerooms table",
 
     # nhme_dialogs.py
-    " Échap/q: fermer ": " Esc/q: close ",
     "texte": "text",
     "entier": "integer",
     "entier ou random": "integer or random",
     "Filtre : ": "Filter: ",
-    "Entrée: choisir  Échap: annuler": "Enter: choose  Esc: cancel",
-    " ↑↓ défiler": " ↑↓ scroll",
     " (o/n) ": " (y/n) ",
     "Terminer": "Done",
     "(défaut)": "(default)",
-    "%s (Entrée: modifier, Échap: terminer)": "%s (Enter: change, Esc: done)",
-    "%s (Entrée: cocher/décocher, Échap: terminer)":
-        "%s (Enter: check/uncheck, Esc: done)",
     "Valeur invalide : %s attendu.": "Invalid value: %s expected.",
     "oui": "yes",
     "non": "no",
@@ -540,8 +534,6 @@ EN = {
         "Dungeon: put the level in dungeon.lua…",
     "Propriétés du niveau": "Level properties",
     "Options ignorées (syntaxe invalide).": "Options ignored (invalid syntax).",
-    "Drapeaux (Entrée: cocher/décocher, Échap: terminer)":
-        "Flags (Enter: check/uncheck, Esc: done)",
     "alignement (halign/valign)": "alignment (halign/valign)",
     "position fixe (x, y)": "fixed position (x, y)",
     "Compilation de Lua": "Building Lua",
@@ -768,8 +760,6 @@ EN = {
     '→ les entités seules': '→ entities only',
     '→ les régions seules': '→ regions only',
     '→ affichage par défaut': '→ default display',
-    'Calques (Entrée: cocher/décocher, Échap: terminer)':
-        'Layers (Enter: check/uncheck, Esc: done)',
     'terrain': 'terrain',
     'entités (Tab)': 'entities (Tab)',
     # labyrinthe
@@ -1027,6 +1017,93 @@ EN = {
         '%s (game texts; type another text then Enter)',
     'Texte gravé': 'Engraved text',
     'Épitaphe': 'Epitaph',
+    # menus dans le style du lanceur NetHack
+    'auto, classique, cyber ou sobre attendu':
+        'auto, classique, cyber or sobre expected',
+    "Couloirs d'une case dans la zone, avec des boucles si on le souhaite.":
+        'One-cell corridors in the area, with loops if wanted.',
+    'Grotte irrégulière, bordée de murs ou de roche.':
+        'Irregular cave, bordered by walls or rock.',
+    'Salles murées reliées par des couloirs ; 12x6 au moins.':
+        'Walled rooms joined by corridors; 12x6 at least.',
+    'Passages': 'Passages',
+    'Créatures et objets': 'Creatures and objects',
+    'Décor': 'Decor',
+    'Régions (Espace sur le coin opposé)':
+        'Regions (Space on the opposite corner)',
+    'des.stair : escalier montant ou descendant.':
+        'des.stair: up or down staircase.',
+    'des.ladder : échelle montante ou descendante.':
+        'des.ladder: up or down ladder.',
+    'des.door : porte ouverte, fermée, verrouillée, cassée ou absente ; la case devient une porte.':
+        'des.door: open, closed, locked, broken or missing door; the cell becomes a door.',
+    "des.drawbridge : pont-levis posé sur l'eau ou la lave, contre un mur.":
+        'des.drawbridge: drawbridge over water or lava, against a wall.',
+    'des.monster : un monstre précis, une classe (une lettre) ou au hasard, avec ses options (endormi, pacifique, inventaire…).':
+        'des.monster: a given monster, a class (one letter) or random, with its options (asleep, peaceful, inventory…).',
+    'des.object : un objet précis, une classe ou au hasard, avec ses options (béni, contenu…).':
+        'des.object: a given object, a class or random, with its options (blessed, contents…).',
+    'des.trap : un piège du jeu.': 'des.trap: one of the game traps.',
+    'des.altar : autel, son alignement et son type (autel, sanctuaire).':
+        'des.altar: altar, its alignment and type (altar, shrine).',
+    'des.feature : fontaine, évier, bassin, trône ou arbre.':
+        'des.feature: fountain, sink, pool, throne or tree.',
+    'des.engraving : texte gravé ou tracé au sol, ou un graffiti du jeu.':
+        'des.engraving: text engraved or written on the floor, or a game graffiti.',
+    'des.grave : tombe avec son épitaphe, choisie parmi celles du jeu ou tirée au hasard.':
+        'des.grave: grave with its epitaph, chosen from the game ones or random.',
+    "des.gold : un tas d'or (montant fixe ou aléatoire).":
+        'des.gold: a pile of gold (fixed or random amount).',
+    "des.terrain : change le terrain d'une seule case par le script.":
+        'des.terrain: changes the terrain of a single cell from the script.',
+    'des.region : salle éclairée ou non, typée (temple, boutique, zoo…). Marquée R sur le calque des régions.':
+        'des.region: lit or unlit room, typed (temple, shop, zoo…). Marked R on the regions layer.',
+    'des.non_diggable : murs impossibles à creuser. Marquée #.':
+        'des.non_diggable: walls that cannot be dug. Marked #.',
+    "des.non_passwall : murs que l'on ne traverse pas, même en passe-muraille. Marquée #.":
+        'des.non_passwall: walls nobody walks through, even phasing. Marked #.',
+    "des.teleport_region : zone d'arrivée d'une téléportation. Marquée T.":
+        'des.teleport_region: landing area of a teleport. Marked T.',
+    "des.levregion : zone d'arrivée dans le niveau (escaliers, portails). Marquée A.":
+        'des.levregion: arrival area in the level (stairs, portals). Marked A.',
+    '↑/↓ défiler · Échap/q fermer': '↑/↓ scroll · Esc/q close',
+    '↑/↓ naviguer': '↑/↓ navigate',
+    'Entrée choisir': 'Enter choose',
+    'Échap annuler': 'Esc cancel',
+    'touche ou numéro': 'key or number',
+    'numéro': 'number',
+    'Numéro : ': 'Number: ',
+    'Filtre : (tapez des lettres)': 'Filter: (type letters)',
+    'Carte': 'Map',
+    'Niveau': 'Level',
+    'Jeu': 'Game',
+    'Largeur et hauteur de la carte des.map (la carte est rognée ou complétée de roche).':
+        'Width and height of the des.map map (cropped or padded with rock).',
+    'Où NetHack pose la carte dans le niveau de 80x21 : alignement ou position fixe.':
+        'Where NetHack puts the map in the 80x21 level: alignment or fixed position.',
+    "Option lit de des.map : la carte est éclairée à l'arrivée.":
+        'lit option of des.map: the map is lit on arrival.',
+    'Remplissage du niveau autour de la carte (des.level_init) : roche, mines, labyrinthe…':
+        'Filling of the level around the map (des.level_init): rock, mines, maze…',
+    'des.level_flags : noteleport, hardfloor, noflip, mazelevel…':
+        'des.level_flags: noteleport, hardfloor, noflip, mazelevel…',
+    'Ajoute le niveau à dat/dungeon.lua (profondeur, probabilité…), ou modifie et retire les niveaux spéciaux du donjon.':
+        'Adds the level to dat/dungeon.lua (depth, probability…), or edits and removes the special levels of the dungeon.',
+    'Salles murées reliées par des couloirs qui entrent par des portes, comme un niveau ordinaire.':
+        'Walled rooms joined by corridors entering through doors, like an ordinary level.',
+    "Couloirs d'une case entre des murs ; des boucles évitent les culs-de-sac.":
+        'One-cell corridors between walls; loops avoid dead ends.',
+    'Grotte irrégulière creusée par automate cellulaire.':
+        'Irregular cave dug by a cellular automaton.',
+    "Une seule grande salle semée d'éléments de décor.":
+        'A single big room scattered with decor.',
+    # aides des menus
+    '↑/↓ naviguer · Entrée modifier · numéro · Échap terminer':
+        '↑/↓ navigate · Enter edit · number · Esc done',
+    '↑/↓ naviguer · Entrée cocher/décocher · numéro · Échap terminer':
+        '↑/↓ navigate · Enter check/uncheck · number · Esc done',
+    'Calques': 'Layers',
+    'Drapeaux': 'Flags',
 }
 
 HELP = """\
@@ -1046,6 +1123,8 @@ MOVING
                          right click = eyedropper; in lists: click =
                          select, second click = confirm, wheel = scroll,
                          right click = cancel
+  Menus                  ↑/↓ then Enter, the key in brackets or the line
+                         number; other letters filter
 
 TERRAIN (the typed character becomes the brush, and paints with the Pen)
   .  floor      #  corridor     -  horiz. wall  |  vert. wall  +  door

@@ -3,10 +3,12 @@
 import curses
 import glob
 import os
+import textwrap
 
 import nhlevel
 from nhi18n import _
-from nhme_common import BUC, Cancel
+from nhme_common import BUC, Cancel, Group
+from nhme_theme import dotted, group_line
 
 
 class DialogsMixin:
@@ -68,16 +70,21 @@ class DialogsMixin:
     def window(self, h, w):
         maxy, maxx = self.scr.getmaxyx()
         h, w = min(h, maxy - 2), min(w, maxx - 2)
-        win = curses.newwin(h, w, (maxy - h) // 2, (maxx - w) // 2)
+        geom = (h, w, (maxy - h) // 2, (maxx - w) // 2)
+        if geom != getattr(self, "last_window", None) and self.lvl:
+            # autre fenêtre (ou autre taille) : on efface les restes de
+            # la précédente en redessinant l'écran dessous
+            self.draw()
+        self.last_window = geom
+        win = curses.newwin(*geom)
         win.keypad(True)
         return win, h, w
 
     @staticmethod
-    def dialog_mouse(win, h, w):
-        """Événement souris dans une fenêtre de dialogue : ("line", i) clic
-        gauche sur la ligne intérieure i (0 : celle sous le cadre),
-        ("up",) / ("down",) molette, ("cancel",) clic droit ; None pour le
-        reste (mouvements, clic hors de la fenêtre)."""
+    def menu_mouse(win):
+        """Événement souris d'un menu : ("row", y) clic gauche sur la
+        ligne y de la fenêtre (double : ("row2", y)), ("up",)/("down",)
+        molette, ("cancel",) clic droit, None sinon."""
         try:
             _id, mx, my, _z, b = curses.getmouse()
         except curses.error:
@@ -89,96 +96,233 @@ class DialogsMixin:
         if b & (curses.BUTTON3_PRESSED | curses.BUTTON3_CLICKED):
             return ("cancel",)
         by, bx = win.getbegyx()
-        if (b & (curses.BUTTON1_PRESSED | curses.BUTTON1_CLICKED)
-                and by < my < by + h - 1 and bx < mx < bx + w - 1):
-            return ("line", my - by - 1)
+        h, w = win.getmaxyx()
+        if not (by <= my < by + h and bx <= mx < bx + w):
+            return None
+        if b & curses.BUTTON1_DOUBLE_CLICKED:
+            return ("row2", my - by)
+        if b & (curses.BUTTON1_PRESSED | curses.BUTTON1_CLICKED):
+            return ("row", my - by)
         return None
 
-    def pick(self, title, items, initial=None, custom=False, hint=""):
-        """Liste filtrable. items : [(libellé, valeur)]. Échap -> Cancel.
+    def wput(self, win, y, x, s, a=0):
+        """Écrit dans une fenêtre en coupant au bord (sans erreur dans le
+        coin bas-droit)."""
+        h, w = win.getmaxyx()
+        if 0 <= y < h and x < w:
+            try:
+                win.addnstr(y, x, s, w - x, a)
+            except curses.error:
+                pass
 
-        On tape pour filtrer ; avec custom=True, Entrée sur un filtre sans
-        correspondance renvoie le texte saisi."""
-        filt, sel, top = "", 0, 0
+    def menu_head(self, win, title):
+        """Bloc de titre du lanceur : « ==== », titre centré, « ==== »."""
+        h, w = win.getmaxyx()
+        sep = "=" * w
+        self.wput(win, 0, 0, sep, self.style("separateur"))
+        self.wput(win, 1, 0, title[:w - 2].center(w).rstrip(),
+                  self.style("titre"))
+        self.wput(win, 2, 0, sep, self.style("separateur"))
+
+    def menu_foot(self, win, y, lines):
+        """Pied d'un menu à partir de la ligne y : « ==== », puis les
+        lignes (texte, élément du thème), puis « ==== » en bas."""
+        h, w = win.getmaxyx()
+        sep = "=" * w
+        self.wput(win, y, 0, sep, self.style("separateur"))
+        for i, (text, elem) in enumerate(lines):
+            self.wput(win, y + 1 + i, 1, text, self.style(elem))
+        self.wput(win, h - 1, 0, sep, self.style("separateur"))
+
+    def menu(self, title, items, initial=None, custom=False, hint="",
+             actions=None, filterable=True):
+        """Menu dans le style du lanceur NetHack. items : [(libellé,
+        valeur)] ou [(libellé, valeur, {"key": touche, "desc": texte})],
+        et des Group("titre") pour les titres de groupe. Renvoie la valeur
+        choisie, ou (valeur, action) avec actions ({touche: action}).
+        Échap -> Cancel.
+
+        Une touche entre crochets choisit sa ligne ; un numéro aussi
+        (tout de suite s'il y a au plus 9 lignes, sinon Entrée) ; les
+        autres lettres filtrent la liste (filterable) ; avec custom,
+        Entrée sur un filtre sans correspondance renvoie le texte saisi."""
+        entries = []
+        for it in items:
+            if isinstance(it, Group):
+                entries.append(it)
+            else:
+                opts = it[2] if len(it) > 2 else {}
+                entries.append((it[0], it[1], opts.get("key"),
+                                opts.get("desc") or ""))
+        choices = [e for e in entries if not isinstance(e, Group)]
+        number = {id(e): i + 1 for i, e in enumerate(choices)}
+        keys = {e[2]: e for e in choices if e[2]}
+        numw = len(str(len(choices)))
+        keyw = 4 if keys else 0
+        filt = ""
+        sel = 0
         if initial is not None:
-            for i, (_label, v) in enumerate(items):
-                if v == initial:
+            for i, e in enumerate(choices):
+                if e[1] == initial:
                     sel = i
+                    break
+        cur = choices[sel] if choices else None
+        top = 0
+        if not hint:
+            parts = [_("↑/↓ naviguer"), _("Entrée choisir")]
+            parts.append(_("touche ou numéro") if keys else _("numéro"))
+            parts.append(_("Échap annuler"))
+            hint = " · ".join(parts)
+        hint = dotted(hint)
+
+        def done(e, action=None):
+            curses.curs_set(1)
+            return (e[1], action) if actions is not None else e[1]
+
         curses.curs_set(0)
         while True:
-            shown = [it for it in items
-                     if filt.lower() in it[0].lower()] if filt else items
+            if filt and not filt.isdigit():
+                low = filt.lower()
+                shown = [e for e in choices if low in e[0].lower()]
+            else:
+                shown = entries
+            rows = [e for e in shown]
+            selectable = [e for e in rows if not isinstance(e, Group)]
+            if cur not in selectable:
+                cur = selectable[0] if selectable else None
             maxy, maxx = self.scr.getmaxyx()
-            width = max([len(title) + 4, len(hint) + 4, 40] +
-                        [len(l) + 6 for l, _ in shown[:200]])
-            win, h, w = self.window(min(len(items), maxy - 8) + 5, width)
-            n = h - 5
-            sel = max(0, min(sel, len(shown) - 1))
-            if sel < top:
-                top = sel
-            elif sel >= top + n:
-                top = sel - n + 1
+            label_w = max([len(e[0]) for e in choices[:300]] + [10])
+            width = max(len(title) + 4, len(hint) + 3, 44,
+                        label_w + numw + keyw + 6)
+            wrap_w = min(width, maxx - 2) - 2
+            descs = [textwrap.wrap(e[3], max(10, wrap_w)) for e in choices
+                     if e[3]]
+            desc_h = min(4, max([len(d) for d in descs] + [0]))
+            # ligne du filtre : listes longues, ou dès que l'on tape
+            show_filt = filt or (filterable and len(choices) > 9)
+            foot = (1 if show_filt else 0) + desc_h + 1
+            win, h, w = self.window(min(len(entries), maxy - 8 - foot)
+                                    + foot + 5, width)
+            n = max(1, h - foot - 5)
+            ri = rows.index(cur) if cur in rows else 0
+            if ri < top:
+                top = ri
+            elif ri >= top + n:
+                top = ri - n + 1
+            top = max(0, min(top, max(0, len(rows) - n)))
             win.erase()
-            win.box()
-            win.addnstr(0, 2, " %s " % title, w - 4, curses.A_BOLD)
+            self.menu_head(win, title)
+            zones = {}
             for i in range(n):
                 j = top + i
-                if j >= len(shown):
+                if j >= len(rows):
                     break
-                a = curses.A_REVERSE if j == sel else 0
-                win.addnstr(1 + i, 2, shown[j][0].ljust(w - 4), w - 4, a)
-            more = "%d/%d" % (len(shown), len(items))
-            win.addnstr(h - 3, 2, _("Filtre : ") + filt, w - 4 - len(more) - 1,
-                        curses.A_BOLD)
-            win.addnstr(h - 3, w - 2 - len(more), more, len(more))
-            win.addnstr(h - 2, 2, hint or _("Entrée: choisir  Échap: annuler"),
-                        w - 4)
+                e, y = rows[j], 3 + i
+                if isinstance(e, Group):
+                    self.wput(win, y, 1, group_line(e, w - 2, self.unicode),
+                              self.style("groupe"))
+                    continue
+                zones[y] = e
+                num = "%*d" % (numw, number[id(e)])
+                key = ("[%s]" % e[2] if e[2] else "   ") if keys else ""
+                if e is cur:
+                    text = " %s %s%s %s" % (num, key, " " if key else "",
+                                           e[0])
+                    self.wput(win, y, 0, text.ljust(w), self.style(
+                        "selection"))
+                else:
+                    self.wput(win, y, 1, num, self.style("numero"))
+                    x = 2 + numw
+                    if key:
+                        self.wput(win, y, x, key, self.style("touche"))
+                        x += 4
+                    self.wput(win, y, x + 1, e[0], self.style("texte"))
+            lines = []
+            if show_filt:
+                if filt.isdigit():
+                    left = _("Numéro : ") + filt
+                elif filt:
+                    left = _("Filtre : ") + filt
+                else:
+                    left = _("Filtre : (tapez des lettres)")
+                more = "%d/%d" % (len(selectable), len(choices))
+                lines.append((left.ljust(w - 3 - len(more)) + more,
+                              "discret"))
+            d = textwrap.wrap(cur[3], max(10, w - 2)) if cur else []
+            lines += [(t, "description") for t in (d + [""] * desc_h)[
+                :desc_h]]
+            lines.append((hint, "aide"))
+            self.menu_foot(win, h - 2 - len(lines), lines)
+            if len(rows) > n:
+                mark = "%d-%d/%d" % (top + 1, min(len(rows), top + n),
+                                     len(rows))
+                self.wput(win, 2, w - len(mark) - 2, " %s " % mark,
+                          self.style("discret"))
             win.refresh()
             k = win.get_wch()
+            idx = selectable.index(cur) if cur in selectable else 0
             if k in ("\n", "\r", curses.KEY_ENTER):
-                if shown:
+                if filt.isdigit() and custom and not (
+                        1 <= int(filt) <= len(choices)):
                     curses.curs_set(1)
-                    return shown[sel][1]
+                    return filt
+                if cur is not None:
+                    return done(cur, "goto")
                 if custom and filt:
                     curses.curs_set(1)
                     return filt
-            elif k == "\x1b":
+            elif k == "\x1b" or (actions is not None and k == "q"):
                 curses.curs_set(1)
                 raise Cancel()
-            elif k == curses.KEY_UP:
-                sel -= 1
-            elif k == curses.KEY_DOWN:
-                sel += 1
-            elif k == curses.KEY_PPAGE:
-                sel -= n
-            elif k == curses.KEY_NPAGE:
-                sel += n
-            elif k == curses.KEY_HOME:
-                sel = 0
-            elif k == curses.KEY_END:
-                sel = len(shown) - 1
+            elif actions is not None and k in actions and cur is not None:
+                return done(cur, actions[k])
+            elif k == curses.KEY_UP and selectable:
+                cur = selectable[(idx - 1) % len(selectable)]
+            elif k == curses.KEY_DOWN and selectable:
+                cur = selectable[(idx + 1) % len(selectable)]
+            elif k == curses.KEY_PPAGE and selectable:
+                cur = selectable[max(0, idx - n)]
+            elif k == curses.KEY_NPAGE and selectable:
+                cur = selectable[min(len(selectable) - 1, idx + n)]
+            elif k == curses.KEY_HOME and selectable:
+                cur = selectable[0]
+            elif k == curses.KEY_END and selectable:
+                cur = selectable[-1]
             elif k in (curses.KEY_BACKSPACE, "\x7f", "\x08"):
                 filt = filt[:-1]
-                sel = 0
             elif k == curses.KEY_RESIZE:
                 self.draw()
             elif k == curses.KEY_MOUSE:
-                # clic : choisit la ligne, un second clic la valide ;
-                # molette : défile ; clic droit : annule
-                m = self.dialog_mouse(win, h, w)
+                # clic : choisit la ligne, un second clic (ou un double
+                # clic) la valide ; molette : défile ; clic droit : annule
+                m = self.menu_mouse(win)
                 if m == ("cancel",):
                     curses.curs_set(1)
                     raise Cancel()
-                if m in (("up",), ("down",)):
-                    sel += 3 if m == ("down",) else -3
-                elif m and m[1] < n and top + m[1] < len(shown):
-                    if top + m[1] == sel:
-                        curses.curs_set(1)
-                        return shown[sel][1]
-                    sel = top + m[1]
+                if m in (("up",), ("down",)) and selectable:
+                    step = 3 if m == ("down",) else -3
+                    cur = selectable[max(0, min(len(selectable) - 1,
+                                                idx + step))]
+                elif m and m[1] in zones:
+                    if zones[m[1]] is cur or m[0] == "row2":
+                        return done(zones[m[1]], "goto")
+                    cur = zones[m[1]]
             elif isinstance(k, str) and k.isprintable():
-                filt += k
-                sel = 0
+                if not filt and k in keys:
+                    return done(keys[k], "goto")
+                if k.isdigit() and (not filt or filt.isdigit()):
+                    filt += k
+                    v = int(filt)
+                    if len(choices) <= 9 and 1 <= v <= len(choices):
+                        return done(choices[v - 1], "goto")
+                    if 1 <= v <= len(choices):
+                        cur = choices[v - 1]
+                elif filterable or custom:
+                    filt += k
+
+    def pick(self, title, items, initial=None, custom=False, hint=""):
+        """Liste filtrable (voir menu()). Échap -> Cancel."""
+        return self.menu(title, items, initial, custom, hint)
 
     def message_box(self, title, text):
         lines = text.split("\n")
@@ -186,23 +330,34 @@ class DialogsMixin:
         curses.curs_set(0)
         while True:
             maxy, maxx = self.scr.getmaxyx()
-            win, h, w = self.window(len(lines) + 3,
-                                    max(len(l) for l in lines + [title]) + 4)
-            n = h - 3
+            foot = _("↑/↓ défiler · Échap/q fermer")
+            win, h, w = self.window(len(lines) + 6, max(
+                [len(l) for l in lines] + [len(title) + 4, len(foot) + 3])
+                + 2)
+            n = h - 6
             win.erase()
-            win.box()
-            win.addnstr(0, 2, " %s " % title, w - 4, curses.A_BOLD)
+            self.menu_head(win, title)
             for i in range(n):
                 if top + i < len(lines):
-                    win.addnstr(1 + i, 2, lines[top + i], w - 4)
-            foot = _(" Échap/q: fermer ")
+                    line = lines[top + i]
+                    word = line.split(" ")[0]
+                    if line[:1].isalpha() and len(word) > 1 and \
+                            word == word.upper():
+                        # titre de section de l'aide : « ── OUTILS ── »
+                        self.wput(win, 3 + i, 1, group_line(
+                            line, w - 2, self.unicode), self.style("groupe"))
+                    else:
+                        self.wput(win, 3 + i, 1, line)
             if len(lines) > n:
-                foot = _(" ↑↓ défiler") + foot
-            win.addnstr(h - 1, max(1, w - len(foot) - 2), foot, w - 3)
+                mark = "%d-%d/%d" % (top + 1, min(len(lines), top + n),
+                                     len(lines))
+                self.wput(win, 2, w - len(mark) - 2, " %s " % mark,
+                          self.style("discret"))
+            self.menu_foot(win, h - 3, [(foot, "aide")])
             win.refresh()
             k = win.getch()
             if k == curses.KEY_MOUSE:
-                m = self.dialog_mouse(win, h, w)
+                m = self.menu_mouse(win)
                 if m in (("up",), ("down",)):
                     top += 3 if m == ("down",) else -3
                     top = max(0, min(max(0, len(lines) - n), top))
@@ -263,8 +418,9 @@ class DialogsMixin:
                     "%s=%s" % (k, nhlevel.lua_value(v))
                     for k, v in rest.items()) or _("(aucune)")), "_other"))
             try:
-                sel = self.pick(_("%s (Entrée: modifier, Échap: terminer)")
-                                % title, items, sel)
+                sel = self.pick(title, items, sel,
+                                hint=_("↑/↓ naviguer · Entrée modifier · "
+                                       "numéro · Échap terminer"))
             except Cancel:
                 return extra
             if sel == "_done":
@@ -318,8 +474,9 @@ class DialogsMixin:
             items = [("[%s] %s" % ("x" if v in checked else " ", v), v)
                      for v in values]
             try:
-                sel = self.pick(_("%s (Entrée: cocher/décocher, Échap: "
-                                  "terminer)") % title, items, sel)
+                sel = self.pick(title, items, sel,
+                                hint=_("↑/↓ naviguer · Entrée cocher/décocher"
+                                       " · numéro · Échap terminer"))
             except Cancel:
                 return [v for v in values if v in checked]
             if sel in checked:
@@ -360,58 +517,9 @@ class DialogsMixin:
                 self.msg = _("Valeur invalide : %s attendu.") % hint
 
     def pick_action(self, title, items, sel, hint):
-        """Comme pick() sans filtre, avec les touches e et d."""
-        top = 0
-        curses.curs_set(0)
-        try:
-            while True:
-                maxy, maxx = self.scr.getmaxyx()
-                width = max([len(hint) + 4] + [len(l) + 4 for l, _ in items])
-                win, h, w = self.window(len(items) + 4, width)
-                n = h - 4
-                sel = max(0, min(sel, len(items) - 1))
-                if sel < top:
-                    top = sel
-                elif sel >= top + n:
-                    top = sel - n + 1
-                win.erase()
-                win.box()
-                win.addnstr(0, 2, " %s " % title, w - 4, curses.A_BOLD)
-                for i in range(n):
-                    j = top + i
-                    if j < len(items):
-                        a = curses.A_REVERSE if j == sel else 0
-                        win.addnstr(1 + i, 2, items[j][0].ljust(w - 4),
-                                    w - 4, a)
-                win.addnstr(h - 2, 2, hint, w - 4)
-                win.refresh()
-                k = win.getch()
-                if k in (10, 13, curses.KEY_ENTER):
-                    return items[sel][1], "goto"
-                if k == ord("e"):
-                    return items[sel][1], "edit"
-                if k in (ord("d"), curses.KEY_DC):
-                    return items[sel][1], "delete"
-                if k in (27, ord("q")):
-                    raise Cancel()
-                if k == curses.KEY_MOUSE:
-                    m = self.dialog_mouse(win, h, w)
-                    if m == ("cancel",):
-                        raise Cancel()
-                    if m in (("up",), ("down",)):
-                        sel += 3 if m == ("down",) else -3
-                    elif m and m[1] < n and top + m[1] < len(items):
-                        if top + m[1] == sel:
-                            return items[sel][1], "goto"
-                        sel = top + m[1]
-                    continue
-                if k == curses.KEY_UP:
-                    sel -= 1
-                elif k == curses.KEY_DOWN:
-                    sel += 1
-                elif k == curses.KEY_PPAGE:
-                    sel -= n
-                elif k == curses.KEY_NPAGE:
-                    sel += n
-        finally:
-            curses.curs_set(1)
+        """Comme pick() sans filtre, avec les touches e (modifier) et d
+        (supprimer) ; renvoie (valeur, action)."""
+        initial = items[min(sel, len(items) - 1)][1] if items else None
+        return self.menu(title, items, initial, hint=hint, filterable=False,
+                         actions={"e": "edit", "d": "delete",
+                                  curses.KEY_DC: "delete"})

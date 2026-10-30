@@ -14,6 +14,11 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   glisser, clic droit, molette), y compris dans les fenêtres : un clic
   choisit une ligne d'une liste ou d'un formulaire, un second la valide,
   la molette fait défiler listes et textes, le clic droit annule.
+- Menus dans le style du lanceur NetHack : bloc de titre, groupes,
+  lignes numérotées avec leur touche, barre de sélection, description de
+  la ligne choisie, ligne d'aide ; choix par flèches, touche, numéro ou
+  filtre ; thèmes cyber, classique et sobre (clé `theme`,
+  `NHMAPEDIT_THEME`), cyber par défaut avec la version cyberpunk du jeu.
 - Palette des outils et des terrains à droite de la carte quand le
   terminal est assez large ; défilement des cartes plus grandes que
   l'écran ; terminal de 80x24 au minimum.
@@ -321,17 +326,18 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   format INI, exemple commenté dans `docs/config.exemple` :
   répertoire du jeu, `dungeon.lua`, taille par défaut, règles, entités,
   Unicode, délai de la sauvegarde de secours, langue, langue du jeu,
-  palette du rendu jeu, couleurs des terrains, remplacement de touches.
+  palette du rendu jeu, thème des menus, couleurs des terrains,
+  remplacement de touches.
 - Erreurs de configuration signalées au démarrage sans bloquer.
 - Variables d'environnement : `NHMAPEDIT_HACKDIR`, `NHMAPEDIT_DUNGEON`,
   `NHMAPEDIT_LANG`, `NHMAPEDIT_LUA`, `NHMAPEDIT_DAT`, `NHMAPEDIT_LUAC`,
-  `NHMAPEDIT_GAME_LANG`, `NHMAPEDIT_PALETTE`.
+  `NHMAPEDIT_GAME_LANG`, `NHMAPEDIT_PALETTE`, `NHMAPEDIT_THEME`.
 - Langue choisie selon la locale (français si elle commence par `fr`,
   anglais sinon), imposable par la configuration ou `NHMAPEDIT_LANG`.
 
 ## Qualité
 
-- 128 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 133 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

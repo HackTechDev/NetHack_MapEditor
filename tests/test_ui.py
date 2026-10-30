@@ -76,6 +76,19 @@ class Ui(unittest.TestCase):
                               for e in lvl.entities],
                              [("stair", 2, 2, "down")])
 
+    def test_menu_keys_and_numbers(self):
+        # menus du lanceur : m puis la touche [e] (escalier), puis le
+        # numéro 2 (« down ») choisit tout de suite dans une liste courte
+        with tempfile.TemporaryDirectory() as d:
+            path = os.path.join(d, "essai.lua")
+            out = drive([path], ["m", "e", "2", "s"], env={"HOME": d})
+            self.assertNotIn("Traceback", out)
+            self.assertIn("── Passages ──", out)
+            with open(path, encoding="utf-8") as f:
+                lvl = nhlevel.parse_level(f.read())[0]
+            self.assertEqual([(e.kind, e.value) for e in lvl.entities],
+                             [("stair", "down")])
+
     def test_config_keys_and_size(self):
         with tempfile.TemporaryDirectory() as d:
             path = os.path.join(d, "essai.lua")
@@ -95,15 +108,15 @@ class Ui(unittest.TestCase):
                                           "m" if up else "M")
         with tempfile.TemporaryDirectory() as d:
             path = os.path.join(d, "essai.lua")
-            # m : la liste des entités (23 lignes, centrée : 1re ligne en
-            # y=4) ; molette en bas puis en haut, clic sur la ligne déjà
-            # choisie = Entrée ; puis la liste des escaliers (7 lignes,
-            # 1re ligne en y=12) : un clic choisit « down », un second
-            # le valide
+            # m : la liste des entités (bloc de titre en y=1 à 3, groupe
+            # « Passages » en y=4, « Escalier » en y=5) ; molette en bas
+            # puis en haut, clic sur la ligne déjà choisie = Entrée ;
+            # puis la liste des escaliers (« down » en y=15) : un clic la
+            # choisit, un second la valide
             def click(x, y):
                 return [ev(0, x, y), ev(0, x, y, True)]
-            keys = (["m", ev(65, 55, 10), ev(64, 55, 10)] + click(55, 4)
-                    + click(55, 13) + click(55, 13) + ["s"])
+            keys = (["m", ev(65, 55, 10), ev(64, 55, 10)] + click(55, 5)
+                    + click(55, 15) + click(55, 15) + ["s"])
             out = drive([path], keys, env={"HOME": d})
             self.assertNotIn("Traceback", out)
             with open(path, encoding="utf-8") as f:

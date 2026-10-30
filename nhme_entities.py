@@ -8,7 +8,7 @@ import nhlevel
 from nhi18n import _
 from nhlevel import Entity
 from nhme_common import (
-    Cancel, MON_FORM, OBJ_FORM, REGION_FORMS, REGION_MARK)
+    ENTITY_MENU, Cancel, Group, MON_FORM, OBJ_FORM, REGION_FORMS, REGION_MARK)
 
 
 class EntitiesMixin:
@@ -251,12 +251,13 @@ class EntitiesMixin:
     def place_entity(self):
         if self.no_entities():
             return
-        kinds = [("%s" % nhlevel.ENTITY_LABEL[k].capitalize(), k)
-                 for k in nhlevel.ENTITY_KINDS]
-        kinds += [("[%s] %s (des.%s)" % (REGION_MARK[k],
-                                         nhlevel.REGION_LABEL[k].capitalize(),
-                                         k), k)
-                  for k in nhlevel.REGION_KINDS]
+        kinds = []
+        for group, entries in ENTITY_MENU:
+            kinds.append(Group(group))
+            for k, key, desc in entries:
+                label = (nhlevel.ENTITY_LABEL.get(k)
+                         or nhlevel.REGION_LABEL[k]).capitalize()
+                kinds.append((label, k, {"key": key, "desc": desc}))
         kind = self.pick(_("Placer une entité en (%d,%d)")
                          % (self.cx, self.cy), kinds)
         if kind in nhlevel.REGION_KINDS:

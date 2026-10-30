@@ -139,6 +139,31 @@ clic droit = pipette. Dans les listes et les formulaires, un clic choisit
 une ligne et un second clic la valide, la molette fait défiler (les
 fenêtres de texte aussi), le clic droit annule.
 
+### Menus
+
+Les menus ont le même aspect que celui du
+[lanceur NetHack](../Nethack_Launcher) : un bloc de titre entre deux
+lignes `====`, des titres de groupe `── Passages ──────`, des lignes
+numérotées avec leur touche entre crochets, une barre de sélection, la
+description de la ligne choisie et une ligne d'aide
+`↑/↓ naviguer · Entrée choisir · touche ou numéro · Échap annuler`.
+
+- `↑`/`↓` (ou la molette) puis Entrée, comme dans le lanceur ;
+- la touche entre crochets choisit sa ligne tout de suite : `m` puis `e`
+  pose un escalier, `p` puis `t` change la taille de la carte ;
+- un numéro choisit sa ligne : tout de suite dans une liste de 9 lignes
+  au plus, sinon il y amène la sélection et Entrée la valide ;
+- les autres lettres filtrent la liste (ligne « Filtre : » des longues
+  listes).
+
+Les couleurs suivent le thème du lanceur : **cyber** (titre et touches
+cyan, groupes magenta, numéros verts, descriptions magenta) quand le jeu
+est dans sa version cyberpunk, **classique** (jaune et bleu) sinon, ou
+**sobre** (sans couleur). La clé `theme` de la section `[editeur]`
+(`auto`, `classique`, `cyber`, `sobre`) ou la variable `NHMAPEDIT_THEME`
+l'imposent. Le cadre de la carte, le panneau des outils et des terrains
+et la ligne d'aide du bas prennent le même style.
+
 Les listes de monstres et d'objets se filtrent en tapant une partie du nom.
 Une lettre seule (`d`, `D`…) donne un monstre aléatoire de cette classe, un
 symbole seul (`!`, `?`…) un objet aléatoire de cette classe. Sur la carte,
@@ -492,6 +517,7 @@ entites = oui         ; entités affichées au démarrage
 unicode = auto        ; murs en traits Unicode : auto, oui, non
 sauvegarde = 60       ; sauvegarde de secours (secondes, 0 : aucune)
 langue = auto         ; auto (selon LANG), fr ou en
+theme = auto          ; menus : auto, classique, cyber ou sobre
 
 [couleurs]
 } = bright_blue       ; couleur d'un terrain (roche, couloir pour « » et #)
@@ -511,7 +537,8 @@ au démarrage, sans empêcher l'éditeur de s'ouvrir.
   - `nhme_common.py` : constantes, couleurs, symboles, aide, géométrie ;
   - `nhme_display.py` : affichage de la carte, des règles, du panneau et
     de la barre d'état ;
-  - `nhme_dialogs.py` : fenêtres de saisie (invite, listes, formulaires) ;
+  - `nhme_dialogs.py` : fenêtres de saisie (invite, menus, formulaires) ;
+  - `nhme_theme.py` : thèmes et style des menus, repris du lanceur ;
   - `nhme_tools.py` : outils de dessin, presse-papiers, annulation ;
   - `nhme_entities.py` : entités, options, inventaires et contenus ;
   - `nhme_level.py` : propriétés, vérification, ouverture et

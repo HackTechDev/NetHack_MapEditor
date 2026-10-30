@@ -33,6 +33,7 @@ entites = oui
 unicode = non
 sauvegarde = 0
 langue = en
+theme = sobre
 [couleurs]
 } = bright_blue
 couloir = yellow
@@ -50,6 +51,7 @@ espace = .
         self.assertFalse(cfg["unicode"])
         self.assertEqual(cfg["autosave"], 0)
         self.assertEqual(cfg["lang"], "en")
+        self.assertEqual(cfg["theme"], "sobre")
         self.assertEqual(cfg["colors"], {"}": "CLR_BRIGHT_BLUE",
                                          "#": "CLR_YELLOW",
                                          " ": "CLR_RED"})

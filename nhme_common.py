@@ -145,6 +145,13 @@ GENERATORS = [
     ("cave", _("grotte (comme les mines)")),
     ("rooms", _("salles reliées par des couloirs")),
 ]
+GENERATOR_MENU = {
+    "maze": ("l", _("Couloirs d'une case dans la zone, avec des boucles "
+                    "si on le souhaite.")),
+    "cave": ("g", _("Grotte irrégulière, bordée de murs ou de roche.")),
+    "rooms": ("s", _("Salles murées reliées par des couloirs ; 12x6 au "
+                     "moins.")),
+}
 GENERATOR_NAME = {"maze": _("Labyrinthe"), "cave": _("Grotte"),
                   "rooms": _("Salles et couloirs")}
 
@@ -320,6 +327,55 @@ OBJ_FORM = [
 # du calque) et formulaire d'options
 REGION_MARK = {"region": "R", "non_diggable": "#", "non_passwall": "#",
                "teleport_region": "T", "levregion": "A"}
+# Menu « Placer une entité » (touche m) : groupes, puis (genre, touche,
+# description)
+ENTITY_MENU = [
+    (_("Passages"), [
+        ("stair", "e", _("des.stair : escalier montant ou descendant.")),
+        ("ladder", "l", _("des.ladder : échelle montante ou descendante.")),
+        ("door", "d", _("des.door : porte ouverte, fermée, verrouillée, "
+                        "cassée ou absente ; la case devient une porte.")),
+        ("drawbridge", "b", _("des.drawbridge : pont-levis posé sur l'eau "
+                              "ou la lave, contre un mur.")),
+    ]),
+    (_("Créatures et objets"), [
+        ("monster", "m", _("des.monster : un monstre précis, une classe "
+                           "(une lettre) ou au hasard, avec ses options "
+                           "(endormi, pacifique, inventaire…).")),
+        ("object", "o", _("des.object : un objet précis, une classe ou au "
+                          "hasard, avec ses options (béni, contenu…).")),
+        ("trap", "p", _("des.trap : un piège du jeu.")),
+    ]),
+    (_("Décor"), [
+        ("altar", "a", _("des.altar : autel, son alignement et son type "
+                         "(autel, sanctuaire).")),
+        ("feature", "f", _("des.feature : fontaine, évier, bassin, trône "
+                           "ou arbre.")),
+        ("engraving", "g", _("des.engraving : texte gravé ou tracé au "
+                             "sol, ou un graffiti du jeu.")),
+        ("grave", "t", _("des.grave : tombe avec son épitaphe, choisie "
+                         "parmi celles du jeu ou tirée au hasard.")),
+        ("gold", "$", _("des.gold : un tas d'or (montant fixe ou "
+                        "aléatoire).")),
+        ("terrain", "c", _("des.terrain : change le terrain d'une seule "
+                           "case par le script.")),
+    ]),
+    (_("Régions (Espace sur le coin opposé)"), [
+        ("region", "r", _("des.region : salle éclairée ou non, typée "
+                          "(temple, boutique, zoo…). Marquée R sur le "
+                          "calque des régions.")),
+        ("non_diggable", "n", _("des.non_diggable : murs impossibles à "
+                                "creuser. Marquée #.")),
+        ("non_passwall", "s", _("des.non_passwall : murs que l'on ne "
+                                "traverse pas, même en passe-muraille. "
+                                "Marquée #.")),
+        ("teleport_region", "x", _("des.teleport_region : zone d'arrivée "
+                                   "d'une téléportation. Marquée T.")),
+        ("levregion", "y", _("des.levregion : zone d'arrivée dans le "
+                             "niveau (escaliers, portails). Marquée A.")),
+    ]),
+]
+
 REGION_FAMILY = {"region": "room", "non_diggable": "dig",
                  "non_passwall": "dig", "teleport_region": "tele",
                  "levregion": "tele"}
@@ -384,6 +440,8 @@ DÉPLACEMENT
                          clic droit = pipette ; dans les listes : clic =
                          choisir, second clic = valider, molette = défiler,
                          clic droit = annuler
+  Menus                  ↑/↓ puis Entrée, la touche entre crochets ou le
+                         numéro de la ligne ; les autres lettres filtrent
 
 TERRAIN (le caractère tapé devient le pinceau, et peint en mode Pinceau)
   .  sol        #  couloir      -  mur horiz.   |  mur vert.   +  porte
@@ -703,3 +761,7 @@ def maze_cells(lx, ly, hx, hy, rng, wall="-", floor=".", loops=0):
 
 class Cancel(Exception):
     pass
+
+
+class Group(str):
+    """Titre de groupe dans une liste de menu() (« ── Outils ── »)."""

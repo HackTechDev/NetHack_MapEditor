@@ -108,6 +108,12 @@ def load(path):
                 cfg["lang"] = low
             else:
                 bad("editeur", key, _("fr, en ou auto attendu"))
+        elif key in ("theme", "thème"):
+            if low in ("auto", "classique", "cyber", "sobre"):
+                cfg["theme"] = low
+            else:
+                bad("editeur", key, _("auto, classique, cyber ou sobre "
+                                      "attendu"))
         else:
             bad("editeur", key, _("clé inconnue"))
     for key, val in (cp.items("couleurs") if cp.has_section("couleurs")
