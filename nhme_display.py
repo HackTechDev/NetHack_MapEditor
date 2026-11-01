@@ -373,7 +373,8 @@ class DisplayMixin:
         if lvl.allowed_flips() and not lvl.theme:
             head += _("  (retournable : %s, f pour voir)") % FLIP_NAME[
                 lvl.allowed_flips()]
-        self.put(0, 0, head.ljust(maxx), self.style("entete"))
+        # coupée à la largeur : sinon curses la poursuit sur la ligne 2
+        self.put(0, 0, head.ljust(maxx)[:maxx], self.style("entete"))
         # cadre, de la couleur des séparateurs des menus
         frame = self.style("separateur")
         if self.rulers:

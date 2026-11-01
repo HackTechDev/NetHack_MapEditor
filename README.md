@@ -5,7 +5,7 @@ créer et modifier les cartes des niveaux spéciaux de NetHack 5.0 / 3.7.
 Ces niveaux sont des scripts Lua (`dat/*.lua`) qui utilisent `des.map()`,
 `des.monster()`, `des.stair()`…
 
-![nhmapedit : le niveau de Médusa, avec une salle en cours de tracé](docs/capture.svg)
+![nhmapedit : le niveau de Médusa et le menu « Placer une entité », au design du lanceur NetHack](docs/capture.svg)
 
 *English: the interface is also available in English. It follows the
 locale (`LANG`): French when it starts with `fr`, English otherwise.
@@ -681,7 +681,8 @@ au démarrage, sans empêcher l'éditeur de s'ouvrir.
   possibles.
 - `docs/capture.py` : régénère la capture d'écran `docs/capture.svg` en
   pilotant l'éditeur dans un pseudo-terminal :
-  `python3 docs/capture.py [--level niveau.lua] [--size 108x30]`.
+  `python3 docs/capture.py [--level niveau.lua] [--size 108x34]
+  [--sans-menu]` (par défaut, avec le menu des entités ouvert).
 
 ## Tests
 

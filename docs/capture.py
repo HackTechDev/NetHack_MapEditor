@@ -3,10 +3,10 @@
 
 L'éditeur est lancé dans un pseudo-terminal, piloté par une suite de
 touches, puis le contenu réel de l'écran curses (caractères, couleurs,
-gras, inversion) est converti en image SVG.
+gras, inversion), menu ouvert compris, est converti en image SVG.
 
 Usage : python3 docs/capture.py [--level NIVEAU.lua] [--out FICHIER.svg]
-                                [--size LARGEURxHAUTEUR]
+                                [--size LARGEURxHAUTEUR] [--sans-menu]
 """
 
 import argparse
@@ -32,6 +32,9 @@ DEFAULT_LEVEL = os.path.join(ROOT, "..", "NetHack-5.0.0", "dat",
 # déplacé pour montrer l'aperçu du tracé
 RIGHT, DOWN = "\x1bOC", "\x1bOB"
 KEYS = [RIGHT * 55, DOWN * 3, "5", " ", RIGHT * 9, DOWN * 4]
+# Avec un menu : la salle tracée, puis le menu des entités (m), la
+# sélection sur « Monstre » pour montrer sa description
+KEYS_MENU = KEYS + [" ", "\x1bOD" * 4, "\x1bOA" * 2, "m", DOWN * 4]
 
 # Palette du terminal : couleurs curses 0-7, normales et en gras
 NORMAL = ["#45475a", "#e06c75", "#98c379", "#c8a04a",
@@ -49,31 +52,58 @@ def child(dump, level):
     import nhmapedit
 
     draw = nhmapedit.Editor.draw
+    menu_foot = nhmapedit.Editor.menu_foot
 
-    def draw_and_dump(self):
-        draw(self)
-        maxy, maxx = self.scr.getmaxyx()
-        cursor = self.scr.getyx()   # avant instr()/inch(), qui le déplacent
+    def cells_of(scr):
+        h, w = scr.getmaxyx()
         rows = []
-        for y in range(maxy):
-            text = self.scr.instr(y, 0, maxx).decode("utf-8", "replace")
+        for y in range(h):
             cells = []
-            for x in range(min(len(text), maxx)):
-                a = self.scr.inch(y, x)
-                cells.append([text[x],
+            for x in range(w):
+                # instr() compte en octets : une case à la fois, son
+                # premier caractère (─, é… en prennent plusieurs)
+                try:
+                    raw = scr.instr(y, x, 4)
+                except curses.error:
+                    raw = b" "
+                ch = (raw.decode("utf-8", "ignore") or " ")[0]
+                a = scr.inch(y, x)
+                cells.append([ch,
                               curses.pair_number(a & curses.A_COLOR),
                               bool(a & curses.A_BOLD),
                               bool(a & curses.A_REVERSE)])
             rows.append(cells)
+        return rows
+
+    def write(self, win=None):
+        """L'écran, et par-dessus la fenêtre win (menu) s'il y en a une ;
+        sans curseur dans un menu (il y est masqué)."""
+        cursor = None if win else self.scr.getyx()
+        rows = cells_of(self.scr)
+        if win:
+            by, bx = win.getbegyx()
+            for y, r in enumerate(cells_of(win)):
+                if 0 <= by + y < len(rows):
+                    line = rows[by + y]
+                    line[bx:bx + len(r)] = r
         with open(dump, "w", encoding="utf-8") as f:
             json.dump({"rows": rows, "cursor": cursor}, f)
 
+    def draw_and_dump(self):
+        draw(self)
+        write(self)
+
+    def foot_and_dump(self, win, y, lines):
+        menu_foot(self, win, y, lines)
+        write(self, win)
+
     nhmapedit.Editor.draw = draw_and_dump
+    nhmapedit.Editor.menu_foot = foot_and_dump
     sys.argv = ["nhmapedit", level]
     nhmapedit.main()
 
 
-def capture(level, cols, rows):
+def capture(level, cols, rows, keys=KEYS):
     """Pilote l'éditeur dans un pseudo-terminal ; renvoie l'écran final."""
     tmp = tempfile.mkdtemp(prefix="nhme-capture-")
     try:
@@ -103,7 +133,7 @@ def capture(level, cols, rows):
                         return
 
         drain(1.0)
-        for k in KEYS:
+        for k in keys:
             os.write(fd, k.encode())
             drain(0.3)
         os.kill(pid, 9)
@@ -115,7 +145,7 @@ def capture(level, cols, rows):
 
 
 def to_svg(screen, title):
-    rows, (cy, cx) = screen["rows"], screen["cursor"]
+    rows, cursor = screen["rows"], screen["cursor"]
     while rows and not "".join(c[0] for c in rows[-1]).strip():
         rows.pop()
     # inch() ne sait pas lire les attributs des caractères non ASCII :
@@ -169,9 +199,11 @@ def to_svg(screen, title):
                         escape(c[0])))
             x = j
     out.append("</g>")
-    out.append('<rect x="%d" y="%d" width="%d" height="%d" fill="none" '
-               'stroke="#ffffff" stroke-width="1.5"/>'
-               % (PAD + cx * CW, TOP + cy * CH, CW, CH))
+    if cursor:
+        cy, cx = cursor
+        out.append('<rect x="%d" y="%d" width="%d" height="%d" '
+                   'fill="none" stroke="#ffffff" stroke-width="1.5"/>'
+                   % (PAD + cx * CW, TOP + cy * CH, CW, CH))
     out.append("</svg>")
     return "\n".join(out) + "\n"
 
@@ -186,8 +218,10 @@ def main():
                          "sources de NetHack)")
     ap.add_argument("--out", default=os.path.join(DOCS, "capture.svg"),
                     help="fichier SVG produit (défaut : docs/capture.svg)")
-    ap.add_argument("--size", default="108x30",
-                    help="taille du terminal simulé (défaut : 108x30)")
+    ap.add_argument("--size", default="108x34",
+                    help="taille du terminal simulé (défaut : 108x34)")
+    ap.add_argument("--sans-menu", action="store_true",
+                    help="sans menu : la salle en cours de tracé seule")
     args = ap.parse_args()
     if not os.path.isfile(args.level):
         sys.exit("Niveau introuvable : %s (utilisez --level)" % args.level)
@@ -195,7 +229,8 @@ def main():
         cols, rows = (int(v) for v in args.size.lower().split("x"))
     except ValueError:
         sys.exit("--size attend LARGEURxHAUTEUR, ex: --size 108x28")
-    screen = capture(args.level, cols, rows)
+    screen = capture(args.level, cols, rows,
+                     KEYS if args.sans_menu else KEYS_MENU)
     title = "nhmapedit — " + os.path.basename(args.level)
     with open(args.out, "w", encoding="utf-8") as f:
         f.write(to_svg(screen, title))
