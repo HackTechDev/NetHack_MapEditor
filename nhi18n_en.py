@@ -1174,6 +1174,17 @@ EN = {
         'Welcome window disabled (key d); delete this file to see it again.\n',
     "Fenêtre d'accueil désactivée : F1 la rouvre.":
         'Welcome window disabled: F1 opens it again.',
+    # Liste des cartes .lua (Ctrl-O)
+    'Dossier de la carte': 'Map folder',
+    'Dossier courant': 'Current folder',
+    'Niveaux du jeu (dat/)': 'Game levels (dat/)',
+    ' (ouverte)': ' (open)',
+    'Autre': 'Other',
+    'Autre fichier… (chemin à taper, Tab complète)':
+        'Other file… (type a path, Tab completes)',
+    "Comme la touche o : n'importe quel fichier, y compris un .txt à importer.":
+        'Like the o key: any file, including a .txt to import.',
+    'Ouvrir une carte .lua': 'Open a .lua map',
 }
 
 HELP = """\
@@ -1338,6 +1349,8 @@ LEVEL AND FILES
      n offers a wizard: complete level ready to try (rooms and
      corridors, maze, cave or big room, stairs at both ends, random
      monsters, objects and traps)
+  Ctrl-O  list of .lua maps to open: map folder, current folder, game
+     levels (dat/); typed letters filter it
      o on a .txt: imports a plain text map;
      w to a .txt: exports the map alone; to a .svg or a .png: exports
      it as an image, as displayed (J, Tab)

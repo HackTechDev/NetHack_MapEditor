@@ -151,6 +151,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `u` (ou Ctrl-Z) / `U` (ou Ctrl-R, Ctrl-Y) | annuler / rétablir la dernière commande ; le message nomme la commande (« Annulé : Salle : sol. ») et le curseur revient où elle a eu lieu |
 | `V` | historique des commandes : la liste nommée de toutes les modifications (dessin, entités, propriétés…), les annulées comprises ; Entrée ramène la carte à l'état choisi, en avant ou en arrière ; le titre perd `[modifié]` quand on revient à l'état enregistré |
 | `n`, `o`, `s`, `w` | nouveau (avec un assistant qui génère un niveau complet prêt à essayer : salles et couloirs, labyrinthe, caverne ou grande salle, escaliers, monstres, objets, pièges), ouvrir, enregistrer, enregistrer sous (Tab complète les chemins) ; `o` sur un `.txt` importe une carte en texte brut, `w` vers un `.txt`, `.svg` ou `.png` l'exporte en texte ou en image (voir « Import et export ») |
+| `Ctrl-O` | liste des cartes `.lua` à ouvrir, par dossier : celui de la carte, le dossier courant, les niveaux du jeu (`dat/`) ; date de modification, chemin complet en description ; les lettres tapées filtrent (`medu` → les quatre Médusa) ; « Autre fichier… » demande un chemin comme `o` |
 | `q` | quitter |
 | `F1` | fenêtre d'accueil : faire une carte, placer le joueur |
 

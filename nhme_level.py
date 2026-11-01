@@ -508,6 +508,65 @@ class LevelMixin:
         self.msg = _("Lua compilé : %s") % lua
         return lua
 
+    def map_dirs(self):
+        """[(titre, dossier)] où chercher les cartes .lua : celui de la
+        carte ouverte, le dossier courant, les niveaux du jeu (dat/)."""
+        dirs = []
+        if self.path:
+            dirs.append((_("Dossier de la carte"),
+                         os.path.dirname(os.path.abspath(self.path))))
+        dirs.append((_("Dossier courant"), os.getcwd()))
+        if self.dungeon_path:
+            dirs.append((_("Niveaux du jeu (dat/)"),
+                         os.path.dirname(os.path.abspath(self.dungeon_path))))
+        seen, out = set(), []
+        for title, d in dirs:
+            real = os.path.realpath(d)
+            if real not in seen and os.path.isdir(d):
+                seen.add(real)
+                out.append((title, d))
+        return out
+
+    def open_list(self):
+        """Ctrl-O : fenêtre avec la liste des cartes .lua (dossier de la
+        carte, dossier courant, niveaux du jeu) ; les lettres tapées
+        filtrent ; « Autre fichier… » demande un chemin, comme o."""
+        items = []
+        current = os.path.abspath(self.path) if self.path else None
+        for title, d in self.map_dirs():
+            try:
+                names = sorted(n for n in os.listdir(d)
+                               if n.endswith(".lua")
+                               and os.path.isfile(os.path.join(d, n)))
+            except OSError:
+                continue
+            if not names:
+                continue
+            items.append(Group("%s : %s" % (title, d)))
+            for n in names:
+                path = os.path.join(d, n)
+                try:
+                    when = time.strftime("%d/%m/%Y %H:%M", time.localtime(
+                        os.path.getmtime(path)))
+                except OSError:
+                    when = ""
+                mark = _(" (ouverte)") if path == current else ""
+                items.append(("%-26s %s%s" % (n, when, mark), path,
+                              {"desc": path}))
+        items.append(Group(_("Autre")))
+        items.append((_("Autre fichier… (chemin à taper, Tab complète)"),
+                      "_other", {"key": "/", "desc": _(
+                          "Comme la touche o : n'importe quel fichier, "
+                          "y compris un .txt à importer.")}))
+        path = self.menu(_("Ouvrir une carte .lua"), items,
+                         initial=current)
+        if path == "_other":
+            path = os.path.expanduser(self.prompt(
+                _("Ouvrir : "), os.getcwd() + "/",
+                self.path_completer).strip())
+        self.check_unsaved()
+        self.open_file(path)
+
     def open_file(self, path):
         if path.lower().endswith(".txt"):
             return self.import_text(path)

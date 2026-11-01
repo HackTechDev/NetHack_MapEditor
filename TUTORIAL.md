@@ -439,7 +439,10 @@ ou que les régions.
 **Mini-carte.** Quand la carte dépasse la fenêtre, une mini-carte montre
 en haut à droite la partie visible ; `[~]` la force ou la masque.
 
-**Ouvrir un niveau existant.** `[o]` puis le chemin, par exemple
+**Ouvrir un niveau existant.** `[Ctrl-O]` affiche la liste des cartes
+`.lua` : celles du dossier de la carte, du dossier courant et les
+niveaux du jeu (`dat/`). Tapez `medu` pour ne garder que Médusa, puis
+Entrée. Ou `[o]` puis le chemin, par exemple
 `../NetHack-5.0.0/dat/medusa-1.lua` (Tab complète les chemins).
 L'éditeur modifie la carte et les entités à position fixe, et conserve
 tout le reste du script. Ouvrir `themerms.lua` propose ses salles à

@@ -225,6 +225,10 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 - Enregistrer (`s`), enregistrer sous (`w`), ouvrir (`o`) avec
   complétion des chemins par Tab ; confirmation avant de perdre des
   modifications.
+- Liste des cartes `.lua` à ouvrir (`Ctrl-O`) : dossier de la carte,
+  dossier courant et niveaux du jeu (`dat/`), avec la date de
+  modification ; filtre par les lettres tapées ; « Autre fichier… »
+  pour un chemin quelconque.
 - Import d'une carte en texte brut (`o` sur un `.txt`).
 - Export de la carte seule en texte (`.txt`) ou en image (`.svg`, `.png`
   via `rsvg-convert` ou ImageMagick), telle qu'elle est affichée.

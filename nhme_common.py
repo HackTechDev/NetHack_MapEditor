@@ -654,6 +654,8 @@ NIVEAU ET FICHIERS
      n propose un assistant : niveau complet prêt à essayer (salles et
      couloirs, labyrinthe, caverne ou grande salle, escaliers aux deux
      bouts, monstres, objets et pièges aléatoires)
+  Ctrl-O  liste des cartes .lua à ouvrir : dossier de la carte, dossier
+     courant, niveaux du jeu (dat/) ; les lettres tapées filtrent
      o sur un .txt : importe une carte en texte brut ;
      w vers un .txt : exporte la carte seule ; vers un .svg ou un .png :
      l'exporte en image, telle qu'elle est affichée (J, Tab)

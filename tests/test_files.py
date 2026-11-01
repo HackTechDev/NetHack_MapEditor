@@ -77,3 +77,50 @@ class Themes(unittest.TestCase):
 
 if __name__ == "__main__":
     unittest.main()
+
+
+class OpenList(unittest.TestCase):
+    """Ctrl-O : liste des cartes .lua à ouvrir."""
+
+    def test_list_and_open(self):
+        import tempfile
+        import nhmapedit
+        from nhme_common import Group
+        from tests.util import level
+        with tempfile.TemporaryDirectory() as d:
+            mine, dat = os.path.join(d, "mes"), os.path.join(d, "dat")
+            os.makedirs(mine)
+            os.makedirs(dat)
+            for path, rows in ((os.path.join(mine, "a.lua"), ["..."]),
+                               (os.path.join(mine, "b.lua"), ["...."] * 2),
+                               (os.path.join(dat, "medusa.lua"), ["."])):
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(level(rows).to_lua("x"))
+            open(os.path.join(mine, "notes.txt"), "w").close()
+            open(os.path.join(dat, "dungeon.lua"), "w").close()
+            ed = nhmapedit.Editor(None)
+            ed.path = os.path.join(mine, "a.lua")
+            ed.dungeon_path = os.path.join(dat, "dungeon.lua")
+            shown = []
+
+            def menu(title, items, initial=None, **k):
+                shown.extend(items)
+                self.assertEqual(initial, ed.path)
+                return os.path.join(mine, "b.lua")
+            ed.menu = menu
+            cwd = os.getcwd()
+            os.chdir(mine)              # dossier courant = celui de la carte
+            try:
+                ed.open_list()
+            finally:
+                os.chdir(cwd)
+            groups = [g for g in shown if isinstance(g, Group)]
+            # dossier courant identique : une seule fois
+            self.assertEqual(len(groups), 3)
+            names = [os.path.basename(it[1]) for it in shown
+                     if not isinstance(it, Group)]
+            self.assertEqual(names, ["a.lua", "b.lua", "dungeon.lua",
+                                     "medusa.lua", "_other"])
+            self.assertIn("(ouverte)", shown[1][0])
+            self.assertEqual((ed.lvl.w, ed.lvl.h), (4, 2))
+            self.assertEqual(ed.path, os.path.join(mine, "b.lua"))

@@ -407,6 +407,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             path = self.prompt(_("Ouvrir : "), os.getcwd() + "/",
                                self.path_completer)
             self.open_file(os.path.expanduser(path.strip()))
+        elif k == "\x0f":
+            self.open_list()
         elif k in ("s", "\x13"):
             self.save()
         elif k == "w":
