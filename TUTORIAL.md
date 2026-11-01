@@ -7,7 +7,8 @@ l'enregistre, puis on l'essaie dans NetHack. Comptez une demi-heure.
 
 Pour chaque étape, les touches à taper sont indiquées entre crochets :
 `[5]`, `[Espace]`… L'aide complète s'affiche à tout moment avec `[?]`,
-et la barre du bas rappelle les touches utiles selon la situation.
+la fenêtre d'accueil (l'essentiel en une page) avec `[F1]`, et la barre
+du bas rappelle les touches utiles selon la situation.
 
 À la fin, la carte ressemblera à ceci :
 
@@ -36,6 +37,30 @@ python3 nhmapedit.py --new 40x12 crypte.lua
 `--new 40x12` crée une carte de 40 colonnes sur 12 lignes, remplie de
 roche ; `crypte.lua` est le fichier où elle sera enregistrée. Il n'existe
 pas encore : il sera créé au premier enregistrement.
+
+### La fenêtre d'accueil
+
+Au démarrage, une fenêtre **Bienvenue dans nhmapedit** s'ouvre par-dessus
+la carte. Elle résume en deux parties ce que ce tutoriel détaille :
+
+- **Faire une carte** : nouvelle carte (`n`), terrain tapé au clavier
+  qui devient le pinceau (`.` sol, `-` et `|` murs, `#` couloir…),
+  outils (`1` Pinceau, `3` Rectangle, `5` Salle), Espace pour appliquer,
+  `m` pour les entités, puis `v` vérifier, `s` enregistrer, `t` essayer ;
+- **Placer le joueur** : un niveau NetHack n'a pas de « position du
+  joueur ». Il arrive sur l'escalier montant quand il descend, sur
+  l'escalier descendant quand il remonte, ou dans une zone d'arrivée
+  (voir l'étape 7).
+
+Les flèches la font défiler si le terminal est petit ; **n'importe
+quelle autre touche la ferme**. `[F1]` la rouvre à tout moment. Si vous
+la connaissez par cœur, `[d]` ne l'affiche plus au démarrage (le fichier
+`~/.config/nhmapedit/sans-accueil` s'en souvient : supprimez-le pour la
+revoir), tout comme `accueil = non` dans la configuration.
+
+Fermez-la : la carte vide apparaît.
+
+### L'écran
 
 L'écran se compose de :
 
@@ -199,6 +224,15 @@ leurs coordonnées.
    groupes, touches, description de la ligne choisie en bas.
 3. Choisissez **montant (up)**. Le symbole `<` apparaît.
 4. En `(35,9)`, `[m]`, **Escalier**, **descendant (down)** : `>`.
+
+**Où apparaîtra le joueur ?** C'est l'escalier montant qui le décide :
+un joueur qui descend dans la crypte arrive sur le `<` en `(3,3)`, un
+joueur qui remonte du niveau inférieur arrive sur le `>`. Pour une
+arrivée ailleurs qu'un escalier, `[m]` puis **Zone d'arrivée** (`[y]`,
+`des.levregion`) ou **Zone de téléportation** (`[x]`,
+`des.teleport_region`) : le joueur apparaît au hasard dans la zone
+tracée, et une zone d'une seule case donne une place exacte. Ce rappel
+figure aussi dans la fenêtre d'accueil (`[F1]`).
 
 ## 8. Monstres et objets
 
