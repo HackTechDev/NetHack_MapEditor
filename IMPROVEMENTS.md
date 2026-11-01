@@ -20,7 +20,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 5. Vérification | 3 / 3 | — |
 | 6. Intégration avec le jeu | 4 / 4 | — |
 | 7. Fichiers et formats | 4 / 4 | — |
-| 8. Configuration et confort | 3 / 3 | — |
+| 8. Configuration et confort | 4 / 4 | — |
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
 | 11. Idées supplémentaires | 6 / 12 | tirage, $EDITOR, `.des`, sélections, Sokoban, donjon |
@@ -191,6 +191,9 @@ mais invisible dans l'éditeur.
   pour une diffusion au-delà de la communauté francophone.
 - ✅ **Fait** — **Aide contextuelle** **[facile]** : afficher dans la barre du bas les
   touches utiles pour l'outil en cours (ancre posée, collage…).
+- ✅ **Fait** — **Fenêtre d'accueil** **[facile]** : au démarrage,
+  comment faire une carte et comment placer le joueur ; `F1` la rouvre,
+  `d` ou `accueil = non` la désactive.
 
 ## 9. Qualité du projet
 

@@ -87,6 +87,7 @@ def capture(level, cols, rows):
             # capture du README en français, sauf NHMAPEDIT_LANG=en
             os.environ.setdefault("NHMAPEDIT_LANG", "fr")
             os.environ["NHMAPEDIT_CONFIG"] = os.devnull
+            os.environ["NHMAPEDIT_ACCUEIL"] = "non"
             os.execv(sys.executable, [sys.executable, __file__,
                                       "--child", dump, copy])
         fcntl.ioctl(fd, termios.TIOCSWINSZ,

@@ -657,7 +657,7 @@ NIVEAU ET FICHIERS
      o sur un .txt : importe une carte en texte brut ;
      w vers un .txt : exporte la carte seule ; vers un .svg ou un .png :
      l'exporte en image, telle qu'elle est affichée (J, Tab)
-  q  quitter      ?  cette aide
+  q  quitter      ?  cette aide      F1  fenêtre d'accueil
 
 La barre du bas rappelle les touches utiles selon la situation : ancre
 posée, outil Coller, crayon baissé, entités sous le curseur, rendu jeu…
@@ -685,10 +685,35 @@ Pour un fichier existant, seuls la première carte des.map et les éléments
 contient que des des.object simples) sont édités ; le reste du script Lua
 est conservé tel quel à l'enregistrement.
 """
+# Fenêtre d'accueil (au démarrage, et touche F1) ; les lignes en
+# majuscules sont des titres de groupe
+WELCOME_FR = """\
+FAIRE UNE CARTE
+  1. n : nouvelle carte, vide ou générée par l'assistant de niveau
+  2. Tapez un terrain : il devient le pinceau
+     .  sol    -  |  murs    #  couloir    +  porte    }  douves
+  3. Choisissez un outil : 1 Pinceau, 3 Rectangle, 5 Salle (murs+sol)
+  4. Déplacez le curseur (flèches ou souris), Espace : appliquer
+  5. m : placer une entité (escalier, monstre, objet, piège…)
+  6. v : vérifier    s : enregistrer    t : essayer dans NetHack
+
+PLACER LE JOUEUR
+  Un niveau NetHack n'a pas de « position du joueur » : il arrive
+  - sur l'escalier montant quand il descend :
+      m, Escalier, montant (up)  — c'est le cas habituel ;
+  - sur l'escalier descendant quand il remonte ;
+  - ou dans une zone d'arrivée : m, puis y (des.levregion) ou
+      x (des.teleport_region) ; une zone d'une case = une place exacte.
+  À l'essai (t), le joueur apparaît sur l'escalier montant.
+
+  ? : aide complète    F1 : revoir cette fenêtre"""
+WELCOME_OFF = os.path.join(CONFIG_DIR, "sans-accueil")
+
 if LANG == "en":
-    from nhi18n_en import HELP
+    from nhi18n_en import HELP, WELCOME
 else:
     HELP = HELP_FR
+    WELCOME = WELCOME_FR
 
 
 def load_data():

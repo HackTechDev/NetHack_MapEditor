@@ -324,13 +324,15 @@ class DialogsMixin:
         """Liste filtrable (voir menu()). Échap -> Cancel."""
         return self.menu(title, items, initial, custom, hint)
 
-    def message_box(self, title, text):
+    def message_box(self, title, text, foot=None):
+        """Fenêtre de texte défilante ; renvoie la touche qui l'a fermée
+        (None pour un clic)."""
         lines = text.split("\n")
         top = 0
         curses.curs_set(0)
         while True:
             maxy, maxx = self.scr.getmaxyx()
-            foot = _("↑/↓ défiler · Échap/q fermer")
+            foot = foot or _("↑/↓ défiler · Échap/q fermer")
             win, h, w = self.window(len(lines) + 6, max(
                 [len(l) for l in lines] + [len(title) + 4, len(foot) + 3])
                 + 2)
@@ -364,6 +366,7 @@ class DialogsMixin:
                     continue
                 if m is None:
                     continue        # mouvement : la fenêtre reste
+                k = None
                 break               # clic : fermer
             if k in (curses.KEY_DOWN, ord("j"), curses.KEY_NPAGE, ord(" ")):
                 step = n if k in (curses.KEY_NPAGE, ord(" ")) else 1
@@ -376,6 +379,7 @@ class DialogsMixin:
             else:
                 break
         curses.curs_set(1)
+        return k
 
     def confirm(self, question):
         try:

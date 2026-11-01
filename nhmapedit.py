@@ -21,7 +21,7 @@ from nhlevel import Level
 from nhme_common import (
     AUTOSAVE_DELAY, CONFIG_DIR, Cancel, DUNGEON_FILES, FLIP_CYCLE, FLIP_NAME,
     HACKDIRS, HELP, SYM_NAME, TERRAIN_COLOR, TOOL_KEY, TOOL_NAME, TWO_POINT,
-    bresenham, load_data)
+    WELCOME, WELCOME_OFF, bresenham, load_data)
 from nhme_dialogs import DialogsMixin
 from nhme_display import DisplayMixin
 from nhme_entities import EntitiesMixin
@@ -185,6 +185,28 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         finally:
             sys.stdout.write("\033[?1002l")
             sys.stdout.flush()
+
+    def welcome(self, force=False):
+        """Fenêtre d'accueil : faire une carte, placer le joueur. Au
+        démarrage, sauf « accueil = non », $NHMAPEDIT_ACCUEIL=non ou après
+        « d » (fichier sans-accueil du dossier de configuration)."""
+        if not force and (not self.config.get("welcome", True)
+                          or os.environ.get("NHMAPEDIT_ACCUEIL") == "non"
+                          or os.path.exists(WELCOME_OFF)):
+            return
+        foot = (_("F1 : revoir · Échap : fermer") if force else
+                _("d : ne plus afficher au démarrage · Échap : fermer"))
+        k = self.message_box(_("Bienvenue dans nhmapedit"), WELCOME, foot)
+        if not force and k in (ord("d"), ord("D")):
+            try:
+                os.makedirs(CONFIG_DIR, exist_ok=True)
+                with open(WELCOME_OFF, "w", encoding="utf-8") as f:
+                    f.write(_("Fenêtre d'accueil désactivée (touche d) ; "
+                              "supprimez ce fichier pour la revoir.\n"))
+                self.msg = _("Fenêtre d'accueil désactivée : F1 la "
+                             "rouvre.")
+            except OSError as e:
+                self.msg = _("Erreur d'écriture : %s") % e
 
     def handle(self, k):
         lvl = self.lvl
@@ -391,6 +413,8 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.save(as_new=True)
         elif k == "?":
             self.message_box(_("Aide"), HELP.rstrip())
+        elif k == curses.KEY_F1:
+            self.welcome(force=True)
         elif k in ("q", "\x11"):
             if self.check_unsaved():
                 return False
@@ -468,6 +492,8 @@ def main():
         ed = Editor(scr, path, size, config)
         if errors:
             ed.msg = _("Configuration : %s") % "; ".join(errors)
+        ed.draw()
+        ed.welcome()
         ed.run()
 
     curses.wrapper(run)

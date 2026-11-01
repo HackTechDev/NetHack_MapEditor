@@ -15,6 +15,8 @@ os.environ["NHMAPEDIT_GAME_LANG"] = "en"
 os.environ["NHMAPEDIT_PALETTE"] = "aucune"
 # pas de serveur LXD : t essaie sur ce poste, sans demander la cible
 os.environ["NHMAPEDIT_LXD"] = "aucun"
+# pas de fenêtre d'accueil : les touches vont à l'éditeur
+os.environ["NHMAPEDIT_ACCUEIL"] = "non"
 
 # Niveaux de NetHack : $NHMAPEDIT_DAT, sinon les sources à côté du dépôt
 DAT = os.environ.get("NHMAPEDIT_DAT",

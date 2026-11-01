@@ -50,6 +50,9 @@
 # Thème des menus, comme le lanceur NetHack : auto (cyber pour la
 # version cyberpunk du jeu, sinon classique), classique, cyber ou sobre
 #theme = auto
+# Fenêtre d'accueil au démarrage (faire une carte, placer le joueur) ;
+# F1 la rouvre, d la désactive (fichier sans-accueil)
+#accueil = oui
 
 [couleurs]
 # Couleur d'un terrain : black, red, green, brown, blue, magenta, cyan,

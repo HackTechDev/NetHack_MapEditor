@@ -62,6 +62,9 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 - Aide complète (`?`) et barre d'aide contextuelle qui rappelle les
   touches utiles : ancre posée, outil Coller, crayon baissé, entités sous
   le curseur, rendu jeu…
+- Fenêtre d'accueil au démarrage : faire une carte pas à pas et placer
+  le joueur (escalier montant, escalier descendant, zone d'arrivée) ;
+  `F1` la rouvre, `d` ou `accueil = non` la désactive.
 
 ## Dessin du terrain
 

@@ -81,6 +81,15 @@ dossier :
 ./nhmapedit.sh --install        # puis, partout : nhmapedit mon_niveau.lua
 ```
 
+Au démarrage, une fenêtre d'accueil résume comment faire une carte
+(nouvelle carte, terrain, outils, entités, vérification, essai) et
+comment placer le joueur : un niveau NetHack n'a pas de position du
+joueur, il arrive sur l'escalier montant quand il descend, sur
+l'escalier descendant quand il monte, ou dans une zone d'arrivée.
+N'importe quelle touche la ferme ; `d` ne l'affiche plus au démarrage
+(fichier `~/.config/nhmapedit/sans-accueil`, à supprimer pour la
+revoir), `accueil = non` dans la configuration aussi. `F1` la rouvre.
+
 La variable `PYTHON` choisit un autre interpréteur (`PYTHON=python3.13`).
 
 Seul Python 3 (avec son module `curses`, présent sous Linux et macOS)
@@ -143,6 +152,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `V` | historique des commandes : la liste nommée de toutes les modifications (dessin, entités, propriétés…), les annulées comprises ; Entrée ramène la carte à l'état choisi, en avant ou en arrière ; le titre perd `[modifié]` quand on revient à l'état enregistré |
 | `n`, `o`, `s`, `w` | nouveau (avec un assistant qui génère un niveau complet prêt à essayer : salles et couloirs, labyrinthe, caverne ou grande salle, escaliers, monstres, objets, pièges), ouvrir, enregistrer, enregistrer sous (Tab complète les chemins) ; `o` sur un `.txt` importe une carte en texte brut, `w` vers un `.txt`, `.svg` ou `.png` l'exporte en texte ou en image (voir « Import et export ») |
 | `q` | quitter |
+| `F1` | fenêtre d'accueil : faire une carte, placer le joueur |
 
 La souris est gérée : clic = déplacer le curseur et appliquer l'outil,
 glisser = peindre (Pinceau) ou tracer (Rectangle, Ligne, Salle…),
@@ -608,6 +618,7 @@ unicode = auto        ; murs en traits Unicode : auto, oui, non
 sauvegarde = 60       ; sauvegarde de secours (secondes, 0 : aucune)
 langue = auto         ; auto (selon LANG), fr ou en
 theme = auto          ; menus : auto, classique, cyber ou sobre
+accueil = oui         ; fenêtre d'accueil au démarrage
 
 [couleurs]
 } = bright_blue       ; couleur d'un terrain (roche, couloir pour « » et #)

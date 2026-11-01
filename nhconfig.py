@@ -127,6 +127,12 @@ def load(path):
                 cfg["lang"] = low
             else:
                 bad("editeur", key, _("fr, en ou auto attendu"))
+        elif key == "accueil":
+            # fenêtre d'accueil au démarrage
+            if low not in YES:
+                bad("editeur", key, _("oui ou non attendu"))
+            else:
+                cfg["welcome"] = YES[low]
         elif key in ("theme", "thème"):
             if low in ("auto", "classique", "cyber", "sobre"):
                 cfg["theme"] = low

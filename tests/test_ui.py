@@ -89,6 +89,22 @@ class Ui(unittest.TestCase):
             self.assertEqual([(e.kind, e.value) for e in lvl.entities],
                              [("stair", "down")])
 
+    def test_welcome_window(self):
+        with tempfile.TemporaryDirectory() as d:
+            env = {"HOME": d, "XDG_CONFIG_HOME": d, "XDG_CACHE_HOME": d,
+                   "NHMAPEDIT_ACCUEIL": ""}
+            off = os.path.join(d, "nhmapedit", "sans-accueil")
+            out = drive([], ["d"], env=env)
+            self.assertNotIn("Traceback", out)
+            self.assertIn("Bienvenue dans nhmapedit", out)
+            self.assertIn("PLACER LE JOUEUR", out)
+            self.assertTrue(os.path.exists(off))
+            # désactivée : plus au démarrage, mais F1 la rouvre
+            out = drive([], [], env=env)
+            self.assertNotIn("Bienvenue dans", out)
+            out = drive([], ["\x1bOP"], env=env)
+            self.assertIn("Bienvenue dans nhmapedit", out)
+
     def test_config_keys_and_size(self):
         with tempfile.TemporaryDirectory() as d:
             path = os.path.join(d, "essai.lua")
