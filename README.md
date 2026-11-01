@@ -31,7 +31,11 @@ Résumé ci-dessous ; la liste complète est dans [FEATURES.md](FEATURES.md).
 - dessin au clavier ou à la souris : pinceau, ligne, rectangle, salle,
   ellipse, remplissage, semis aléatoire, remplacement, labyrinthe,
   symétrie,
-  copier/couper/coller avec miroirs et rotation, annulation illimitée ;
+  copier/couper/coller avec miroirs et rotation, tampons de terrain,
+  annulation illimitée et historique des commandes (conservé d'une
+  séance à l'autre) ;
+- assistant de niveau : salles et couloirs, labyrinthe, caverne ou
+  grande salle générés et peuplés, prêts à essayer ;
 - entités : escaliers, échelles, autels, monstres et objets (avec leurs
   options, inventaires et contenus), pièges, portes, gravures, or,
   tombes, ponts-levis, éléments de décor, terrain d'une case ;
@@ -43,14 +47,20 @@ Résumé ci-dessous ; la liste complète est dans [FEATURES.md](FEATURES.md).
 - ouverture des niveaux de `dat/` sans rien perdre du script Lua, et des
   salles à thème de `themerms.lua` ;
 - rendu « comme dans le jeu », aperçu des retournements aléatoires ;
+- annotations et brouillon (calque de travail jamais enregistré),
+  statistiques du niveau et difficulté estimée ;
 - vérification : connexité, règles de NetHack, exécution du script avec
   le vrai Lua ;
 - essai immédiat dans NetHack (avec tmux, le jeu est lancé et la carte
-  chargée automatiquement), ajout du niveau au donjon (`dungeon.lua`) ;
+  chargée automatiquement) ou sur un serveur NetHack dans un conteneur
+  LXD, local ou distant ; retour du jeu (erreurs Lua avec la ligne
+  fautive) ; ajout du niveau au donjon (`dungeon.lua`) ;
 - import/export en texte brut, export en image SVG ou PNG, bibliothèque
   de modèles, sauvegarde de secours ;
 - relation avec la version cyberpunk du jeu : noms vus en jeu, palette
   néon, modèles et textes de Night City, noms des lieux du donjon ;
+- menus au design du [lanceur NetHack](../Nethack_Launcher) (touches,
+  numéros, groupes, descriptions), thèmes classique, cyber ou sobre ;
 - fichier de configuration, interface en français ou en anglais.
 
 ## Lancement
@@ -126,7 +136,8 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `p` | propriétés : taille, `level_init`, drapeaux, placement (halign/valign ou x,y), éclairage, place du niveau dans le donjon (`dungeon.lua`, voir plus bas) |
 | `%` | statistiques du niveau : terrain, entités, monstres et objets par classe, pièges, régions, placements aléatoires du script, difficulté estimée |
 | `v` | vérifier la carte : largeur > 76, entités dans les murs, escaliers en double, connexité… (voir « Vérification ») |
-| `t` | tester : copie la carte dans le répertoire du jeu ; avec tmux, lance NetHack et y charge la carte (voir plus bas) |
+| `t` | tester : copie la carte dans le répertoire du jeu ; avec tmux, lance NetHack et y charge la carte ; ou l'envoie au serveur NetHack d'un conteneur LXD, sur ce poste ou sur un serveur distant dont l'adresse IP est demandée (voir plus bas) |
+| `@` | cible des essais (`t`) : ce poste ou un serveur NetHack dans un conteneur LXD |
 | `!` | retour du jeu : erreurs Lua signalées par NetHack sur le dernier essai, avec la ligne fautive ; le curseur va sur l'élément concerné (automatique avec tmux) |
 | `u` (ou Ctrl-Z) / `U` (ou Ctrl-R, Ctrl-Y) | annuler / rétablir la dernière commande ; le message nomme la commande (« Annulé : Salle : sol. ») et le curseur revient où elle a eu lieu |
 | `V` | historique des commandes : la liste nommée de toutes les modifications (dessin, entités, propriétés…), les annulées comprises ; Entrée ramène la carte à l'état choisi, en avant ou en arrière ; le titre perd `[modifié]` quand on revient à l'état enregistré |
@@ -136,7 +147,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 La souris est gérée : clic = déplacer le curseur et appliquer l'outil,
 glisser = peindre (Pinceau) ou tracer (Rectangle, Ligne, Salle…),
 clic droit = pipette. Dans les listes et les formulaires, un clic choisit
-une ligne et un second clic la valide, la molette fait défiler (les
+une ligne et un second clic (ou un double-clic) la valide, la molette fait défiler (les
 fenêtres de texte aussi), le clic droit annule.
 
 ### Menus
@@ -569,6 +580,9 @@ repertoire = ~/nh/install/games/lib/nethackdir
 dungeon = ~/JEUX/NETHACK/NetHack-5.0.0/dat/dungeon.lua
 langue = fr@cyber     ; noms du jeu (défaut : option language du jeu)
 palette = auto        ; couleurs du rendu jeu : auto, aucune ou un fichier
+serveur_adresse = 192.168.1.20  ; serveur LXD des essais (localhost : ce poste)
+serveur_compte = util01         ; compte SSH sur un serveur distant
+serveur = nethack     ; conteneur LXD (aucun : jamais proposé)
 
 [editeur]
 taille = 75x19        ; taille d'une nouvelle carte
@@ -603,7 +617,8 @@ au démarrage, sans empêcher l'éditeur de s'ouvrir.
   - `nhme_entities.py` : entités, options, inventaires et contenus ;
   - `nhme_level.py` : propriétés, vérification, ouverture et
     enregistrement ;
-  - `nhme_game.py` : test dans le jeu (tmux) et `dungeon.lua`.
+  - `nhme_game.py` : test dans le jeu (tmux ou serveur LXD), retour du
+    jeu et `dungeon.lua`.
 - `nhlevel.py` : le modèle de niveau, la lecture et l'écriture du Lua.
 - `nhdungeon.py` : la lecture et la modification de `dat/dungeon.lua`.
 - `nhtheme.py` : les salles à thème de `dat/themerms.lua`.
@@ -651,6 +666,12 @@ Ils vérifient :
 - la vérification (connexité, règles, Lua), l'import et l'export, les
   modèles et la sauvegarde de secours ;
 - le fichier de configuration et l'aide contextuelle ;
+- les générateurs de l'assistant de niveau ;
+- l'essai dans le jeu : copie, retour du jeu, envoi au serveur LXD local
+  ou distant (commandes `lxc` et `ssh` simulées) ;
+- les noms du jeu (catalogue gettext), la palette et les textes de
+  `dat/` ;
+- les thèmes des menus, leurs touches et leurs numéros ;
 - la traduction anglaise : catalogue complet, mêmes `%s` que l'original ;
 - un parcours complet de l'interface dans un pseudo-terminal.
 
