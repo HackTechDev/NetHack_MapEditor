@@ -361,8 +361,9 @@ le répertoire du jeu sous le nom `nhme-crypte.lua`, avec le drapeau
   `nethack -D` dans un autre terminal, tapez `#wizloaddes` puis
   `nhme-crypte`.
 
-Dans le jeu, Ctrl-F révèle toute la carte et Ctrl-T téléporte : pratique
-pour aller voir le coffre et chercher la porte secrète.
+Le joueur apparaît sur l'escalier montant, comme s'il descendait d'un
+étage. Dans le jeu, Ctrl-F révèle toute la carte et Ctrl-T téléporte :
+pratique pour aller voir le coffre et chercher la porte secrète.
 
 **Si NetHack refuse la carte**, par exemple à cause d'un nom de piège
 mal écrit dans un script modifié à la main, revenez dans l'éditeur et

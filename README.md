@@ -136,7 +136,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `p` | propriétés : taille, `level_init`, drapeaux, placement (halign/valign ou x,y), éclairage, place du niveau dans le donjon (`dungeon.lua`, voir plus bas) |
 | `%` | statistiques du niveau : terrain, entités, monstres et objets par classe, pièges, régions, placements aléatoires du script, difficulté estimée |
 | `v` | vérifier la carte : largeur > 76, entités dans les murs, escaliers en double, connexité… (voir « Vérification ») |
-| `t` | tester : copie la carte dans le répertoire du jeu ; avec tmux, lance NetHack et y charge la carte ; ou l'envoie au serveur NetHack d'un conteneur LXD, sur ce poste ou sur un serveur distant dont l'adresse IP est demandée (voir plus bas) |
+| `t` | tester : copie la carte dans le répertoire du jeu (le joueur y arrivera sur l'escalier montant) ; avec tmux, lance NetHack et y charge la carte ; ou l'envoie au serveur NetHack d'un conteneur LXD, sur ce poste ou sur un serveur distant dont l'adresse IP est demandée (voir plus bas) |
 | `@` | cible des essais (`t`) : ce poste ou un serveur NetHack dans un conteneur LXD |
 | `!` | retour du jeu : erreurs Lua signalées par NetHack sur le dernier essai, avec la ligne fautive ; le curseur va sur l'élément concerné (automatique avec tmux) |
 | `u` (ou Ctrl-Z) / `U` (ou Ctrl-R, Ctrl-Y) | annuler / rétablir la dernière commande ; le message nomme la commande (« Annulé : Salle : sol. ») et le curseur revient où elle a eu lieu |
@@ -356,6 +356,21 @@ Appuyez sur `t` : l'éditeur écrit l'état actuel de la carte (même non
 enregistré) dans le répertoire de données du jeu, sous le nom
 `nhme-<nom>.lua`. Le préfixe `nhme-` évite qu'un niveau du jeu portant le
 même nom, rangé dans `nhdat`, soit chargé à la place du vôtre.
+
+**Position du joueur.** Un niveau NetHack n'indique pas où le joueur
+apparaît : il arrive sur l'escalier montant quand il descend, sur
+l'escalier descendant quand il monte, ou dans une zone d'arrivée
+(`des.levregion` de type `stair-up`/`stair-down`, `des.teleport_region`,
+touches `m` puis `y` ou `x`). Pour l'essai, `#wizloaddes` placerait le
+joueur au hasard : la copie de test lui ajoute donc une zone d'arrivée
+d'une case sur l'escalier montant, et le joueur y apparaît comme s'il
+descendait. C'est vrai aussi au niveau 1 du donjon, où NetHack ne crée
+pas d'escalier montant. Ce bloc tient sur la première et les dernières
+lignes de la copie : les numéros de ligne du retour du jeu ne changent
+pas. Il ne fait rien si le niveau définit sa propre zone d'arrivée
+(`des.teleport_region`) ou s'il n'a pas d'escalier montant (ni si
+l'escalier est tiré au hasard au niveau 1) ; `arrivee = non` dans la
+configuration le supprime.
 
 ### Avec tmux : le jeu est lancé et la carte chargée automatiquement
 
@@ -583,6 +598,7 @@ palette = auto        ; couleurs du rendu jeu : auto, aucune ou un fichier
 serveur_adresse = 192.168.1.20  ; serveur LXD des essais (localhost : ce poste)
 serveur_compte = util01         ; compte SSH sur un serveur distant
 serveur = nethack     ; conteneur LXD (aucun : jamais proposé)
+arrivee = oui         ; essai : joueur sur l'escalier montant
 
 [editeur]
 taille = 75x19        ; taille d'une nouvelle carte

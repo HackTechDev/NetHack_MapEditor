@@ -17,6 +17,9 @@
 # fr@cyber, puis les options glyph de votre ~/.nethackrc), aucune, ou le
 # chemin d'un .nethackrc
 #palette = auto
+# Essai (t) : le joueur arrive sur l'escalier montant (oui, défaut) ou
+# à une place tirée au hasard par #wizloaddes (non)
+#arrivee = oui
 # Serveur NetHack dans un conteneur LXD (install-serveur-nethack.sh) pour
 # la touche « t », sur ce poste ou distant. Adresse IP du serveur
 # proposée (localhost : ce poste) et compte SSH sur un serveur distant

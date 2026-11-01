@@ -18,7 +18,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 3. Outils d'édition | 11 / 11 | — |
 | 4. Entités | 4 / 4 | — |
 | 5. Vérification | 3 / 3 | — |
-| 6. Intégration avec le jeu | 3 / 3 | — |
+| 6. Intégration avec le jeu | 4 / 4 | — |
 | 7. Fichiers et formats | 4 / 4 | — |
 | 8. Configuration et confort | 3 / 3 | — |
 | 9. Qualité du projet | 2 / 4 | intégration continue, paquet installable |
@@ -162,6 +162,10 @@ mais invisible dans l'éditeur.
   fichier à la main.
 - ✅ **Fait** — **Salles à thème** **[gros]** : éditer les salles de `themerms.lua`,
   qui sont des `des.room()` et des `des.map()` dans des fonctions Lua.
+- ✅ **Fait** — **Position du joueur à l'essai** **[facile]** :
+  `#wizloaddes` place le joueur au hasard ; la copie de test lui ajoute
+  une zone d'arrivée d'une case sur l'escalier montant, comme s'il
+  descendait (même au niveau 1, où le jeu ne crée pas cet escalier).
 
 ## 7. Fichiers et formats
 

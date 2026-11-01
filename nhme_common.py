@@ -51,6 +51,43 @@ GAME_SESSION = "nhmapedit-jeu"
 # Options ajoutées au .nethackrc : ni introduction ni question du
 # tutoriel, pour que #wizloaddes arrive au jeu
 GAME_OPTIONS = "!legacy,!tutorial"
+# Ajoutés à la copie de test : #wizloaddes place le joueur au hasard
+# (u_on_rndspot) dans la zone d'arrivée de ceux qui descendent ; une zone
+# d'une case sur l'escalier montant l'y fait arriver, comme en jeu. En
+# tête, sur la première ligne (les numéros de ligne ne changent pas) :
+# des.stair est enveloppé pour noter la position demandée, car au niveau
+# 1 du donjon NetHack ne crée pas d'escalier montant (nh.stairways() n'en
+# a pas) ; des.teleport_region aussi, pour garder la zone d'arrivée que
+# le niveau définit lui-même
+ARRIVAL_HEAD = (
+    'local nhme_up, nhme_own, nhme_stair, nhme_tele = nil, false, '
+    'des.stair, des.teleport_region; '
+    'des.stair = function(a, b, c) local up, x, y; '
+    'if type(a) == "table" then up, x, y = a.dir == "up", a.x, a.y; '
+    'if a.coord then x, y = a.coord[1] or a.coord.x, '
+    'a.coord[2] or a.coord.y end '
+    'else up = a == "up"; if type(b) == "table" then '
+    'x, y = b[1] or b.x, b[2] or b.y else x, y = b, c end end; '
+    'if up and x and y and not nhme_up then '
+    'local ax, ay = nh.abscoord(x, y); nhme_up = { x = ax, y = ay } end; '
+    'return nhme_stair(a, b, c) end; '
+    'des.teleport_region = function(t) '
+    'if type(t) == "table" and t.dir ~= "up" then nhme_own = true end; '
+    'return nhme_tele(t) end; ')
+ARRIVAL_TAIL = """
+-- nhmapedit : le joueur arrive sur l'escalier montant (#wizloaddes)
+des.stair, des.teleport_region = nhme_stair, nhme_tele;
+if not nhme_up then
+   for _, s in ipairs(nh.stairways()) do
+      if s.up then nhme_up = s; break end
+   end
+end
+if nhme_up and not nhme_own then
+   des.teleport_region({ region = { nhme_up.x, nhme_up.y, nhme_up.x,
+                                    nhme_up.y },
+                         region_islev = 1, dir = "down" });
+end
+"""
 # Serveur NetHack dans un conteneur LXD (install-serveur-nethack.sh du
 # projet DGameLaunch) : dossier du jeu dans le chroot de dgamelaunch et
 # proxy LXD de l'accès SSH

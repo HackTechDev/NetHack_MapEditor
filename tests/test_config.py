@@ -31,6 +31,7 @@ serveur_adresse = 192.168.1.20
 serveur_compte = admin
 serveur_dossier = /opt/jeu/
 serveur_ssh = ssh -p 2222 nethack@hote
+arrivee = non
 [editeur]
 taille = 40x12   ; commentaire
 regles = non
@@ -54,6 +55,7 @@ espace = .
                          ("nethack", "/opt/jeu", "ssh -p 2222 nethack@hote"))
         self.assertEqual((cfg["lxd_host"], cfg["lxd_user"]),
                          ("192.168.1.20", "admin"))
+        self.assertFalse(cfg["arrival"])
         self.assertEqual(cfg["size"], (40, 12))
         self.assertFalse(cfg["rulers"])
         self.assertTrue(cfg["entities"])
@@ -68,6 +70,8 @@ espace = .
 
     def test_errors(self):
         cfg, errs = load("""
+[jeu]
+arrivee = parfois
 [editeur]
 taille = grand
 inconnue = 1
@@ -76,8 +80,9 @@ inconnue = 1
 [autre]
 """)
         self.assertEqual(cfg, {})
-        self.assertEqual(len(errs), 4)
-        self.assertTrue(errs[0].startswith("[editeur] taille"))
+        self.assertEqual(len(errs), 5)
+        self.assertTrue(errs[0].startswith("[jeu] arrivee"))
+        self.assertTrue(errs[1].startswith("[editeur] taille"))
 
     def test_syntax_error(self):
         cfg, errs = load("pas de section\n")

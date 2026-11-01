@@ -78,6 +78,13 @@ def load(path):
             cfg["lxd_dir"] = val.strip().rstrip("/")
         elif key == "serveur_ssh":
             cfg["lxd_ssh"] = val.strip()
+        elif key in ("arrivee", "arrivée"):
+            # essai avec tmux : joueur placé sur l'escalier montant
+            low = val.strip().lower()
+            if low not in YES:
+                bad("jeu", key, _("oui ou non attendu"))
+            else:
+                cfg["arrival"] = YES[low]
         elif key == "palette":
             # rendu jeu : auto (néon du thème cyberpunk et .nethackrc),
             # aucune, ou le chemin d'un .nethackrc

@@ -283,6 +283,12 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 - Essai immédiat (`t`) : copie de la carte en cours (même non
   enregistrée) dans le répertoire du jeu sous `nhme-<nom>.lua`, avec le
   drapeau `noflip`.
+- Position du joueur à l'essai : la copie de test ajoute une zone
+  d'arrivée d'une case sur l'escalier montant (`des.teleport_region`),
+  le joueur y apparaît après `#wizloaddes` au lieu d'une case au hasard,
+  même au niveau 1 (où le jeu ne crée pas l'escalier montant) ; numéros
+  de ligne inchangés ; la zone d'arrivée du niveau est respectée ; clé
+  `arrivee`.
 - Avec tmux : lancement de NetHack en mode wizard (panneau, fenêtre ou
   session tmux) et chargement automatique de la carte par
   `#wizloaddes` ; rechargement à chaque nouvel appui sur `t` ; jamais de

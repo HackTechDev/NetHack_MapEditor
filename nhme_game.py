@@ -13,7 +13,7 @@ import nhlevel
 from nhi18n import _
 from nhme_common import (
     Cancel, GAME_OPTIONS, GAME_SESSION, HACKDIRS, LXD_GAME_DIR, LXD_PANICLOG,
-    LXD_PUSH, LXD_SSH_DEVICE, TEST_PREFIX)
+    LXD_PUSH, LXD_SSH_DEVICE, TEST_PREFIX, ARRIVAL_HEAD, ARRIVAL_TAIL)
 
 # Adresses du serveur LXD qui désignent ce poste (lxc lancé sans ssh)
 LOCAL_HOSTS = ("", "localhost", "127.0.0.1", "::1")
@@ -328,16 +328,21 @@ class GameMixin:
     def test_copy(self):
         """(nom, texte) de la copie de test : préfixe nhme- (jamais le nom
         d'un niveau de nhdat) et drapeau noflip, car NetHack retourne au
-        hasard les niveaux qui ne l'ont pas."""
+        hasard les niveaux qui ne l'ont pas ; avec le bloc qui fait
+        arriver le joueur sur l'escalier montant (ARRIVAL_HEAD et
+        ARRIVAL_TAIL), sauf « arrivee = non » dans la configuration."""
         base = os.path.splitext(os.path.basename(self.path or "sans-nom"))[0]
         name = TEST_PREFIX + re.sub(r"[^A-Za-z0-9_-]", "_", base)
         flags = self.lvl.flags
         if not {"noflip", "noflipx", "noflipy"} & set(flags):
             self.lvl.flags = flags + ["noflip"]
         try:
-            return name, self.lvl.to_lua(base)
+            text = self.lvl.to_lua(base)
         finally:
             self.lvl.flags = flags
+        if self.config.get("arrival", True):
+            text = ARRIVAL_HEAD + text + ARRIVAL_TAIL
+        return name, text
 
     # --- serveur NetHack dans un conteneur LXD --------------------------
     def lxc(self, *args, input=None, timeout=30, remote=None):

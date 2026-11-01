@@ -2,14 +2,17 @@
 
 import os
 import shlex
+import subprocess
 import tempfile
 import unittest
 
 from tests.util import level
 
+import nhcheck
 import nhmapedit
 import nhme_game
 from nhlevel import Entity
+from nhme_common import ARRIVAL_HEAD, ARRIVAL_TAIL
 from nhme_game import game_errors, screen_messages
 
 # formats relevés dans NetHack 5.0 (#wizloaddes d'un fichier fautif)
@@ -76,6 +79,65 @@ class Feedback(unittest.TestCase):
             self.assertEqual((ed.cx, ed.cy), (3, 2))
             self.assertIn("ligne %d : Unknown trap type" % n, shown[-1])
             self.assertIn("piège pit", shown[-1])
+
+
+class Arrival(unittest.TestCase):
+    """Le joueur arrive sur l'escalier montant après #wizloaddes."""
+
+    def test_copy_has_block(self):
+        ed = nhmapedit.Editor(None)
+        ed.lvl = level(["....."] * 3)
+        text = ed.test_copy()[1]
+        self.assertTrue(text.startswith(ARRIVAL_HEAD))
+        self.assertTrue(text.endswith(ARRIVAL_TAIL))
+        # en tête, sur la première ligne : les numéros de ligne du retour
+        # du jeu (touche !) ne changent pas
+        self.assertNotIn("\n", ARRIVAL_HEAD)
+        ed.config["arrival"] = False
+        plain = ed.test_copy()[1]
+        self.assertNotIn("nhme_up", plain)
+        self.assertEqual(text, ARRIVAL_HEAD + plain + ARRIVAL_TAIL)
+
+    def run_block(self, body, stairs="{}"):
+        """Zones d'arrivée créées par le bloc autour de body, avec des, nh
+        simulés : la carte commence en (5,2)."""
+        stub = (
+            'des = { stair = function() end, teleport_region = function(t)'
+            ' print(t.region and table.concat(t.region, ",") or "-",'
+            ' t.region_islev, t.dir) end }\n'
+            'nh = { stairways = function() return %s end,'
+            ' abscoord = function(x, y) return x + 5, y + 2 end }\n'
+            % stairs)
+        r = subprocess.run([nhcheck.find_lua(), "-"],
+                           input=stub + ARRIVAL_HEAD + body + ARRIVAL_TAIL,
+                           capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        return r.stdout.strip()
+
+    @unittest.skipUnless(nhcheck.find_lua(), "pas d'interpréteur Lua")
+    def test_lua_block(self):
+        # escalier montant écrit dans le script (au niveau 1, NetHack ne
+        # le crée pas : sa position vient de l'appel à des.stair)
+        for call in ('des.stair("up", 25, 10)', 'des.stair("up", {25, 10})',
+                     'des.stair({ dir = "up", x = 25, y = 10 })',
+                     'des.stair({ dir = "up", coord = {25, 10} })'):
+            self.assertEqual(self.run_block(
+                'des.stair("down", 1, 1)\n' + call + "\n"),
+                "30,12,30,12\t1\tdown", call)
+        # escalier tiré au hasard : celui que le jeu a créé
+        self.assertEqual(self.run_block(
+            'des.stair("up")\n',
+            "{ { up = false, x = 1, y = 1 }, { up = true, x = 30, y = 12 } }"),
+            "30,12,30,12\t1\tdown")
+        # pas d'escalier montant : pas de zone
+        self.assertEqual(self.run_block('des.stair("down", 1, 1)\n'), "")
+        # zone d'arrivée du niveau lui-même : gardée seule
+        own = 'des.teleport_region({ region = {1,1,3,3} })\n'
+        self.assertEqual(self.run_block('des.stair("up", 2, 2)\n' + own),
+                         "1,1,3,3\tnil\tnil")
+        up_only = 'des.teleport_region({ region = {1,1,3,3}, dir = "up" })\n'
+        self.assertEqual(self.run_block('des.stair("up", 2, 2)\n' + up_only),
+                         "1,1,3,3\tnil\tup\n7,4,7,4\t1\tdown")
 
 
 class Lxd(unittest.TestCase):
