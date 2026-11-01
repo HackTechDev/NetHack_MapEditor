@@ -523,8 +523,33 @@ class Maze(unittest.TestCase):
             self.assertGreaterEqual(int(ed.msg.split()[0]), 2)
             # toutes les salles et tous les couloirs se rejoignent
             self.assertEqual(len(nhgen.zones(zone)), 1)
+            # salles éclairées (des.region "lit"), vraies portes
+            doors = {(x, y) for y, r in enumerate(g) for x, c in enumerate(r)
+                     if c == "+"}
+            self.assertEqual({(e.x, e.y) for e in ed.lvl.entities
+                              if e.kind == "door"}, doors)
+            self.assertEqual(len(ed.lvl.regions), int(ed.msg.split()[0]))
+            self.assertTrue(all(r.extra == {"lit": "lit"}
+                                for r in ed.lvl.regions))
             ed.undo()
+            self.assertEqual((ed.lvl.entities, ed.lvl.regions), ([], []))
         self.assertEqual(ed.undo_stack, [])
+        # second tirage par-dessus le premier : ni porte ni zone en trop
+        ed.generate((2, 1), (45, 17), random.Random(1))
+        ed.generate((2, 1), (45, 17), random.Random(2))
+        self.assertTrue(all(ed.lvl.grid[e.y][e.x] == "+"
+                            for e in ed.lvl.entities))
+        self.assertEqual(len(ed.lvl.regions), int(ed.msg.split()[0]))
+        # symétrie gauche-droite : zones et portes reflétées
+        ed.lvl.entities, ed.lvl.regions = [], []
+        ed.sym = 2
+        ed.generate((0, 0), (20, 17), random.Random(3))
+        rects = {r.rect for r in ed.lvl.regions}
+        self.assertEqual(rects, {(49 - x2, y1, 49 - x1, y2)
+                                 for x1, y1, x2, y2 in rects})
+        self.assertTrue(all(ed.lvl.grid[e.y][49 - e.x] == "+"
+                            for e in ed.lvl.entities))
+        ed.sym = 0
         ed.generate((0, 0), (10, 5), random.Random(0))
         self.assertIn("12x6", ed.msg)
 

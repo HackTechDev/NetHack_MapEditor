@@ -101,7 +101,10 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
     - salles et couloirs : salles murées sans chevauchement (nombre
       voulu, moins si la zone est petite), reliées par des couloirs en L
       qui n'entrent que par une porte au milieu d'un mur ; toutes les
-      salles se rejoignent.
+      salles se rejoignent ; salles éclairées (`des.region(…, "lit")`)
+      et vraies portes (`des.door("random", …)`), comme un niveau
+      ordinaire ; reflets en mode symétrie ; un nouveau tirage retire
+      les portes et zones du précédent.
 - Murs automatiques (`=`) : pinceau mur qui donne à chaque `-` ou `|`
   posé, et à ses voisins, la forme qui convient (`|` au milieu d'un mur
   vertical, jonctions comprises, `-` pour les murs horizontaux et les

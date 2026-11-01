@@ -465,10 +465,50 @@ class ToolsMixin:
             return
         name = GENERATOR_NAME[kind]
         self.paint(cells, label=name)
+        if kind == "rooms" and not self.draft_mode:
+            self.room_details((lx, ly, hx, hy),
+                              *nhgen.room_details(g, rooms, lx, ly))
         self.msg = _("%s tracé(e) (u puis Espace : un autre tirage).") % name
         if kind == "rooms":
             self.msg = _("%d salle(s) reliée(s) par des couloirs (u puis "
                          "Espace : un autre tirage).") % len(rooms)
+
+    def mirror_rects(self, rect):
+        """Le rectangle et ses reflets selon le mode symétrie."""
+        rects = {rect}
+        w, h = self.lvl.w, self.lvl.h
+        if self.sym & 2:
+            rects |= {(w - 1 - x2, y1, w - 1 - x1, y2)
+                      for x1, y1, x2, y2 in rects}
+        if self.sym & 1:
+            rects |= {(x1, h - 1 - y2, x2, h - 1 - y1)
+                      for x1, y1, x2, y2 in rects}
+        return rects
+
+    def room_details(self, zone, lit, doors):
+        """Après l'outil Q (salles et couloirs) : une zone éclairée par
+        salle et une vraie porte (des.door, état aléatoire) par +, reflets
+        compris ; les portes et zones éclairées d'un tirage précédent
+        dans la zone sont retirées."""
+        lvl = self.lvl
+        zones = self.mirror_rects(zone)
+
+        def inside(x, y):
+            return any(a <= x <= c and b <= y <= d for a, b, c, d in zones)
+        lvl.entities = [e for e in lvl.entities if not (
+            e.kind == "door" and e.x is not None and inside(e.x, e.y)
+            and lvl.grid[e.y][e.x] not in "+S")]
+        lvl.regions = [r for r in lvl.regions if not (
+            r.kind == "region" and r.style == "sel" and r.rect
+            and not r.readonly and inside(*r.rect[:2])
+            and inside(*r.rect[2:]))]
+        for rect in sorted({m for r in lit for m in self.mirror_rects(r)}):
+            lvl.regions.append(nhlevel.Region("region", rect, {"lit": "lit"},
+                                              "sel"))
+        have = {(e.x, e.y) for e in lvl.entities if e.kind == "door"}
+        for x, y in sorted({p for d in doors for p in self.mirror_points(*d)}):
+            if (x, y) not in have and lvl.grid[y][x] == "+":
+                lvl.entities.append(nhlevel.Entity("door", x, y, "random"))
 
     def ask_generator(self):
         """Choix du générateur de l'outil Q, puis ses options."""

@@ -870,6 +870,15 @@ class LevelMixin:
         lvl = Level(w, h)
         lvl.grid = grid
         lvl.lit = lit
+        if kind == "rooms":
+            # salles éclairées, couloirs sombres, vraies portes : comme
+            # un niveau ordinaire
+            rects, doors = nhgen.room_details(grid, rooms)
+            lvl.lit = False
+            if lit:
+                lvl.regions = [nhlevel.Region("region", r, {"lit": "lit"},
+                                              "sel") for r in rects]
+            lvl.entities = [Entity("door", x, y, "random") for x, y in doors]
         lvl.flags = ["mazelevel"] if kind == "maze" else []
         for k, x, y, v in nhgen.populate(grid, rng, mons, objs, traps):
             lvl.entities.append(Entity(k, x, y, v))

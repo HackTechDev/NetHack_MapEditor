@@ -50,6 +50,17 @@ def rooms_and_corridors(w, h, n, rng, tries=40):
     return grid, [r]
 
 
+def room_details(grid, rooms, ox=0, oy=0):
+    """(zones éclairées, portes) des salles générées, décalées de (ox,
+    oy) : dans un des.map, NetHack laisse sombres les salles sans
+    des.region(..., "lit") (murs compris, comme ses salles ordinaires) et
+    fait d'un + une simple ouverture sans des.door()."""
+    lit = [(ox + r[0], oy + r[1], ox + r[2], oy + r[3]) for r in rooms]
+    doors = [(ox + x, oy + y) for y, row in enumerate(grid)
+             for x, c in enumerate(row) if c == DOOR]
+    return lit, doors
+
+
 def _draw_room(grid, r):
     x1, y1, x2, y2 = r
     for y in range(y1, y2 + 1):

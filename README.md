@@ -113,7 +113,7 @@ rotation), crayon baissé, entités sous le curseur, rendu jeu…
 | `1`…`8` | outil : Pinceau, Ligne, Rectangle, Rectangle plein, Salle, Remplissage, Copier, Coller |
 | `9`, `0` | outil Ellipse, Ellipse pleine (un cercle est une ellipse tracée dans un carré) |
 | `G` | outil Semis aléatoire : peint au hasard une partie des cases d'une zone, selon une densité en % |
-| `Q` | générateur dans une zone (`u` puis Espace en tire un autre) : **labyrinthe**, comme `des.mazewalk()` mais tiré une fois pour toutes (murs `-` et `\|`, roche ou pinceau, passages en sol ou couloir, boucles en %) ; **grotte** comme les mines (automate cellulaire, % de roche au départ, bord en murs `-` et `\|` ou en roche, d'un seul tenant) ; **salles et couloirs** (le nombre de salles voulu, murées, reliées par des couloirs qui entrent par des portes ; zone de 12x6 au moins) |
+| `Q` | générateur dans une zone (`u` puis Espace en tire un autre) : **labyrinthe**, comme `des.mazewalk()` mais tiré une fois pour toutes (murs `-` et `\|`, roche ou pinceau, passages en sol ou couloir, boucles en %) ; **grotte** comme les mines (automate cellulaire, % de roche au départ, bord en murs `-` et `\|` ou en roche, d'un seul tenant) ; **salles et couloirs** (le nombre de salles voulu, murées, reliées par des couloirs qui entrent par des portes ; zone de 12x6 au moins ; chaque salle est éclairée par un `des.region(…, "lit")` et chaque porte est une vraie porte `des.door("random", …)`, comme dans un niveau ordinaire) |
 | `:` | outil Remplissage par motif : damier, rayures horizontales ou verticales, diagonales ou points espacés, avec deux terrains (`.` et `}` par exemple) et une largeur ; dans un rectangle tracé, ou, avec deux appuis sur la même case, dans toute la zone de même terrain (comme `6`) ; le motif suit les coordonnées de la carte, deux zones voisines se raccordent |
 | `=` | murs automatiques : en mode « pinceau mur », tout `-` ou `\|` posé (et ses voisins) prend la forme qui convient (`\|` dans un mur vertical, `-` ailleurs, coins compris) ; corrige aussi les murs de toute la carte ou d'une zone |
 | `R` | remplacer un terrain par un autre, sur toute la carte ou dans une zone, avec une proportion en % (comme `des.replace_terrain()`) |
@@ -366,6 +366,13 @@ Appuyez sur `t` : l'éditeur écrit l'état actuel de la carte (même non
 enregistré) dans le répertoire de données du jeu, sous le nom
 `nhme-<nom>.lua`. Le préfixe `nhme-` évite qu'un niveau du jeu portant le
 même nom, rangé dans `nhdat`, soit chargé à la place du vôtre.
+
+**Éclairage et portes.** Dans un `des.map()`, NetHack laisse les salles
+sombres (on n'y voit que les cases voisines) sauf zone éclairée
+(`m` puis `r`, ou option `lit` de la carte dans `p`), et un `+` seul
+n'est qu'une ouverture sans battant : la porte (ouverte, fermée,
+verrouillée ou tirée au hasard) se pose avec `m` puis `d`. Les salles et
+couloirs générés par `Q` ou par l'assistant le font d'eux-mêmes.
 
 **Position du joueur.** Un niveau NetHack n'indique pas où le joueur
 apparaît : il arrive sur l'escalier montant quand il descend, sur

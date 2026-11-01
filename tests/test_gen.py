@@ -77,6 +77,14 @@ class Wizard(unittest.TestCase):
                 again = nhlevel.parse_level(lvl.to_lua())[0]
                 self.assertEqual(again.grid, lvl.grid)
                 self.assertEqual(len(again.entities), len(lvl.entities))
+                if kind == "rooms":
+                    # salles éclairées, couloirs sombres, vraies portes
+                    self.assertFalse(lvl.lit)
+                    self.assertTrue(lvl.regions)
+                    self.assertEqual(sum(e.kind == "door"
+                                         for e in lvl.entities),
+                                     "".join(map("".join, lvl.grid))
+                                     .count("+"))
 
     def test_too_small(self):
         self.assertIsNone(self.run_wizard("rooms", w=10, h=5))
