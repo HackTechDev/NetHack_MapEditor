@@ -26,6 +26,11 @@ class Load(unittest.TestCase):
         cfg, errs = load("""
 [jeu]
 repertoire = ~/jeu
+serveur = nethack
+serveur_adresse = 192.168.1.20
+serveur_compte = admin
+serveur_dossier = /opt/jeu/
+serveur_ssh = ssh -p 2222 nethack@hote
 [editeur]
 taille = 40x12   ; commentaire
 regles = non
@@ -45,6 +50,10 @@ espace = .
 """)
         self.assertEqual(errs, [])
         self.assertEqual(cfg["hackdir"], os.path.expanduser("~/jeu"))
+        self.assertEqual((cfg["lxd"], cfg["lxd_dir"], cfg["lxd_ssh"]),
+                         ("nethack", "/opt/jeu", "ssh -p 2222 nethack@hote"))
+        self.assertEqual((cfg["lxd_host"], cfg["lxd_user"]),
+                         ("192.168.1.20", "admin"))
         self.assertEqual(cfg["size"], (40, 12))
         self.assertFalse(cfg["rulers"])
         self.assertTrue(cfg["entities"])

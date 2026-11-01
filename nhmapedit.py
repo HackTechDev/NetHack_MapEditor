@@ -100,6 +100,9 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
         self.game_where = ""
         self.launch = None          # réponse à « lancer le jeu ? »
         self.last_test = None       # dernier essai (touche !, retour du jeu)
+        self.test_target = None     # cible de t : "local" ou serveur LXD
+        self.lxd_last = None        # dernier serveur LXD (adresse, compte…)
+        self.lxd_told = set()       # conteneurs dont les consignes sont vues
         self.lua_refused = False    # compilation de Lua refusée
         self.autosave_delay = self.config.get("autosave", AUTOSAVE_DELAY)
         self.autosave_time = time.time()
@@ -317,6 +320,13 @@ class Editor(DisplayMixin, DialogsMixin, ToolsMixin, EntitiesMixin,
             self.check()
         elif k == "t":
             self.test_in_game()
+        elif k == "@":
+            target = self.choose_test_target(always=True)
+            if target == "local":
+                self.msg = _("Essais (t) sur ce poste.")
+            elif target:
+                self.msg = (_("Essais (t) sur le serveur LXD « %s ».")
+                            % self.lxd_label(target))
         elif k == "g":
             s = self.prompt(_("Aller à « x y » : "),
                             "%d %d" % (self.cx, self.cy))

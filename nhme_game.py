@@ -1,5 +1,6 @@
 """Intégration avec le jeu : test (tmux, #wizloaddes, THEMERM) et dungeon.lua."""
 
+import getpass
 import os
 import re
 import shlex
@@ -11,7 +12,11 @@ import nhdungeon
 import nhlevel
 from nhi18n import _
 from nhme_common import (
-    Cancel, GAME_OPTIONS, GAME_SESSION, HACKDIRS, TEST_PREFIX)
+    Cancel, GAME_OPTIONS, GAME_SESSION, HACKDIRS, LXD_GAME_DIR, LXD_PANICLOG,
+    LXD_PUSH, LXD_SSH_DEVICE, TEST_PREFIX)
+
+# Adresses du serveur LXD qui désignent ce poste (lxc lancé sans ssh)
+LOCAL_HOSTS = ("", "localhost", "127.0.0.1", "::1")
 
 
 # Erreurs Lua de NetHack, écrites par impossible() dans le paniclog (en
@@ -66,15 +71,17 @@ class GameMixin:
         return os.path.join(self.hackdir, "paniclog") if self.hackdir \
             else None
 
-    def note_test(self, name, text):
+    def note_test(self, name, text, size=None, lxd=None):
         """Mémorise l'essai en cours : nom, texte copié et taille actuelle
-        du paniclog (on ne lira que ce que le jeu y ajoutera)."""
-        p = self.paniclog_path()
-        try:
-            size = os.path.getsize(p)
-        except (OSError, TypeError):
-            size = 0
-        self.last_test = {"name": name, "text": text, "size": size}
+        du paniclog (on ne lira que ce que le jeu y ajoutera) ; lxd : cible
+        serveur ({box, host, user}), dont le paniclog fait size octets."""
+        if size is None:
+            try:
+                size = os.path.getsize(self.paniclog_path())
+            except (OSError, TypeError):
+                size = 0
+        self.last_test = {"name": name, "text": text, "size": size,
+                          "lxd": lxd}
 
     def game_feedback(self, auto=False):
         """Touche ! (et après chaque chargement par tmux) : messages
@@ -85,15 +92,22 @@ class GameMixin:
             self.msg = _("Pas encore d'essai dans le jeu (touche t).")
             return []
         found = ""
-        try:
-            with open(self.paniclog_path(), encoding="utf-8",
-                      errors="replace") as f:
-                f.seek(t["size"])
-                found = f.read()
-        except (OSError, TypeError):
-            pass
+        if t.get("lxd"):
+            # paniclog du serveur, lu dans le conteneur
+            found = self.lxc("exec", "-T", t["lxd"]["box"], "--", "sh",
+                             "-c", LXD_PANICLOG, "sh", self.lxd_dir(),
+                             str(t["size"] + 1),
+                             remote=self.lxd_remote(t["lxd"]))[0] or ""
+        else:
+            try:
+                with open(self.paniclog_path(), encoding="utf-8",
+                          errors="replace") as f:
+                    f.seek(t["size"])
+                    found = f.read()
+            except (OSError, TypeError):
+                pass
         errors = game_errors(found, t["name"])
-        if not errors and self.game_alive():
+        if not errors and not t.get("lxd") and self.game_alive():
             # paniclog absent ou désactivé : l'écran du jeu
             screen = self.tmux("capture-pane", "-p", "-J", "-t",
                                self.game_pane) or ""
@@ -311,10 +325,224 @@ class GameMixin:
         return bool(d) and any(os.path.isfile(os.path.join(d, f))
                                for f in ("nhdat", "sysconf"))
 
+    def test_copy(self):
+        """(nom, texte) de la copie de test : préfixe nhme- (jamais le nom
+        d'un niveau de nhdat) et drapeau noflip, car NetHack retourne au
+        hasard les niveaux qui ne l'ont pas."""
+        base = os.path.splitext(os.path.basename(self.path or "sans-nom"))[0]
+        name = TEST_PREFIX + re.sub(r"[^A-Za-z0-9_-]", "_", base)
+        flags = self.lvl.flags
+        if not {"noflip", "noflipx", "noflipy"} & set(flags):
+            self.lvl.flags = flags + ["noflip"]
+        try:
+            return name, self.lvl.to_lua(base)
+        finally:
+            self.lvl.flags = flags
+
+    # --- serveur NetHack dans un conteneur LXD --------------------------
+    def lxc(self, *args, input=None, timeout=30, remote=None):
+        """(sortie, erreur) d'une commande lxc ; sortie None en cas
+        d'échec. remote : (adresse, compte) d'un serveur distant, joint
+        par ssh (clé SSH, sans question : l'éditeur ne peut pas en poser
+        pendant l'affichage)."""
+        cmd = ["lxc"] + list(args)
+        if remote:
+            host, user = remote
+            cmd = ["ssh", "-o", "BatchMode=yes", "-o", "ConnectTimeout=10",
+                   "%s@%s" % (user, host) if user else host,
+                   " ".join(shlex.quote(a) for a in cmd)]
+        try:
+            r = subprocess.run(cmd, capture_output=True, text=True,
+                               input=input, timeout=timeout)
+        except (OSError, subprocess.SubprocessError) as e:
+            return None, str(e)
+        if r.returncode:
+            return None, (r.stderr or r.stdout).strip()
+        return r.stdout, ""
+
+    def lxd_dir(self):
+        return self.config.get("lxd_dir") or LXD_GAME_DIR
+
+    @staticmethod
+    def lxd_remote(target):
+        """(adresse, compte) d'un serveur distant ; None sur ce poste."""
+        return (target["host"], target["user"]) if target["host"] else None
+
+    @staticmethod
+    def lxd_label(target):
+        """« nethack » ou « nethack sur 192.168.1.20 »."""
+        if target["host"]:
+            return _("%s sur %s") % (target["box"], target["host"])
+        return target["box"]
+
+    def lxd_setting(self):
+        """Conteneur imposé (clé serveur, ou NHMAPEDIT_LXD) ; « aucun »
+        désactive la cible serveur."""
+        return (os.environ.get("NHMAPEDIT_LXD")
+                or self.config.get("lxd", "")).strip()
+
+    def choose_test_target(self, always=False):
+        """Cible des essais (t) : ce poste, ou un serveur LXD (sur ce
+        poste ou distant). Demandée la première fois, puis retenue (@ la
+        change). Renvoie "local", {box, host, user}, ou None."""
+        if self.test_target and not always:
+            return self.test_target
+        if self.lxd_setting().lower() in ("aucun", "non", "none"):
+            self.test_target = "local"
+            return "local"
+        items = [
+            (_("Ce poste : %s") % (self.hackdir or _("répertoire du jeu à "
+                                                     "indiquer")),
+             "local", {"key": "l", "desc": _(
+                 "Copie dans le répertoire du jeu local ; avec tmux, "
+                 "l'éditeur lance NetHack en mode wizard et y charge la "
+                 "carte.")}),
+            (_("Serveur NetHack dans un conteneur LXD…"), "lxd", {
+                "key": "s", "desc": _(
+                    "Serveur installé par install-serveur-nethack.sh : "
+                    "l'adresse IP du serveur est demandée (localhost : "
+                    "conteneur sur ce poste) ; un serveur distant est "
+                    "joint par ssh, avec une clé SSH.")}),
+        ]
+        what = self.pick(_("Où essayer la carte ?"), items,
+                         "local" if self.test_target in (None, "local")
+                         else "lxd")
+        if what == "local":
+            self.test_target = "local"
+        else:
+            self.test_target = self.ask_lxd_server()
+        return self.test_target
+
+    def ask_lxd_server(self):
+        """Demande l'adresse du serveur LXD (et le compte SSH s'il est
+        distant), puis trouve le conteneur du jeu. None si introuvable."""
+        last = self.lxd_last or {}
+        host = self.prompt(
+            _("Adresse IP du serveur LXD (localhost : ce poste) : "),
+            last.get("host") or self.config.get("lxd_host")
+            or "localhost").strip()
+        if host.lower() in LOCAL_HOSTS:
+            host = None
+        user = None
+        if host:
+            user = self.prompt(
+                _("Compte SSH sur %s (membre du groupe lxd) : ") % host,
+                last.get("user") or self.config.get("lxd_user")
+                or getpass.getuser()).strip() or None
+        remote = (host, user) if host else None
+        box = self.lxd_setting()
+        if not box:
+            self.msg = (_("Recherche des conteneurs sur %s…")
+                        % (host or "localhost"))
+            self.draw()
+            out, err = self.lxc("list", "--format", "csv", "-c", "ns",
+                                timeout=20, remote=remote)
+            if out is None:
+                self.msg = _("Serveur LXD %s injoignable : %s") % (
+                    host or "localhost",
+                    err.splitlines()[-1] if err else "?")
+                return None
+            boxes = [line.split(",")[0] for line in out.splitlines()
+                     if line.endswith(",RUNNING")]
+            if not boxes:
+                self.msg = (_("Aucun conteneur LXD en marche sur %s.")
+                            % (host or "localhost"))
+                return None
+            if len(boxes) == 1:
+                box = boxes[0]
+            else:
+                box = self.pick(_("Conteneur du serveur NetHack"),
+                                [(b, b) for b in boxes],
+                                "nethack" if "nethack" in boxes else None)
+        self.lxd_last = {"box": box, "host": host, "user": user}
+        return self.lxd_last
+
+    def lxd_ssh_command(self, target):
+        """Commande ssh des joueurs : clé serveur_ssh, sinon l'adresse
+        écoutée par le proxy LXD du conteneur."""
+        if self.config.get("lxd_ssh"):
+            return self.config["lxd_ssh"]
+        listen = (self.lxc("config", "device", "get", target["box"],
+                           LXD_SSH_DEVICE, "listen", timeout=10,
+                           remote=self.lxd_remote(target))[0] or "").strip()
+        m = re.match(r"tcp:\[?([^\]]*?)\]?:(\d+)$", listen)
+        if m:
+            host = m.group(1)
+            if host in ("0.0.0.0", "::", ""):
+                host = target["host"] or "localhost"
+            port = "" if m.group(2) == "22" else "-p %s " % m.group(2)
+            return "ssh %snethack@%s" % (port, host)
+        return _("ssh -p 2222 nethack@<adresse de l'hôte>")
+
+    def test_in_lxd(self, target):
+        """Copie la carte dans le jeu du serveur LXD (en root, mode 644,
+        comme les autres fichiers du jeu) et explique comment l'essayer."""
+        name, text = self.test_copy()
+        d = self.lxd_dir()
+        label = self.lxd_label(target)
+        self.msg = _("Copie vers le serveur LXD « %s »…") % label
+        self.draw()
+        out, err = self.lxc("exec", "-T", target["box"], "--", "sh", "-c",
+                            LXD_PUSH, "sh", d, name + ".lua", input=text,
+                            remote=self.lxd_remote(target))
+        if out is None:
+            self.msg = _("Serveur LXD « %s » : copie impossible (%s).") % (
+                label, err.splitlines()[-1] if err else "?")
+            return
+        lines = out.split("\n")
+        try:
+            size = int(lines[0])
+        except ValueError:
+            size = 0
+        wizard = lines[1].strip() if len(lines) > 1 else ""
+        self.note_test(name, text, size, target)
+        dest = "%s/%s.lua" % (d, name)
+        self.msg = (_("Copié sur le serveur LXD « %s » : %s ; #wizloaddes "
+                      "%s en mode debug.") % (label, dest, name))
+        if label in self.lxd_told:
+            return
+        self.lxd_told.add(label)
+        report = [
+            _("Carte copiée (état actuel, même non enregistré) dans le"),
+            _("conteneur « %s » :") % label,
+            "  " + dest,
+            _("(fichier de root en lecture seule pour les parties, comme"),
+            _("le reste du jeu ; drapeau noflip ajouté à la copie)"),
+            "",
+            _("Pour l'essayer :"),
+            _("  1. connectez-vous :  %s") % self.lxd_ssh_command(target),
+            _("  2. entrez avec le compte du mode debug%s ;") % (
+                " (%s)" % wizard if wizard and wizard != "-aucun-" else ""),
+            _("     dans le menu o, mettez  OPTIONS=playmode:debug"),
+            _("  3. lancez une partie, tapez  #wizloaddes  puis :  ") + name,
+            "",
+            _("Après une modification, t recopie la carte : refaites"),
+            _("#wizloaddes. ! relève les erreurs Lua que le jeu écrit"),
+            _("dans le paniclog du serveur. @ change de cible (ce poste"),
+            _("ou le serveur)."),
+        ]
+        if not wizard or wizard == "-aucun-":
+            report += [
+                "",
+                _("Attention : le mode debug n'est pas encore accordé sur ce"),
+                _("serveur (WIZARDS=%s dans sysconf). Inscrivez le compte du")
+                % (wizard or "?"),
+                _("mode debug par ssh, puis relancez"),
+                _("install-serveur-nethack.sh dans un terminal (voir son"),
+                _("README, « Activer le mode debug »)."),
+            ]
+        self.message_box(_("Tester sur le serveur LXD"), "\n".join(report))
+
     def test_in_game(self):
-        """Copie l'état courant de la carte dans le répertoire du jeu."""
+        """Copie l'état courant de la carte dans le répertoire du jeu,
+        local ou du serveur LXD."""
         if self.lvl.theme:
             return self.test_theme()
+        target = self.choose_test_target()
+        if target is None:
+            return
+        if target != "local":
+            return self.test_in_lxd(target)
         if not self.hackdir:
             d = self.prompt(
                 _("Répertoire de données de NetHack (nethackdir) : "),
@@ -326,24 +554,15 @@ class GameMixin:
                 return
             self.hackdir = d
             self.load_game_names()
-        base = os.path.splitext(os.path.basename(self.path or "sans-nom"))[0]
-        name = TEST_PREFIX + re.sub(r"[^A-Za-z0-9_-]", "_", base)
+        name, text = self.test_copy()
         dest = os.path.join(self.hackdir, name + ".lua")
-        # NetHack retourne au hasard les niveaux sans « noflip » : on
-        # l'ajoute à la copie de test pour retrouver la carte telle quelle
-        flags = self.lvl.flags
-        if not {"noflip", "noflipx", "noflipy"} & set(flags):
-            self.lvl.flags = flags + ["noflip"]
         try:
-            text = self.lvl.to_lua(base)
             self.note_test(name, text)
             with open(dest, "w", encoding="utf-8") as f:
                 f.write(text)
         except OSError as e:
             self.msg = _("Erreur d'écriture : %s") % e
             return
-        finally:
-            self.lvl.flags = flags
         self.msg = _("Copié pour test : %s") % dest
         if self.game_alive():
             self.load_in_game(name)

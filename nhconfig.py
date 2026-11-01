@@ -66,6 +66,18 @@ def load(path):
             # langue du jeu (fr@cyber, fr, en) ; défaut : celle du
             # .nethackrc, sinon le thème par défaut du jeu
             cfg["game_lang"] = val.strip()
+        elif key == "serveur":
+            # conteneur LXD du serveur NetHack (touche t), ou « aucun »
+            cfg["lxd"] = val.strip()
+        elif key == "serveur_adresse":
+            # adresse IP du serveur LXD (localhost : ce poste)
+            cfg["lxd_host"] = val.strip()
+        elif key == "serveur_compte":
+            cfg["lxd_user"] = val.strip()
+        elif key == "serveur_dossier":
+            cfg["lxd_dir"] = val.strip().rstrip("/")
+        elif key == "serveur_ssh":
+            cfg["lxd_ssh"] = val.strip()
         elif key == "palette":
             # rendu jeu : auto (néon du thème cyberpunk et .nethackrc),
             # aucune, ou le chemin d'un .nethackrc

@@ -51,6 +51,35 @@ GAME_SESSION = "nhmapedit-jeu"
 # Options ajoutées au .nethackrc : ni introduction ni question du
 # tutoriel, pour que #wizloaddes arrive au jeu
 GAME_OPTIONS = "!legacy,!tutorial"
+# Serveur NetHack dans un conteneur LXD (install-serveur-nethack.sh du
+# projet DGameLaunch) : dossier du jeu dans le chroot de dgamelaunch et
+# proxy LXD de l'accès SSH
+LXD_GAME_DIR = "/opt/nethack/chroot/home/util01/nethack500"
+LXD_SSH_DEVICE = "ssh-nethack"
+# Copie de la carte dans le conteneur, en root : par un dossier
+# temporaire réservé à root puis un renommage, qui remplace un éventuel
+# lien symbolique posé par le compte du jeu au lieu de le suivre (le
+# dossier du jeu lui est ouvert en écriture, avec le sticky bit)
+LXD_PUSH = r"""set -e
+d=$1; n=$2
+[ -f "$d/nhdat" ] || { echo "nhdat absent de $d" >&2; exit 3; }
+umask 022
+t=$(mktemp -d "$d/.nhme.XXXXXX")
+trap 'rm -rf "$t"' EXIT
+cat > "$t/$n"
+chmod 644 "$t/$n"
+mv -fT "$t/$n" "$d/$n"
+if [ -f "$d/paniclog" ] && [ ! -L "$d/paniclog" ]; then
+    stat -c %s "$d/paniclog"
+else
+    echo 0
+fi
+sed -n 's/^WIZARDS=//p' "$d/sysconf" | tail -n 1
+"""
+# Lecture du paniclog du serveur à partir d'un octet donné
+LXD_PANICLOG = r"""f=$1/paniclog
+[ -f "$f" ] && [ ! -L "$f" ] && tail -c "+$2" "$f" || true
+"""
 
 # Outils : identifiant, nom, nom court (palette), touche
 TOOLS = [
@@ -573,7 +602,10 @@ NIVEAU ET FICHIERS
   t  tester : copie la carte dans le répertoire du jeu, à charger avec
      #wizloaddes en mode wizard (nethack -D) ; avec tmux, l'éditeur
      lance le jeu (panneau, fenêtre ou session tmux) et y charge la carte
-     lui-même, puis la recharge à chaque nouvel appui sur t
+     lui-même, puis la recharge à chaque nouvel appui sur t. Avec un
+     serveur NetHack dans un conteneur LXD, sur ce poste ou distant
+     (adresse IP demandée, ssh), t peut aussi y copier la carte
+  @  cible des essais (t) : ce poste ou un serveur LXD
   !  retour du jeu : erreurs Lua signalées par NetHack (paniclog, écran
      du jeu) depuis le dernier essai, avec la ligne fautive ; le curseur
      va sur l'élément concerné (automatique avec tmux)

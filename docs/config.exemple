@@ -17,6 +17,20 @@
 # fr@cyber, puis les options glyph de votre ~/.nethackrc), aucune, ou le
 # chemin d'un .nethackrc
 #palette = auto
+# Serveur NetHack dans un conteneur LXD (install-serveur-nethack.sh) pour
+# la touche « t », sur ce poste ou distant. Adresse IP du serveur
+# proposée (localhost : ce poste) et compte SSH sur un serveur distant
+# (clé SSH, membre du groupe lxd)
+#serveur_adresse = 192.168.1.20
+#serveur_compte = util01
+# Nom du conteneur (par défaut, celui qui tourne sur le serveur), ou
+# « aucun » pour ne jamais proposer de serveur
+#serveur = nethack
+# Dossier du jeu dans le conteneur (chroot de dgamelaunch)
+#serveur_dossier = /opt/nethack/chroot/home/util01/nethack500
+# Commande de connexion affichée (par défaut : l'adresse du proxy LXD
+# ssh-nethack du conteneur)
+#serveur_ssh = ssh -p 2222 nethack@192.168.1.10
 
 [editeur]
 # Taille d'une nouvelle carte

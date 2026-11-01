@@ -25,7 +25,7 @@ ce que fait l'éditeur aujourd'hui est dans [FEATURES.md](FEATURES.md).
 | 10. Nouvelles idées | 3 / 7 | langues, raccourcis, couverture, comparaison |
 | 11. Idées supplémentaires | 6 / 12 | tirage, $EDITOR, `.des`, sélections, Sokoban, donjon |
 | 12. Encore d'autres idées | 8 / 14 | voir la liste |
-| 13. Version cyberpunk du jeu | 5 / 5 | — |
+| 13. Version cyberpunk du jeu | 6 / 6 | — |
 
 Prochaines étapes conseillées : l'**intégration continue**, peu coûteuse
 maintenant que les tests existent, puis l'**aperçu d'un tirage** et
@@ -352,3 +352,8 @@ l'affichage avec un thème cyberpunk (Night City, langue `fr@cyber`).
   sélection, description de la ligne choisie, ligne d'aide « · » ;
   thèmes cyber, classique et sobre ; même style pour le cadre de la
   carte, le panneau et la ligne d'aide du bas.
+- ✅ **Fait** — **Essai sur le serveur LXD** **[moyen]** : `t` copie la
+  carte dans le jeu du serveur dgamelaunch installé dans un conteneur LXD
+  (`install-serveur-nethack.sh`), donne la marche à suivre (ssh, mode
+  debug, `#wizloaddes`), et `!` lit le paniclog du serveur ; `@` choisit
+  la cible.

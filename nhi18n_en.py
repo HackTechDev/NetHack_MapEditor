@@ -1104,6 +1104,67 @@ EN = {
         '↑/↓ navigate · Enter check/uncheck · number · Esc done',
     'Calques': 'Layers',
     'Drapeaux': 'Flags',
+    # touche t : serveur LXD
+    'Essais (t) sur ce poste.': 'Tests (t) on this computer.',
+    'Essais (t) sur le serveur LXD « %s ».':
+        'Tests (t) on the LXD server "%s".',
+    "ssh -p 2222 nethack@<adresse de l'hôte>":
+        'ssh -p 2222 nethack@<host address>',
+    'Où essayer la carte ?': 'Where to test the map?',
+    'Copie vers le serveur LXD « %s »…': 'Copying to the LXD server "%s"…',
+    'Copié sur le serveur LXD « %s » : %s ; #wizloaddes %s en mode debug.':
+        'Copied to the LXD server "%s": %s; #wizloaddes %s in debug mode.',
+    'Carte copiée (état actuel, même non enregistré) dans le':
+        'Map copied (current state, even unsaved) into the',
+    'conteneur « %s » :': 'container "%s":',
+    '(fichier de root en lecture seule pour les parties, comme':
+        '(root file, read-only for games, like the rest',
+    'le reste du jeu ; drapeau noflip ajouté à la copie)':
+        'of the game; noflip flag added to the copy)',
+    "Pour l'essayer :": 'To try it:',
+    '  1. connectez-vous :  %s': '  1. log in:  %s',
+    '  2. entrez avec le compte du mode debug%s ;':
+        '  2. enter with the debug mode account%s;',
+    '     dans le menu o, mettez  OPTIONS=playmode:debug':
+        '     in the o menu, set  OPTIONS=playmode:debug',
+    '  3. lancez une partie, tapez  #wizloaddes  puis :  ':
+        '  3. start a game, type  #wizloaddes  then:  ',
+    'Après une modification, t recopie la carte : refaites':
+        'After a change, t copies the map again: redo',
+    '#wizloaddes. ! relève les erreurs Lua que le jeu écrit':
+        '#wizloaddes. ! reads the Lua errors the game writes',
+    'dans le paniclog du serveur. @ change de cible (ce poste':
+        'to the server paniclog. @ changes the target (this',
+    'ou le serveur).': 'computer or the server).',
+    "Attention : le mode debug n'est pas encore accordé sur ce":
+        'Warning: debug mode is not granted yet on this',
+    'serveur (WIZARDS=%s dans sysconf). Inscrivez le compte du':
+        'server (WIZARDS=%s in sysconf). Register the debug',
+    'mode debug par ssh, puis relancez': 'mode account over ssh, then run',
+    'install-serveur-nethack.sh dans un terminal (voir son':
+        'install-serveur-nethack.sh again in a terminal (see its',
+    'README, « Activer le mode debug »).': 'README, "Activer le mode debug").',
+    'Tester sur le serveur LXD': 'Test on the LXD server',
+    'Serveur LXD « %s » : copie impossible (%s).':
+        'LXD server "%s": copy failed (%s).',
+    'Ce poste : %s': 'This computer: %s',
+    'répertoire du jeu à indiquer': 'game directory to give',
+    "Copie dans le répertoire du jeu local ; avec tmux, l'éditeur lance NetHack en mode wizard et y charge la carte.":
+        'Copy into the local game directory; with tmux, the editor starts NetHack in wizard mode and loads the map.',
+    # serveur LXD distant
+    '%s sur %s': '%s on %s',
+    'Serveur NetHack dans un conteneur LXD…':
+        'NetHack server in an LXD container…',
+    'Recherche des conteneurs sur %s…': 'Looking for containers on %s…',
+    "Serveur installé par install-serveur-nethack.sh : l'adresse IP du serveur est demandée (localhost : conteneur sur ce poste) ; un serveur distant est joint par ssh, avec une clé SSH.":
+        'Server installed by install-serveur-nethack.sh: the server IP address is asked (localhost: container on this computer); a remote server is reached over ssh, with an SSH key.',
+    'Adresse IP du serveur LXD (localhost : ce poste) : ':
+        'IP address of the LXD server (localhost: this computer): ',
+    'Serveur LXD %s injoignable : %s': 'LXD server %s unreachable: %s',
+    'Aucun conteneur LXD en marche sur %s.': 'No LXD container running on %s.',
+    'Conteneur du serveur NetHack': 'Container of the NetHack server',
+    'Compte SSH sur %s (membre du groupe lxd) : ':
+        'SSH account on %s (member of the lxd group): ',
 }
 
 HELP = """\
@@ -1253,7 +1314,10 @@ LEVEL AND FILES
   t  test: copies the map to the game directory, to load with
      #wizloaddes in wizard mode (nethack -D); with tmux, the editor
      starts the game (pane, window or tmux session) and loads the map
-     itself, then reloads it each time t is pressed again
+     itself, then reloads it each time t is pressed again. With a
+     NetHack server in an LXD container, on this computer or remote
+     (IP address asked, ssh), t can also copy the map there
+  @  target of the tests (t): this computer or an LXD server
   !  game feedback: Lua errors reported by NetHack (paniclog, game
      screen) since the last test, with the faulty line; the cursor goes
      to the element concerned (automatic with tmux)

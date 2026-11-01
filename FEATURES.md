@@ -288,6 +288,17 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
   `#wizloaddes` ; rechargement à chaque nouvel appui sur `t` ; jamais de
   second jeu si une partie est en cours.
 - Sans tmux : instructions pas à pas.
+- Serveur NetHack dans un conteneur LXD (installé par
+  `install-serveur-nethack.sh`, dgamelaunch), sur ce poste ou distant
+  (adresse IP demandée ; serveur distant joint par `ssh compte@adresse
+  lxc …`, avec une clé SSH) : `t` peut copier la carte
+  dans le jeu du chroot (root, 644, par renommage depuis un dossier
+  réservé à root : jamais de lien symbolique suivi), puis donne la
+  commande ssh, le compte du mode debug et le `#wizloaddes` ; avertit si
+  le mode debug n'est pas accordé ; `!` lit le paniclog du serveur ; `@`
+  choisit la cible (ce poste ou le serveur) ; clés `serveur_adresse`,
+  `serveur_compte`, `serveur`, `serveur_dossier`, `serveur_ssh`,
+  variable `NHMAPEDIT_LXD`.
 - Retour du jeu (`!`, automatique avec tmux) : les erreurs Lua que
   NetHack écrit dans son `paniclog` (ou à l'écran, dans le panneau tmux)
   depuis le dernier essai sont relevées, avec leur numéro de ligne et la
@@ -331,13 +342,14 @@ voir le [tutoriel](TUTORIAL.md) ; pour le détail des touches, le
 - Erreurs de configuration signalées au démarrage sans bloquer.
 - Variables d'environnement : `NHMAPEDIT_HACKDIR`, `NHMAPEDIT_DUNGEON`,
   `NHMAPEDIT_LANG`, `NHMAPEDIT_LUA`, `NHMAPEDIT_DAT`, `NHMAPEDIT_LUAC`,
-  `NHMAPEDIT_GAME_LANG`, `NHMAPEDIT_PALETTE`, `NHMAPEDIT_THEME`.
+  `NHMAPEDIT_GAME_LANG`, `NHMAPEDIT_PALETTE`, `NHMAPEDIT_THEME`,
+  `NHMAPEDIT_LXD`.
 - Langue choisie selon la locale (français si elle commence par `fr`,
   anglais sinon), imposable par la configuration ou `NHMAPEDIT_LANG`.
 
 ## Qualité
 
-- 133 tests automatiques (`python3 -m unittest`) : aller-retour sur
+- 137 tests automatiques (`python3 -m unittest`) : aller-retour sur
   `dat/`, outils, entités, fichiers, vérification, export, modèles,
   configuration, traduction, parcours de l'interface dans un
   pseudo-terminal.

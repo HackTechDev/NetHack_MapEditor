@@ -13,6 +13,8 @@ os.environ["NHMAPEDIT_LANG"] = "fr"
 # noms du script seuls, sans le catalogue du jeu installé sur la machine
 os.environ["NHMAPEDIT_GAME_LANG"] = "en"
 os.environ["NHMAPEDIT_PALETTE"] = "aucune"
+# pas de serveur LXD : t essaie sur ce poste, sans demander la cible
+os.environ["NHMAPEDIT_LXD"] = "aucun"
 
 # Niveaux de NetHack : $NHMAPEDIT_DAT, sinon les sources à côté du dépôt
 DAT = os.environ.get("NHMAPEDIT_DAT",

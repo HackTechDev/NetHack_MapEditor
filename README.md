@@ -394,6 +394,66 @@ Pour remplacer un vrai niveau du jeu, mettez le fichier dans `dat/` des
 sources et recompilez/réinstallez (`make install`), ou référencez-le dans
 `dat/dungeon.lua`.
 
+### Sur un serveur NetHack dans un conteneur LXD
+
+`t` sait aussi copier la carte dans le jeu d'un serveur installé par
+`install-serveur-nethack.sh` (projet DGameLaunch : NetHack derrière
+dgamelaunch, dans un conteneur LXD joignable en `ssh -p 2222`). Le
+conteneur peut être sur ce poste ou sur un serveur distant. Le premier
+`t` demande où essayer la carte : **ce poste**, ou **un serveur NetHack
+dans un conteneur LXD**. Dans ce cas, l'éditeur demande :
+
+- l'**adresse IP du serveur** : `localhost` pour un conteneur sur ce
+  poste (`lxc` est alors lancé directement) ;
+- pour un serveur distant, le **compte SSH** sur ce serveur : l'éditeur
+  y lance `lxc` par `ssh compte@adresse`. Il faut une clé SSH (aucun mot
+  de passe ne peut être demandé pendant l'affichage), un compte membre
+  du groupe `lxd`, et s'être connecté une fois à la main (`ssh
+  compte@adresse`) pour accepter la clé du serveur ;
+- le conteneur : celui qui tourne, ou à choisir s'il y en a plusieurs.
+
+Le choix est retenu pour la session ; `@` le change (les dernières
+réponses sont proposées).
+
+Vers le serveur, la carte (état actuel, préfixe `nhme-`, drapeau
+`noflip`) est copiée par `lxc exec` dans le jeu du chroot de
+dgamelaunch, `/opt/nethack/chroot/home/util01/nethack500/`. Elle y
+appartient à root, en lecture seule pour les parties, comme le reste du
+jeu. La copie passe par un dossier temporaire réservé à root puis un
+renommage : un lien symbolique posé à ce nom par le compte du jeu
+(`nhjeu`, qui peut écrire dans ce dossier) est remplacé, jamais suivi.
+
+L'éditeur affiche ensuite la marche à suivre :
+
+1. se connecter : `ssh -p 2222 nethack@<adresse>` (l'adresse est celle
+   du proxy LXD `ssh-nethack` du conteneur, ou celle du serveur s'il
+   écoute sur toutes ses adresses) ;
+2. entrer avec le compte du mode debug et, dans le menu `o` de
+   dgamelaunch, mettre `OPTIONS=playmode:debug` ;
+3. lancer une partie, taper `#wizloaddes` puis le nom donné (`nhme-…`).
+
+Il prévient si le mode debug n'est pas encore accordé sur le serveur
+(`WIZARDS=-aucun-` dans `sysconf`) : il faut alors inscrire le compte du
+mode debug, puis relancer `install-serveur-nethack.sh` dans un terminal
+(voir « Activer le mode debug » dans son README). Après une
+modification, `t` recopie la carte : refaites `#wizloaddes`. `!` lit les
+erreurs Lua dans le `paniclog` du serveur.
+
+Il faut pouvoir utiliser `lxc` sans `sudo` (groupe `lxd`), sur ce poste
+ou sur le serveur. Clés de la section `[jeu]` : `serveur_adresse` et
+`serveur_compte` (réponses proposées par défaut), `serveur` (nom du
+conteneur, ou `aucun` pour ne jamais proposer de serveur),
+`serveur_dossier` (dossier du jeu dans le conteneur), `serveur_ssh`
+(commande de connexion affichée) ; variable `NHMAPEDIT_LXD`.
+
+Pour faire de la carte un vrai niveau du serveur, pour tous les joueurs,
+il faut l'ajouter aux sources du jeu dans le conteneur
+(`/home/util01/Nethack500_Lubuntu2604/dat/` et `dat/dungeon.lua`), puis
+relancer `install-serveur-nethack.sh`, qui compile les modifications
+locales. Seuls les noms prévus par le Makefile entrent dans `nhdat`
+(`bigrm-*.lua`, `medusa-?.lua`…), et les parties en pause risquent de ne
+plus se charger avec un donjon modifié.
+
 ## Ajouter le niveau au donjon
 
 `#wizloaddes` charge une carte à la place du niveau courant. Pour que le
